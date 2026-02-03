@@ -68,6 +68,11 @@
   - `src/content/notes/http-timeouts-retries.md`
   - `src/content/notes/database-migrations-basics.md`
   - `src/content/notes/kubernetes-rollouts-basics.md`
+- Added API and observability notes:
+  - `src/content/notes/api-pagination-basics.md`
+  - `src/content/notes/idempotency-keys-basics.md`
+  - `src/content/notes/service-discovery-basics.md`
+  - `src/content/notes/distributed-tracing-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
