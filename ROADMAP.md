@@ -73,6 +73,11 @@
   - `src/content/notes/idempotency-keys-basics.md`
   - `src/content/notes/service-discovery-basics.md`
   - `src/content/notes/distributed-tracing-basics.md`
+- Added resilience and web security notes:
+  - `src/content/notes/circuit-breaker-basics.md`
+  - `src/content/notes/csrf-basics.md`
+  - `src/content/notes/session-management-basics.md`
+  - `src/content/notes/health-checks-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
