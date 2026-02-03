@@ -48,6 +48,11 @@
   - `src/content/notes/docker-image-optimization.md`
   - `src/content/notes/github-actions-basics.md`
   - `src/content/notes/secrets-rotation-basics.md`
+- Added scheduling and deployment notes:
+  - `src/content/notes/linux-cron-basics.md`
+  - `src/content/notes/systemd-timers-basics.md`
+  - `src/content/notes/kubernetes-probes-basics.md`
+  - `src/content/notes/canary-deployments.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
