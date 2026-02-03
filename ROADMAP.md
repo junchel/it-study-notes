@@ -8,6 +8,7 @@
 - Repo variables set:
   - `SITE_URL` = `https://jjchwordpress.cloud`
   - `SITE_BASE` = `/`
+- Added a DNS setup guide note: `src/content/notes/custom-domain-dns-setup.md`.
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
