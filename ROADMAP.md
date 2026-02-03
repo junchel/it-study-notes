@@ -93,6 +93,11 @@
   - `src/content/notes/database-locking-basics.md`
   - `src/content/notes/deadlocks-basics.md`
   - `src/content/notes/query-plan-basics.md`
+- Added release and ops process notes:
+  - `src/content/notes/deployment-checklist-basics.md`
+  - `src/content/notes/rollback-strategy-basics.md`
+  - `src/content/notes/change-management-basics.md`
+  - `src/content/notes/incident-triage-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
