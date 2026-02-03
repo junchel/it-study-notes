@@ -10,7 +10,7 @@ export async function GET() {
     note.data.tags.forEach((tag) => tagSet.add(tag));
   });
 
-  const routes = ["/", "/notes/", "/tags/", "/about/"];
+  const routes = ["/", "/notes/", "/tags/", "/paths/", "/about/"];
   const urls = [
     ...routes,
     ...notes.map((note) => `/notes/${note.slug}/`),

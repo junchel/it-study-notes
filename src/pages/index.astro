@@ -36,6 +36,33 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
 
     <section class="section">
       <div class="section-title">
+        <h2>Learning paths</h2>
+        <a href="/paths/">View paths</a>
+      </div>
+      <div class="note-grid">
+        <article class="note-card">
+          <div class="note-card-top">
+            <h3 class="note-title">IT foundations</h3>
+            <p class="note-description">Linux, Windows, and networking fundamentals.</p>
+          </div>
+        </article>
+        <article class="note-card">
+          <div class="note-card-top">
+            <h3 class="note-title">DevOps starter</h3>
+            <p class="note-description">Docker, CI/CD, and observability basics.</p>
+          </div>
+        </article>
+        <article class="note-card">
+          <div class="note-card-top">
+            <h3 class="note-title">Security essentials</h3>
+            <p class="note-description">SSH keys, TLS, and HTTP fundamentals.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
         <h2>Latest notes</h2>
         <a href="/notes/">View all</a>
       </div>

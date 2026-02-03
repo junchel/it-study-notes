@@ -1,0 +1,46 @@
+﻿---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TagList from "../components/TagList.astro";
+
+const paths = [
+  {
+    title: "IT foundations",
+    description: "Build core muscle memory: Linux, Windows, networking, and shell basics.",
+    tags: ["it-basics", "linux", "windows", "networking", "cli", "dns", "dhcp"]
+  },
+  {
+    title: "DevOps starter",
+    description: "Learn automation, containers, CI/CD, and operational visibility.",
+    tags: ["devops", "docker", "kubernetes", "ci-cd", "observability"]
+  },
+  {
+    title: "Security essentials",
+    description: "Lock down access, understand HTTPS, and protect keys.",
+    tags: ["security", "ssh", "tls", "http"]
+  }
+];
+---
+
+<BaseLayout title="Paths" description="Suggested learning paths for IT study notes.">
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">Learning paths</span>
+      <h1>Study paths</h1>
+      <p>Pick a track and follow the related tags to build depth.</p>
+    </section>
+
+    <section class="section">
+      <div class="note-grid">
+        {paths.map((path) => (
+          <article class="note-card">
+            <div class="note-card-top">
+              <h3 class="note-title">{path.title}</h3>
+              <p class="note-description">{path.description}</p>
+            </div>
+            <TagList tags={path.tags} />
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
