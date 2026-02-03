@@ -18,6 +18,11 @@
   - `src/content/notes/logrotate-basics.md`
   - `src/content/notes/reverse-proxy-basics.md`
   - `src/content/notes/http-status-codes.md`
+- Added service and security notes:
+  - `src/content/notes/windows-services-basics.md`
+  - `src/content/notes/ssh-hardening-basics.md`
+  - `src/content/notes/dns-troubleshooting-playbook.md`
+  - `src/content/notes/nginx-tls-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
