@@ -83,6 +83,11 @@
   - `src/content/notes/request-validation-basics.md`
   - `src/content/notes/autoscaling-basics.md`
   - `src/content/notes/cache-invalidation-basics.md`
+- Added web security notes:
+  - `src/content/notes/xss-basics.md`
+  - `src/content/notes/content-security-policy-basics.md`
+  - `src/content/notes/password-storage-basics.md`
+  - `src/content/notes/audit-logging-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
