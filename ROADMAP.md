@@ -43,6 +43,11 @@
   - `src/content/notes/redis-basics.md`
   - `src/content/notes/http-security-headers.md`
   - `src/content/notes/correlation-ids-basics.md`
+- Added platform and CI notes:
+  - `src/content/notes/kubernetes-resource-requests-limits.md`
+  - `src/content/notes/docker-image-optimization.md`
+  - `src/content/notes/github-actions-basics.md`
+  - `src/content/notes/secrets-rotation-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
