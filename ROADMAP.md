@@ -78,6 +78,11 @@
   - `src/content/notes/csrf-basics.md`
   - `src/content/notes/session-management-basics.md`
   - `src/content/notes/health-checks-basics.md`
+- Added API and scaling notes:
+  - `src/content/notes/api-error-handling-basics.md`
+  - `src/content/notes/request-validation-basics.md`
+  - `src/content/notes/autoscaling-basics.md`
+  - `src/content/notes/cache-invalidation-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
