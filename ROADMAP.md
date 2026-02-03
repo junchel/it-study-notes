@@ -28,6 +28,11 @@
   - `src/content/notes/synthetic-monitoring-basics.md`
   - `src/content/notes/traceroute-mtr-basics.md`
   - `src/content/notes/ufw-firewall-basics.md`
+- Added web and performance notes:
+  - `src/content/notes/tcp-udp-basics.md`
+  - `src/content/notes/http2-http3-basics.md`
+  - `src/content/notes/load-testing-basics.md`
+  - `src/content/notes/backup-restore-drills.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
