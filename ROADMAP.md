@@ -88,6 +88,11 @@
   - `src/content/notes/content-security-policy-basics.md`
   - `src/content/notes/password-storage-basics.md`
   - `src/content/notes/audit-logging-basics.md`
+- Added database concurrency notes:
+  - `src/content/notes/transaction-isolation-levels.md`
+  - `src/content/notes/database-locking-basics.md`
+  - `src/content/notes/deadlocks-basics.md`
+  - `src/content/notes/query-plan-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
