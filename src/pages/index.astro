@@ -1,0 +1,49 @@
+﻿---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NoteCard from "../components/NoteCard.astro";
+import Search from "../components/Search.astro";
+import { getCollection } from "astro:content";
+
+const notes = (await getCollection("notes", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 6);
+---
+
+<BaseLayout
+  title="Home"
+  description="A living knowledge base for IT study notes, labs, and references."
+>
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">IT knowledge base</span>
+      <h1>Turn IT study sessions into a searchable, growing library.</h1>
+      <p>
+        Capture commands, troubleshooting notes, and architectures. Connect related
+        ideas and surface them later with fast search.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="/notes/">Browse notes</a>
+        <a class="button secondary" href="/about/">How it works</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Search</h2>
+      </div>
+      <Search />
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>Latest notes</h2>
+        <a href="/notes/">View all</a>
+      </div>
+      <div class="note-grid">
+        {notes.map((note) => (
+          <NoteCard note={note} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

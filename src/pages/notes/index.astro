@@ -1,0 +1,32 @@
+﻿---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NoteCard from "../../components/NoteCard.astro";
+import Search from "../../components/Search.astro";
+import { getCollection } from "astro:content";
+
+const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+---
+
+<BaseLayout title="Notes" description="All IT study notes, ordered by date.">
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">All notes</span>
+      <h1>IT study notes</h1>
+      <p>Every entry is a building block for your IT reference system.</p>
+    </section>
+
+    <section class="section">
+      <Search />
+    </section>
+
+    <section class="section">
+      <div class="note-grid">
+        {notes.map((note) => (
+          <NoteCard note={note} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

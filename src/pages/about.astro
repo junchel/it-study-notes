@@ -1,0 +1,33 @@
+﻿---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About" description="About this IT study notes site.">
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">About</span>
+      <h1>How this IT knowledge base is built</h1>
+      <p>
+        The site is a static IT knowledge base built with Astro. Each note is a
+        Markdown file with structured frontmatter for tools, commands, and labs.
+      </p>
+    </section>
+
+    <section class="section">
+      <article class="prose">
+        <h2>Workflow</h2>
+        <ol>
+          <li>Write a Markdown note for a tool, system, or lab.</li>
+          <li>Build the site to generate HTML and the search index.</li>
+          <li>Deploy to GitHub Pages for free hosting.</li>
+        </ol>
+
+        <h2>Search</h2>
+        <p>
+          Pagefind generates a static search index, so search works without a
+          backend or extra cost.
+        </p>
+      </article>
+    </section>
+  </div>
+</BaseLayout>

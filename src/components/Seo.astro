@@ -1,0 +1,29 @@
+﻿---
+const {
+  title,
+  description,
+  image,
+  canonical,
+  noIndex = false
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://example.com");
+const metaTitle = title ? `${title} | IT Study Notes` : "IT Study Notes";
+const metaDescription = description || "A personal knowledge base for IT study notes.";
+const canonicalUrl = canonical
+  ? new URL(canonical, site)
+  : new URL(Astro.url.pathname, site);
+const imageUrl = image ? new URL(image, site) : new URL("/og.svg", site);
+---
+
+<title>{metaTitle}</title>
+<meta name="description" content={metaDescription} />
+<link rel="canonical" href={canonicalUrl.toString()} />
+<meta property="og:site_name" content="IT Study Notes" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={canonicalUrl.toString()} />
+<meta property="og:image" content={imageUrl.toString()} />
+<meta name="twitter:card" content="summary_large_image" />
+{noIndex ? <meta name="robots" content="noindex, nofollow" /> : null}

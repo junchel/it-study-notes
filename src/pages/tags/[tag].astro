@@ -1,0 +1,46 @@
+﻿---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NoteCard from "../../components/NoteCard.astro";
+import { getCollection } from "astro:content";
+import { slugify } from "../../utils/slugify";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes", ({ data }) => !data.draft);
+  const tagSet = new Set();
+
+  notes.forEach((note) => {
+    note.data.tags.forEach((tag) => tagSet.add(tag));
+  });
+
+  return Array.from(tagSet).map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: {
+      tag,
+      notes: notes.filter((note) => note.data.tags.includes(tag))
+    }
+  }));
+}
+
+const { tag, notes } = Astro.props;
+const sortedNotes = [...notes].sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Notes tagged with ${tag}.`}>
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">Tag</span>
+      <h1>{tag}</h1>
+      <p>{notes.length} note(s)</p>
+    </section>
+
+    <section class="section">
+      <div class="note-grid">
+        {sortedNotes.map((note) => (
+          <NoteCard note={note} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

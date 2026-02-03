@@ -1,0 +1,18 @@
+﻿---
+import TagList from "./TagList.astro";
+
+const { note } = Astro.props;
+const { data } = note;
+const date = data.updatedDate || data.pubDate;
+---
+
+<article class="note-card">
+  <div class="note-card-top">
+    <p class="note-date">{date.toLocaleDateString()}</p>
+    <h3 class="note-title">
+      <a href={`/notes/${note.slug}/`}>{data.title}</a>
+    </h3>
+    <p class="note-description">{data.description}</p>
+  </div>
+  <TagList tags={data.tags} />
+</article>

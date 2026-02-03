@@ -1,0 +1,14 @@
+=== 02/03/2026 22:41:32 ===
+
+Setting                      Before After Result 
+-------                      ------ ----- ------ 
+??? ???? ???                 1      0     Changed
+??? ???                      1      0     Changed
+Power Saving Mode            1      0     Changed
+???? ??                      1      0     Changed
+Large Send Offload v2 (IPv4) 1      0     Changed
+Large Send Offload v2 (IPv6) 1      0     Changed
+
+
+
+DNS: 1.1.1.1, 1.0.0.1 -> 1.1.1.1, 1.0.0.1

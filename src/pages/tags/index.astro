@@ -1,0 +1,40 @@
+﻿---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { slugify } from "../../utils/slugify";
+
+const notes = await getCollection("notes", ({ data }) => !data.draft);
+const tagMap = new Map();
+
+notes.forEach((note) => {
+  note.data.tags.forEach((tag) => {
+    const current = tagMap.get(tag) || 0;
+    tagMap.set(tag, current + 1);
+  });
+});
+
+const tags = Array.from(tagMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<BaseLayout title="Tags" description="Explore IT notes by topic tags.">
+  <div class="container">
+    <section class="hero">
+      <span class="hero-badge">Topics</span>
+      <h1>Tags</h1>
+      <p>Group notes by technologies, tools, or certifications.</p>
+    </section>
+
+    <section class="section">
+      <div class="note-grid">
+        {tags.map(([tag, count]) => (
+          <article class="note-card">
+            <h3 class="note-title">
+              <a href={`/tags/${slugify(tag)}/`}>{tag}</a>
+            </h3>
+            <p class="note-description">{count} note(s)</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

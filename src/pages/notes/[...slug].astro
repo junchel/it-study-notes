@@ -1,0 +1,30 @@
+﻿---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TagList from "../../components/TagList.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes", ({ data }) => !data.draft);
+  return notes.map((note) => ({
+    params: { slug: note.slug },
+    props: { note }
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await note.render();
+const { data } = note;
+const displayDate = (data.updatedDate || data.pubDate).toLocaleDateString();
+---
+
+<BaseLayout title={data.title} description={data.description}>
+  <div class="container">
+    <article class="prose">
+      <p class="note-date">{displayDate}</p>
+      <h1>{data.title}</h1>
+      <p>{data.description}</p>
+      <TagList tags={data.tags} />
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
