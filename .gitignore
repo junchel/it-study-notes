@@ -4,3 +4,5 @@ dist/
 .DS_Store
 .env
 .env.*
+lol_net_tune_admin.*
+sample.txt
