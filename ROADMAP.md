@@ -53,6 +53,11 @@
   - `src/content/notes/systemd-timers-basics.md`
   - `src/content/notes/kubernetes-probes-basics.md`
   - `src/content/notes/canary-deployments.md`
+- Added ops and security notes:
+  - `src/content/notes/linux-disk-usage-basics.md`
+  - `src/content/notes/nginx-logging-basics.md`
+  - `src/content/notes/feature-flags-basics.md`
+  - `src/content/notes/jwt-security-pitfalls.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
