@@ -63,6 +63,11 @@
   - `src/content/notes/uptime-checklist.md`
   - `src/content/notes/kubernetes-namespaces-basics.md`
   - `src/content/notes/ssl-certificate-renewal.md`
+- Added reliability and deployment notes:
+  - `src/content/notes/log-levels-basics.md`
+  - `src/content/notes/http-timeouts-retries.md`
+  - `src/content/notes/database-migrations-basics.md`
+  - `src/content/notes/kubernetes-rollouts-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
