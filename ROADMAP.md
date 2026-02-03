@@ -2,11 +2,13 @@
 
 ## Now
 
-- Install Node.js (LTS) and run `npm install`.
-- Set GitHub repo variables:
+- Git repo initialized locally on branch `main`.
+- Node.js + npm installed and `npm run build` verified.
+- Next: create GitHub repo `it-study-notes` and push the local commits.
+- Next: enable GitHub Pages + set custom domain `jjchwordpress.cloud`.
+- Next: set GitHub repo variables:
   - `SITE_URL` = `https://jjchwordpress.cloud`
   - `SITE_BASE` = `/`
-- Configure the custom domain in GitHub Pages and point DNS to GitHub.
 - Add your first 5-10 IT notes in `src/content/notes/`.
 
 ## Next
