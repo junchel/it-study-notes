@@ -58,6 +58,11 @@
   - `src/content/notes/nginx-logging-basics.md`
   - `src/content/notes/feature-flags-basics.md`
   - `src/content/notes/jwt-security-pitfalls.md`
+- Added incident and platform notes:
+  - `src/content/notes/incident-severity-levels.md`
+  - `src/content/notes/uptime-checklist.md`
+  - `src/content/notes/kubernetes-namespaces-basics.md`
+  - `src/content/notes/ssl-certificate-renewal.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
