@@ -33,6 +33,11 @@
   - `src/content/notes/http2-http3-basics.md`
   - `src/content/notes/load-testing-basics.md`
   - `src/content/notes/backup-restore-drills.md`
+- Added API and deployment notes:
+  - `src/content/notes/api-rate-limiting-basics.md`
+  - `src/content/notes/cors-basics.md`
+  - `src/content/notes/api-versioning-basics.md`
+  - `src/content/notes/blue-green-deployments.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
