@@ -30,7 +30,7 @@ const { title, description, image, canonical, noIndex = false } = Astro.props;
   <body class="page">
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader />
-    <main id="main" class="main">
+    <main id="main" class="main" data-pagefind-body>
       <slot />
     </main>
     <SiteFooter />
