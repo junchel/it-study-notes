@@ -13,6 +13,11 @@
 - Added indexing checklist note: `src/content/notes/search-engine-indexing-checklist.md`.
 - Added Bing Webmaster Tools setup note: `src/content/notes/bing-webmaster-tools-setup.md`.
 - Added a 30-day IT study roadmap note: `src/content/notes/first-30-days-it-roadmap.md`.
+- Added ops/web fundamentals notes:
+  - `src/content/notes/linux-systemd-basics.md`
+  - `src/content/notes/logrotate-basics.md`
+  - `src/content/notes/reverse-proxy-basics.md`
+  - `src/content/notes/http-status-codes.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
