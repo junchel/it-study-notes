@@ -23,6 +23,11 @@
   - `src/content/notes/ssh-hardening-basics.md`
   - `src/content/notes/dns-troubleshooting-playbook.md`
   - `src/content/notes/nginx-tls-basics.md`
+- Added monitoring and networking notes:
+  - `src/content/notes/sli-slo-basics.md`
+  - `src/content/notes/synthetic-monitoring-basics.md`
+  - `src/content/notes/traceroute-mtr-basics.md`
+  - `src/content/notes/ufw-firewall-basics.md`
 - Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
 - Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
 
