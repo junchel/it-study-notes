@@ -37,16 +37,24 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           <span class="hero-title-kicker" data-i18n="home.hero.titleTop">
             {t("home.hero.titleTop")}
           </span>
-          <span class="hero-title-emphasis" data-i18n="home.hero.titleBottom">
-            {t("home.hero.titleBottom")}
+          <span class="hero-title-emphasis">
+            <span class="hero-title-accent" data-i18n="home.hero.titleAccent">
+              {t("home.hero.titleAccent")}
+            </span>
+            <span class="hero-title-rest" data-i18n="home.hero.titleBottom">
+              {t("home.hero.titleBottom")}
+            </span>
           </span>
         </h1>
-        <p data-i18n="home.hero.body">{t("home.hero.body")}</p>
-        <ul class="hero-highlights">
-          <li data-i18n="home.hero.point1">{t("home.hero.point1")}</li>
-          <li data-i18n="home.hero.point2">{t("home.hero.point2")}</li>
-          <li data-i18n="home.hero.point3">{t("home.hero.point3")}</li>
-        </ul>
+        <p class="hero-body" data-i18n="home.hero.body">{t("home.hero.body")}</p>
+        <div class="hero-proof">
+          <p class="hero-proof-title" data-i18n="home.hero.proofTitle">{t("home.hero.proofTitle")}</p>
+          <ul class="hero-highlights">
+            <li data-i18n="home.hero.point1">{t("home.hero.point1")}</li>
+            <li data-i18n="home.hero.point2">{t("home.hero.point2")}</li>
+            <li data-i18n="home.hero.point3">{t("home.hero.point3")}</li>
+          </ul>
+        </div>
         <div class="hero-actions">
           <a class="button" href="/notes/" data-i18n="home.hero.primary">
             {t("home.hero.primary")}
