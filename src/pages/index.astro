@@ -55,6 +55,26 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
             {t("home.hero.secondary")}
           </a>
         </div>
+        <div class="hero-signal-rail">
+          <div class="hero-signal-item">
+            <span class="hero-signal-label" data-i18n="home.hero.signal1.label">
+              {t("home.hero.signal1.label")}
+            </span>
+            <strong data-i18n="home.hero.signal1.value">{t("home.hero.signal1.value")}</strong>
+          </div>
+          <div class="hero-signal-item">
+            <span class="hero-signal-label" data-i18n="home.hero.signal2.label">
+              {t("home.hero.signal2.label")}
+            </span>
+            <strong data-i18n="home.hero.signal2.value">{t("home.hero.signal2.value")}</strong>
+          </div>
+          <div class="hero-signal-item">
+            <span class="hero-signal-label" data-i18n="home.hero.signal3.label">
+              {t("home.hero.signal3.label")}
+            </span>
+            <strong data-i18n="home.hero.signal3.value">{t("home.hero.signal3.value")}</strong>
+          </div>
+        </div>
       </div>
       <aside class="hero-panel">
         <div class="hero-panel-card search-card">
@@ -94,16 +114,19 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       </aside>
     </section>
 
-    <section class="section">
+    <section class="section home-section">
       <div class="section-title">
-        <h2 data-i18n="home.section.paths">{t("home.section.paths")}</h2>
+        <div class="section-heading">
+          <span class="section-kicker" data-i18n="home.section.paths.kicker">{t("home.section.paths.kicker")}</span>
+          <h2 data-i18n="home.section.paths">{t("home.section.paths")}</h2>
+        </div>
         <a href="/paths/" data-i18n="home.section.paths.link">
           {t("home.section.paths.link")}
         </a>
       </div>
       <div class="path-grid">
         {PATHS.map((path, index) => (
-          <article class="path-card">
+          <article class:list={["path-card", `path-card-tone-${(index % 3) + 1}`]}>
             <span class="path-index">{String(index + 1).padStart(2, "0")}</span>
             <div>
               <h3 data-i18n={`path.${path.id}.title`}>
@@ -116,9 +139,12 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       </div>
     </section>
 
-    <section class="section">
+    <section class="section home-section">
       <div class="section-title">
-        <h2 data-i18n="home.section.latest">{t("home.section.latest")}</h2>
+        <div class="section-heading">
+          <span class="section-kicker" data-i18n="home.section.latest.kicker">{t("home.section.latest.kicker")}</span>
+          <h2 data-i18n="home.section.latest">{t("home.section.latest")}</h2>
+        </div>
         <a href="/notes/" data-i18n="home.section.latest.link">
           {t("home.section.latest.link")}
         </a>
