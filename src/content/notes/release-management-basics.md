@@ -1,31 +1,51 @@
-﻿---
-title: "Release management basics"
-description: "Versioning, release notes, and safe rollout practices."
+---
+title: "릴리스 관리 기본"
+description: "버저닝, 릴리스 노트, 안전한 롤아웃 관행."
 pubDate: 2026-02-03
 tags: ["release", "operations", "ci-cd"]
 ---
 
-## Summary
+## 요약
 
-Release management keeps deployments predictable and trackable.
+릴리스 관리는 배포를 예측 가능하고 추적 가능하게 만듭니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use semantic versioning where possible.
-- Document release notes and changes.
-- Coordinate rollouts with stakeholders.
+- **버저닝**: Semantic Versioning을 기본으로 합니다.
+- **릴리스 노트**: 사용자 영향과 변경점을 명확히 기록합니다.
+- **롤아웃 조율**: 이해관계자와 타이밍을 맞춥니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Tag releases
-- Publish release notes
-- Monitor post-release health
+- 릴리스 태그 생성
+- 변경 사항 요약 작성
+- 배포 후 헬스 체크 확인
+
+## 명령
+
+```bash
+git tag -a v1.2.3 -m "Release v1.2.3"
 ```
+릴리스 태그를 생성해 변경점을 고정합니다.
 
-## Pitfalls
+```bash
+git push origin v1.2.3
+```
+원격 저장소에 릴리스 태그를 배포합니다.
 
-- Untracked hotfixes.
-- No rollback plan.
-- Deploying without communication.
+```bash
+git log --oneline --decorate -n 20
+```
+최근 변경 이력을 간단히 확인합니다.
+
+## 운영 팁
+
+- 릴리스 체크리스트와 승인 절차를 고정합니다.
+- 대규모 변경은 릴리스 윈도우를 확보합니다.
+- 릴리스 버전을 태그로 남겨 추적성을 확보합니다.
+
+## 주의사항
+
+- 핫픽스가 기록 없이 배포되면 추적이 어려워집니다.
+- 롤백 계획이 없으면 장애 시 복구가 지연합니다.
+- 배포 전후 커뮤니케이션이 누락되면 혼란이 생깁니다.

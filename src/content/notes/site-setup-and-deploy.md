@@ -1,43 +1,62 @@
-﻿---
-title: "Site setup and deployment guide"
-description: "How to build, deploy, and index this IT study notes site."
+---
+title: "사이트 설정과 배포"
+description: "정적/웹 사이트를 로컬에서 준비하고 배포하는 실무 흐름을 정리합니다."
 pubDate: 2026-02-03
-tags: ["workflow", "deployment", "astro", "github-pages"]
+tags: ["web", "deployment", "operations"]
 ---
 
-## Summary
+## 요약
 
-This note explains how the IT study notes site is built, deployed to GitHub Pages, and indexed by search engines.
+사이트 배포는 로컬 환경 준비, 빌드, 배포, 검증의 순서로 진행합니다. 반복 가능한 스크립트가 핵심입니다.
 
-## Steps
+## 핵심 개념
 
-1. Install Node.js (LTS).
-2. In the project folder:
+- 로컬 개발 환경은 배포 환경과 최대한 일치해야 합니다.
+- 빌드 산출물과 배포 대상은 명확히 분리합니다.
+- 배포 후 검증과 롤백 경로를 함께 준비합니다.
+
+## 체크리스트
+
+- 의존성 버전이 고정되어 있는지 확인합니다.
+- 빌드가 재현 가능한지 확인합니다.
+- 배포 후 헬스 체크와 링크 검증을 수행합니다.
+- 정적 파일 캐시 정책을 확인합니다.
+
+## 설정 및 배포 명령
 
 ```bash
-npm.cmd install
-npm.cmd run build
+npm install
 ```
+프로젝트 의존성을 설치합니다.
 
-3. Log in to GitHub and create the repository `it-study-notes`.
-4. Push the local repo to GitHub.
-5. Enable GitHub Pages for the repo.
-6. Add the custom domain `jjchwordpress.cloud`.
-7. Set repo variables:
-   - `SITE_URL` = `https://jjchwordpress.cloud`
-   - `SITE_BASE` = `/`
-8. Confirm these URLs load after deploy:
-   - `/` (home)
-   - `/sitemap.xml`
-   - `/rss.xml`
+```bash
+npm run dev
+```
+로컬 개발 서버를 실행해 기능을 확인합니다.
 
-## Troubleshooting
+```bash
+npm run build
+```
+배포용 정적 산출물을 생성합니다.
 
-- If `npm` fails in PowerShell, use `npm.cmd`.
-- If Pagefind fails, run `npm.cmd run build` again after a clean install.
+```bash
+npm run preview
+```
+빌드 결과물을 로컬에서 검증합니다.
 
-## References
+```bash
+rsync -avz dist/ user@server:/var/www/site/
+```
+생성된 정적 파일을 서버로 안전하게 전송합니다.
 
-- `README.md`
-- `ROADMAP.md`
-- `.github/workflows/deploy.yml`
+## 운영 팁
+
+- 배포 전후에 로그를 비교해 오류 유입을 확인합니다.
+- CDN 무효화 전략을 문서화합니다.
+- 버전별 배포 아티팩트를 보관해 빠른 롤백을 지원합니다.
+
+## 주의사항
+
+- `dist` 경로는 프레임워크에 따라 다를 수 있으니 문서로 확인합니다.
+- 빌드 산출물이 커지면 전송 시간이 증가하므로 캐시 전략을 병행합니다.
+- 배포 이후 robots.txt와 sitemap.xml 갱신을 확인합니다.

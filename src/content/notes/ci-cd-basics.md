@@ -1,29 +1,44 @@
-﻿---
-title: "CI/CD pipeline basics"
-description: "Build, test, and deploy with repeatable automation."
+---
+title: "CI/CD 파이프라인 기본"
+description: "반복 가능한 자동화로 빌드, 테스트, 배포를 수행합니다."
 pubDate: 2026-02-03
 tags: ["devops", "ci-cd", "automation"]
 ---
 
-## Summary
+## 요약
 
-CI/CD automates testing and deployment to reduce risk and speed up delivery.
+CI/CD는 테스트와 배포를 자동화해 위험을 줄이고 전달 속도를 높입니다.
 
-## Key ideas
+## 핵심 개념
 
-- CI validates changes early with tests and linting.
-- CD deploys validated builds to environments.
-- Small, frequent changes are easier to roll back.
+- CI는 테스트와 린팅으로 변경을 조기에 검증합니다.
+- CD는 검증된 빌드를 환경에 배포합니다.
+- 작고 잦은 변경은 롤백이 쉽습니다.
+- 파이프라인은 빌드, 테스트, 배포, 검증 단계로 구성합니다.
+- 아티팩트는 한 번 빌드하고 환경 간 재사용합니다.
 
-## Commands or steps
+## 명령
 
 ```bash
-# Example: run tests locally before pushing
-npm.cmd test
+npm test
 ```
+푸시 전에 로컬 테스트를 실행합니다.
 
-## Pitfalls
+```bash
+npm run build
+```
+배포 전 빌드가 정상적으로 생성되는지 확인합니다.
 
-- Deploying without rollback or monitoring.
-- Skipping tests in the pipeline.
-- Long-running pipelines that discourage frequent commits.
+## 운영 팁
+
+- 빌드와 테스트를 병렬화해 시간을 단축합니다.
+- 메인 브랜치는 보호 정책으로 관리합니다.
+- 배포 단계는 승인 또는 자동 조건을 명확히 합니다.
+- 실패 시 롤백 기준과 책임자를 명확히 합니다.
+- 환경별 변수는 비밀 저장소로 분리합니다.
+
+## 주의사항
+
+- 롤백이나 모니터링 없이 배포하면 장애가 장기화됩니다.
+- 파이프라인에서 테스트를 생략하면 품질이 급격히 떨어집니다.
+- 파이프라인이 너무 길면 배포 빈도가 낮아집니다.

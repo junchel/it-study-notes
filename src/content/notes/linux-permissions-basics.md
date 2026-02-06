@@ -1,31 +1,50 @@
-﻿---
-title: "Linux file permissions basics"
-description: "Users, groups, and permission bits for Linux files and directories."
+---
+title: "Linux 파일 권한 기본"
+description: "사용자, 그룹, 권한 비트로 파일/디렉터리 접근을 제어합니다."
 pubDate: 2026-02-03
 tags: ["linux", "security", "permissions"]
 ---
 
-## Summary
+## 요약
 
-Permissions control who can read, write, and execute files.
+권한은 누가 파일을 읽고, 쓰고, 실행할 수 있는지 제어합니다.
 
-## Key ideas
+## 핵심 개념
 
-- rwx bits apply to user, group, and others.
-- Use groups to manage shared access.
-- Prefer least privilege on system files.
+- rwx 비트는 사용자, 그룹, 기타에 적용합니다.
+- 공유 접근은 그룹을 활용합니다.
+- 시스템 파일은 최소 권한을 선호합니다.
 
-## Commands or steps
+## 명령
 
 ```bash
 ls -l
+```
+파일 권한과 소유자 정보를 확인합니다.
+
+```bash
 chmod 640 file.txt
+```
+파일을 소유자 읽기/쓰기, 그룹 읽기, 기타 접근 금지로 설정합니다.
+
+```bash
 chown user:group file.txt
+```
+파일 소유자와 그룹을 변경합니다.
+
+```bash
 chmod -R 750 /srv/app
 ```
+디렉터리와 하위 파일 권한을 재귀적으로 설정합니다.
 
-## Pitfalls
+## 운영 팁
 
-- Setting permissions too open (777).
-- Forgetting execute bit for directories.
-- Misconfigured ownership on service folders.
+- 사용자는 그룹 기반으로 권한을 부여합니다.
+- sudo 권한은 최소화하고 감사 로그를 남깁니다.
+- setuid 파일을 정기 점검합니다.
+
+## 주의사항
+
+- 권한을 과도하게 개방함(777).
+- 디렉터리에 실행 비트를 잊음.
+- 서비스 폴더의 소유권이 잘못 설정됨.

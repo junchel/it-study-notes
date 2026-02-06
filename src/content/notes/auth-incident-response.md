@@ -1,31 +1,60 @@
-﻿---
-title: "Authentication incident response"
-description: "Respond to auth incidents like leaked credentials or MFA bypass."
+---
+title: "인증 사고 대응"
+description: "자격 증명 유출이나 MFA 우회 같은 인증 사고에 대응합니다."
 pubDate: 2026-02-03
 tags: ["security", "incident-response", "auth"]
 ---
 
-## Summary
+## 요약
 
-Auth incidents require rapid containment and access review.
+인증 사고는 신속한 차단과 접근 검토가 필요합니다. 계정·세션·토큰을 즉시 통제하고 영향 범위를 명확히 해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Revoke compromised credentials immediately.
-- Force password resets and review MFA enrollment.
-- Audit access logs for suspicious activity.
+- 유출된 자격 증명은 즉시 폐기합니다.
+- 비밀번호 재설정과 MFA 등록 상태를 점검합니다.
+- 접근 로그를 감사해 의심 활동을 확인합니다.
+- 세션 무효화와 토큰 폐기 절차를 분리해 운영합니다.
+- 키 회전과 권한 축소를 동시에 수행합니다.
 
-## Commands or steps
+## 절차
 
-```text
-Checklist
-- Disable impacted accounts
-- Rotate credentials
-- Review access logs
+1. 영향 계정과 토큰을 식별해 즉시 차단합니다.
+2. 비밀번호 초기화와 MFA 재등록을 강제합니다.
+3. 로그를 기반으로 침해 범위를 확정합니다.
+4. 권한 회수와 키 회전을 수행합니다.
+5. 재발 방지 조치를 문서화합니다.
+
+## 체크리스트
+
+- 영향 계정을 비활성화합니다.
+- 자격 증명을 교체합니다.
+- 접근 로그를 검토합니다.
+- 세션/토큰 무효화를 적용합니다.
+- 커뮤니케이션 계획을 실행합니다.
+
+## 명령
+
+```bash
+rg -n "login|mfa|token" logs/ -S
 ```
+로그에서 인증 이벤트와 의심 패턴을 빠르게 검색합니다.
 
-## Pitfalls
+```bash
+rg -n "revoke|invalidate|session" src -S
+```
+세션 무효화 및 토큰 폐기 로직 위치를 확인합니다.
 
-- Delayed response to leaked credentials.
-- Missing audit trail of access changes.
-- No communication plan.
+## 운영 팁
+
+- 토큰과 키를 빠르게 폐기할 수 있는 절차를 확보합니다.
+- 비밀번호 초기화와 MFA 재등록 흐름을 마련합니다.
+- 인증 로그를 별도로 보관해 추적성을 확보합니다.
+- 고위험 계정은 즉시 권한 축소와 추가 검증을 적용합니다.
+- 사고 후에는 모든 인증 흐름에 대한 리스크 리뷰를 수행합니다.
+
+## 주의사항
+
+- 유출 대응이 지연되면 피해 범위가 급격히 확대됩니다.
+- 접근 변경에 대한 감사 추적이 없으면 원인 분석이 불가능합니다.
+- 커뮤니케이션 계획이 부재하면 신뢰가 훼손됩니다.

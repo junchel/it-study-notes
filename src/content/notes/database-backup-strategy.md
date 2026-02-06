@@ -1,31 +1,56 @@
-﻿---
-title: "Database backup strategy"
-description: "Snapshots, PITR, and restore validation for databases."
+---
+title: "데이터베이스 백업 전략"
+description: "스냅샷, PITR, 복구 검증을 포함한 DB 백업 전략."
 pubDate: 2026-02-03
 tags: ["database", "backup", "operations"]
 ---
 
-## Summary
+## 요약
 
-Backups only matter if restores are tested and reliable.
+백업은 복구 테스트가 신뢰할 수 있을 때만 의미가 있습니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use both full backups and point-in-time recovery.
-- Store backups in a separate failure domain.
-- Regularly test restore procedures.
+- 전체 백업과 시점 복구(PITR)를 함께 사용합니다.
+- 별도의 장애 영역에 백업을 저장합니다.
+- 복구 절차를 정기적으로 테스트합니다.
+- 백업 보존 기간과 삭제 정책을 명확히 합니다.
+- 백업 메타데이터(버전, 스키마, 시점)를 기록합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Enable PITR
-- Automate snapshot schedules
-- Run quarterly restore drills
+```bash
+pg_dump -Fc -f backups/app.dump appdb
 ```
+PostgreSQL 데이터베이스를 압축 백업합니다.
 
-## Pitfalls
+```bash
+pg_restore --list backups/app.dump
+```
+백업 파일의 내용을 목록으로 확인합니다.
 
-- Backups without restore tests.
-- Single-region backup storage.
-- No documented recovery runbook.
+```bash
+mysqldump -u root -p appdb > backups/app.sql
+```
+MySQL 데이터베이스를 SQL 덤프로 백업합니다.
+
+## 체크리스트
+
+- PITR 활성화
+- 스냅샷 스케줄 자동화
+- 분기별 복구 드릴 수행
+- 백업 보존 기간과 접근 권한 정의
+
+## 운영 팁
+
+- 정기적인 복구 테스트로 실제 복원 시간을 확인합니다.
+- 전체 백업과 증분 백업을 조합해 비용과 복원 시간을 균형 있게 유지합니다.
+- 백업은 암호화하고 외부 저장소에 이중화합니다.
+- 백업 실패 알림과 재시도 정책을 설정합니다.
+- 복구 담당자와 절차를 런북으로 관리합니다.
+
+## 주의사항
+
+- 복구 테스트 없는 백업은 실제 사고에서 실패합니다.
+- 단일 리전에 백업을 저장하면 재해 복구가 불가능합니다.
+- 복구 런북 문서화가 없으면 복구 시간이 늘어납니다.

@@ -1,31 +1,58 @@
-﻿---
-title: "SIEM basics"
-description: "Centralized log collection, correlation, and alerting fundamentals."
+---
+title: "SIEM 기초"
+description: "보안 로그를 수집·상관·분석하는 SIEM의 기본 개념과 운영 포인트를 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "siem", "logging"]
+tags: ["security", "operations", "monitoring"]
 ---
 
-## Summary
+## 요약
 
-SIEM platforms aggregate logs to detect threats and investigate incidents.
+SIEM은 다양한 로그를 통합해 이상 징후를 빠르게 탐지합니다. 수집 범위와 규칙 품질이 핵심입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Normalize logs for consistent querying.
-- Correlate events across systems.
-- Tune alerts to reduce noise.
+- 로그 수집, 정규화, 상관분석, 알림이 기본 흐름입니다.
+- 이벤트 우선순위와 노이즈 제어가 운영 품질을 결정합니다.
+- 규칙 기반 탐지와 행위 기반 탐지를 조합합니다.
+- 보안 대응(Incident Response)과 연계해야 효과가 납니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Centralize log sources
-- Define detection rules
-- Review alerts daily
+- 중요한 시스템의 로그가 누락되지 않는지 점검합니다.
+- 규칙의 오탐/미탐 지표를 정기적으로 확인합니다.
+- 알림 기준과 에스컬레이션 경로를 문서화합니다.
+- 로그 보존 기간과 저장 비용을 균형 있게 설정합니다.
+
+## 명령
+
+```bash
+journalctl -u sshd --since "24 hours ago" | tail -n 20
 ```
+최근 SSH 접속 이벤트가 정상적으로 수집되는지 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "Failed password" /var/log/auth.log | head -n 10
+```
+실패한 로그인 시도가 기록되는지 확인합니다.
 
-- Too many noisy alerts.
-- Missing critical log sources.
-- No retention strategy.
+```bash
+awk '{print $1}' /var/log/syslog | sort | uniq -c | sort -nr | head -n 5
+```
+가장 빈도가 높은 로그 소스가 무엇인지 파악합니다.
+
+```bash
+curl -s http://siem.example.internal/api/health | jq '.status'
+```
+SIEM 수집 파이프라인 상태를 확인합니다.
+
+## 운영 팁
+
+- 신규 서비스 추가 시 로그 스키마를 표준화합니다.
+- 규칙은 실무 공격 시나리오 기준으로 우선순위를 둡니다.
+- 알림 피로도를 줄이기 위해 묶음 알림 정책을 사용합니다.
+
+## 주의사항
+
+- 로그 유실은 탐지 실패로 이어지므로 수집 에이전트 상태를 모니터링합니다.
+- 개인정보가 포함된 로그는 마스킹 규정을 적용합니다.
+- SIEM 자체가 단일 장애점이 되지 않도록 이중화합니다.

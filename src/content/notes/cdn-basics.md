@@ -1,31 +1,51 @@
-﻿---
-title: "CDN basics"
-description: "How CDNs speed up content delivery and reduce origin load."
+---
+title: "CDN 기본"
+description: "CDN이 콘텐츠 전달을 가속하고 오리진 부하를 줄이는 방법."
 pubDate: 2026-02-03
 tags: ["cdn", "performance", "networking"]
 ---
 
-## Summary
+## 요약
 
-CDNs cache content closer to users to reduce latency and origin load.
+CDN은 콘텐츠를 사용자 가까이에 캐시해 지연 시간과 오리진 부하를 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Edge caching reduces round trips to origin.
-- Configure cache keys and TTLs carefully.
-- Purge caches when content changes.
+- 엣지 캐싱으로 오리진까지의 왕복을 줄입니다.
+- 캐시 키와 TTL을 신중히 설정합니다.
+- 콘텐츠 변경 시 캐시를 퍼지합니다.
+- 오리진 실드를 사용하면 오리진 부하를 더 줄일 수 있습니다.
+- 캐시 우회 규칙과 퍼지 정책을 구분해 운영합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Configure CDN origin
-- Set cache headers
-- Test cache HIT/MISS
+```bash
+curl -I https://cdn.example.com/assets/app.css
 ```
+CDN 응답 헤더와 캐시 상태를 확인합니다.
 
-## Pitfalls
+```bash
+curl -I -H "Cache-Control: no-cache" https://cdn.example.com/assets/app.css
+```
+캐시 우회 요청 시 오리진 동작을 확인합니다.
 
-- Caching personalized content.
-- No invalidation strategy.
-- Missing compression for static assets.
+## 체크리스트
+
+- CDN 오리진을 설정합니다.
+- 캐시 헤더를 설정합니다.
+- 캐시 HIT/MISS를 테스트합니다.
+- 퍼지 정책과 예외 규칙을 문서화합니다.
+
+## 운영 팁
+
+- 정적 자산은 버전된 URL로 캐시 무효화를 단순화합니다.
+- 원본 서버 상태를 모니터링해 장애를 조기에 감지합니다.
+- 지역별 성능을 주기적으로 측정합니다.
+- 이미지 최적화와 압축을 CDN에서 처리할 수 있는지 확인합니다.
+- 캐시 적중률 목표를 정하고 리포트를 추적합니다.
+
+## 주의사항
+
+- 개인화 콘텐츠를 캐싱하면 사용자 데이터가 섞입니다.
+- 무효화 전략이 없으면 오래된 콘텐츠가 노출됩니다.
+- 정적 자산 압축을 누락하면 성능 이득이 감소합니다.

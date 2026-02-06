@@ -1,31 +1,58 @@
-﻿---
-title: "Threat modeling basics"
-description: "Identify threats, assets, and mitigations early in design."
+---
+title: "위협 모델링 기초"
+description: "보안 위협을 체계적으로 식별하고 대응 전략을 설계하는 기본 절차를 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "threat-modeling", "architecture"]
+tags: ["security", "architecture", "risk"]
 ---
 
-## Summary
+## 요약
 
-Threat modeling helps teams anticipate risks before systems go live.
+위협 모델링은 공격 표면을 구조적으로 분석해 위험을 줄입니다. 자산, 공격자, 경로를 명확히 해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Identify assets and trust boundaries.
-- Enumerate threats using STRIDE or similar frameworks.
-- Define mitigations and verify them.
+- 자산, 위협, 취약점, 완화책을 구분합니다.
+- 데이터 흐름(DFD)과 신뢰 경계를 정의합니다.
+- STRIDE 같은 프레임워크로 누락을 줄입니다.
+- 위협 우선순위는 영향도와 가능성으로 결정합니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Diagram data flow
-- Identify trust boundaries
-- List threats and mitigations
+- 시스템 경계와 데이터 흐름을 문서화합니다.
+- 주요 자산과 민감 데이터를 분류합니다.
+- 공격 시나리오와 완화책을 매핑합니다.
+- 결과를 백로그에 반영합니다.
+
+## 명령
+
+```bash
+rg -n "auth|token|secret" docs/architecture -S
 ```
+인증/시크릿 관련 설계 문서가 포함되어 있는지 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "boundary|trust" docs/architecture -S
+```
+신뢰 경계가 문서에 명시되어 있는지 점검합니다.
 
-- Skipping threat modeling for internal tools.
-- Not updating models as systems evolve.
-- No validation of mitigations.
+```bash
+rg -n "data flow|DFD" docs/architecture -S
+```
+데이터 흐름 문서가 존재하는지 확인합니다.
+
+```bash
+rg -n "threat|risk" docs/security -S
+```
+위협 및 위험 분석 문서가 최신인지 확인합니다.
+
+## 운영 팁
+
+- 신규 기능 설계 시 위협 모델링을 기본 단계로 포함합니다.
+- 정기적으로 공격 시나리오를 재검토합니다.
+- 보안 이슈를 우선순위 백로그로 관리합니다.
+
+## 주의사항
+
+- 문서화만으로 끝내면 효과가 없습니다.
+- 낮은 확률이라도 영향이 크면 우선 대응합니다.
+- 모델은 실제 시스템 변화에 맞춰 업데이트해야 합니다.

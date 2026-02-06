@@ -1,30 +1,48 @@
 ---
-title: "Health checks basics"
-description: "Design liveness and readiness checks that keep services reliable."
+title: "헬스 체크 기본"
+description: "서비스 신뢰성을 유지하는 라이브니스/레디니스 체크 설계."
 pubDate: 2026-02-03
 tags: ["reliability", "operations", "backend"]
 ---
 
-## Summary
+## 요약
 
-Health checks control traffic routing and detect failures quickly.
+헬스 체크는 트래픽 라우팅을 제어하고 장애를 빠르게 감지합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Liveness checks confirm the process is alive.
-- Readiness checks confirm the service can handle traffic.
-- Shallow checks are fast; deep checks validate dependencies.
-- Load balancers and orchestrators rely on check results.
+- 라이브니스 체크는 프로세스가 살아있는지 확인합니다.
+- 레디니스 체크는 서비스가 트래픽을 처리할 수 있는지 확인합니다.
+- 얕은 체크는 빠르고, 깊은 체크는 의존성을 검증합니다.
+- 로드밸런서와 오케스트레이터는 체크 결과를 신뢰합니다.
 
-## Guidelines
+## 명령
 
-- Keep liveness checks simple and fast.
-- Use readiness checks to gate traffic during startup.
-- Cache expensive dependency checks.
-- Return clear status codes and messages.
+```bash
+curl -f https://example.com/health
+```
+헬스 체크 엔드포인트의 상태를 확인합니다.
 
-## Pitfalls
+```bash
+curl -i https://example.com/ready
+```
+레디니스 체크의 응답 코드와 헤더를 확인합니다.
 
-- Deep liveness checks can trigger unnecessary restarts.
-- Slow checks can cause false negatives and flapping.
-- Missing checks hide partial failures.
+```bash
+rg -n "/health|/ready|/live" src -S
+```
+헬스 체크 경로 정의를 확인합니다.
+
+## 운영 팁
+
+- 라이브니스 체크는 단순하고 빠르게 유지합니다.
+- 시작 시점에 레디니스 체크로 트래픽을 차단합니다.
+- 비용이 큰 의존성 체크는 캐시합니다.
+- 명확한 상태 코드와 메시지를 반환합니다.
+- 체크 타임아웃과 재시도 횟수를 문서화합니다.
+
+## 주의사항
+
+- 깊은 라이브니스 체크는 불필요한 재시작을 유발합니다.
+- 느린 체크는 오탐과 플래핑을 일으킵니다.
+- 체크가 없으면 부분 장애를 숨길 수 있습니다.

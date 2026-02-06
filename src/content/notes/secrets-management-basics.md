@@ -1,31 +1,59 @@
-﻿---
-title: "Secrets management basics"
-description: "Store, rotate, and access secrets without exposing them in code."
+---
+title: "시크릿 관리 기초"
+description: "키와 토큰 같은 민감 정보를 안전하게 저장·배포·회수하는 기본 원칙을 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "secrets", "operations"]
+tags: ["security", "operations", "backend"]
 ---
 
-## Summary
+## 요약
 
-Secrets should be stored outside code and rotated regularly to reduce risk.
+시크릿은 코드나 설정 파일과 분리해 관리해야 합니다. 접근 통제, 감사 로그, 회수 가능한 배포 경로가 핵심입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use dedicated secret managers or vaults.
-- Rotate credentials and revoke unused keys.
-- Audit access and avoid secrets in logs.
+- 시크릿은 최소 권한 원칙으로 접근을 제한합니다.
+- 저장 시 암호화, 전송 시 암호화가 기본입니다.
+- 환경 변수, 시크릿 스토어, 키 관리 시스템을 조합합니다.
+- 배포 시점에만 주입하고 런타임에 기록하지 않습니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Centralize secrets in a vault
-- Enforce least privilege
-- Rotate and audit access quarterly
+- 시크릿이 Git 저장소에 커밋되지 않았는지 확인합니다.
+- 만료 기간과 회수 절차를 문서화합니다.
+- 감사 로그를 활성화해 접근 이력을 남깁니다.
+- 서비스별로 서로 다른 시크릿을 사용합니다.
+- 백업/스냅샷에 시크릿이 포함되지 않도록 검토합니다.
+
+## 명령
+
+```bash
+openssl rand -base64 32
 ```
+충분히 길고 예측 불가능한 시크릿을 생성합니다.
 
-## Pitfalls
+```bash
+gpg --symmetric --cipher-algo AES256 secrets.txt
+```
+시크릿 파일을 강력한 대칭키로 암호화합니다.
 
-- Hardcoding secrets in repos.
-- Exposing secrets in CI logs.
-- Sharing credentials across teams.
+```bash
+rg -n "(API_KEY|SECRET|TOKEN)" -S .
+```
+저장소 내에 민감 정보가 노출되었는지 빠르게 검색합니다.
+
+```bash
+strings /path/to/binary | rg -n "secret|token"
+```
+바이너리에 시크릿이 포함되지 않았는지 검사합니다.
+
+## 운영 팁
+
+- 시크릿은 애플리케이션 로그에 출력하지 않습니다.
+- 배포 파이프라인에서 시크릿을 마스킹합니다.
+- 시크릿 변경 시 서비스 재시작 순서를 문서화합니다.
+
+## 주의사항
+
+- 테스트 환경에 프로덕션 시크릿을 사용하지 않습니다.
+- 시크릿 접근 권한은 사람 계정과 서비스 계정을 분리합니다.
+- 만료된 시크릿을 삭제하지 않으면 공격 표면이 커집니다.

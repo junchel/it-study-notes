@@ -1,28 +1,61 @@
 ---
-title: "Database migrations basics"
-description: "Plan schema changes safely with migrations and rollbacks."
+title: "데이터베이스 마이그레이션 기본"
+description: "마이그레이션과 롤백으로 스키마 변경을 안전하게 계획합니다."
 pubDate: 2026-02-03
 tags: ["database", "deployment", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Migrations help you evolve database schemas safely and consistently across environments.
+마이그레이션은 환경 간 스키마 변경을 안전하고 일관되게 적용할 수 있게 합니다.
 
-## Best practices
+## 핵심 개념
 
-- Use forward-only migrations whenever possible.
-- Separate schema changes from data backfills.
-- Make changes backward compatible for a period.
+- 마이그레이션은 버전 관리된 변경입니다.
+- 다운타임과 락을 최소화하도록 설계합니다.
+- 롤백과 재실행 전략을 준비합니다.
+- 데이터 백필은 별도 작업으로 분리합니다.
+- 마이그레이션은 멱등성을 고려합니다.
 
-## Common patterns
+## 모범 사례
 
-- Add new column as nullable.
-- Backfill data in batches.
-- Switch reads/writes to the new column.
-- Drop old column later.
+- 가능하면 전방 전용(rollback 없는) 마이그레이션을 사용합니다.
+- 스키마 변경과 데이터 백필을 분리합니다.
+- 일정 기간 동안 하위 호환 변경을 유지합니다.
+- 대규모 변경은 배치 작업과 지표 검증을 포함합니다.
 
-## Pitfalls
+## 일반 패턴
 
-- Long-running locks during schema changes.
-- Mixing app deploy and schema change without coordination.
+- 새 컬럼을 nullable로 추가합니다.
+- 배치로 데이터를 백필합니다.
+- 읽기/쓰기 경로를 새 컬럼으로 전환합니다.
+- 나중에 기존 컬럼을 제거합니다.
+
+## 명령
+
+```bash
+ls -lh migrations/
+```
+마이그레이션 파일 목록과 최근 변경을 확인합니다.
+
+```bash
+psql -c "select * from schema_migrations;"
+```
+적용된 마이그레이션 버전을 확인합니다.
+
+```bash
+psql -c "select * from schema_migrations order by version desc limit 5;"
+```
+최근 적용된 마이그레이션을 확인합니다.
+
+## 운영 팁
+
+- 마이그레이션은 작은 단위로 분리합니다.
+- 하위 호환 가능한 스키마 변경을 우선 적용합니다.
+- 배포 전 스테이징에서 검증합니다.
+- 대규모 변경은 유지보수 창을 확보합니다.
+
+## 주의사항
+
+- 스키마 변경 중 장시간 락이 발생하면 장애로 이어집니다.
+- 앱 배포와 스키마 변경을 조율 없이 섞으면 실패합니다.

@@ -1,23 +1,72 @@
-﻿---
-title: "Incident scenario: disk full"
-description: "Recover from disk saturation without data loss."
+---
+title: "인시던트 시나리오: 디스크 꽉 참"
+description: "데이터 손실 없이 디스크 포화를 복구합니다."
 pubDate: 2026-02-03
 tags: ["linux", "incident-response", "operations"]
 ---
 
-## Summary
+## 요약
 
-Full disks can crash services and corrupt data if not handled quickly.
+디스크 포화는 쓰기 실패와 서비스 장애로 빠르게 확산됩니다. 즉시 용량을 확보하고, 증가 원인을 제거해 재발을 막는 것이 핵심입니다.
 
-## Steps
+## 핵심 개념
 
-1. Identify large files and growth sources.
-2. Clear logs or temporary files safely.
-3. Expand storage or adjust retention policies.
-4. Add monitoring alerts for disk usage.
+- 로그/임시 파일 누적과 스냅샷이 주요 원인입니다.
+- inode 고갈도 디스크 포화와 동일한 증상을 유발합니다.
+- 즉시 완화(정리)와 근본 해결(정책/확장)을 분리합니다.
 
-## Pitfalls
+## 절차
 
-- Deleting active files without service checks.
-- Ignoring inode exhaustion.
-- No retention policies for logs.
+1. 파일 시스템 사용량과 inode 사용량을 확인합니다.
+2. 급증한 디렉터리와 대용량 파일을 파악합니다.
+3. 서비스 영향이 적은 파일부터 안전하게 정리합니다.
+4. 스토리지를 확장하거나 보존 정책을 조정합니다.
+5. 사용량 경보와 로그 회전 정책을 추가합니다.
+
+## 체크리스트
+
+- 디스크 사용량/ inode 사용량 경보가 설정됨
+- 로그 회전과 보존 정책이 있음
+- 대용량 파일 생성 경로가 문서화됨
+- 정리 작업 전 서비스 영향 확인 절차가 있음
+- 스토리지 확장 계획이 있음
+
+## 명령
+
+```bash
+df -h
+```
+파일 시스템별 사용량을 확인합니다.
+
+```bash
+df -i
+```
+inode 사용량을 확인합니다.
+
+```bash
+du -xhd 1 /var/log | sort -h
+```
+로그 디렉터리에서 큰 경로를 찾습니다.
+
+```bash
+find / -xdev -type f -size +1G -print
+```
+대용량 파일 위치를 빠르게 식별합니다.
+
+```bash
+lsof +L1
+```
+삭제되었지만 열려 있는 파일을 찾아 용량 회수 여부를 판단합니다.
+
+## 운영 팁
+
+- 로그 정리는 서비스 로그 보존 정책과 함께 진행합니다.
+- 임시 파일은 `tmp` 정리 정책을 정기 작업으로 자동화합니다.
+- 스냅샷/백업이 용량을 잠식하지 않는지 주기적으로 점검합니다.
+- 대용량 파일 생성 시 알림을 받아 조기 대응합니다.
+
+## 주의사항
+
+- 실행 중인 서비스 파일을 삭제하면 장애가 발생할 수 있습니다.
+- inode 고갈을 무시하면 파일 생성이 실패합니다.
+- 임의 삭제 전에 보존/컴플라이언스 요구를 확인해야 합니다.

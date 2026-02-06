@@ -1,30 +1,56 @@
 ---
-title: "Distributed tracing basics"
-description: "Trace requests across services to find latency and errors."
+title: "분산 트레이싱 기본"
+description: "서비스 간 요청을 추적해 지연과 오류를 찾습니다."
 pubDate: 2026-02-03
 tags: ["observability", "reliability", "backend"]
 ---
 
-## Summary
+## 요약
 
-Distributed tracing links spans across services so you can see end-to-end latency.
+분산 트레이싱은 서비스 전반의 스팬을 연결해 end-to-end 지연을 확인할 수 있게 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- A trace is a tree of spans representing work across services.
-- Context propagation carries trace IDs across service boundaries.
-- Sampling controls cost while preserving visibility.
-- Attributes and events add useful debugging context.
+- 트레이스는 서비스 간 작업을 나타내는 스팬 트리합니다.
+- 컨텍스트 전파가 트레이스 ID를 서비스 경계 너머로 전달합니다.
+- 샘플링은 비용을 조절하면서 가시성을 유지합니다.
+- 속성과 이벤트는 디버깅 컨텍스트를 추가합니다.
+- 에러와 지연이 발생한 스팬을 빠르게 찾는 것이 목표입니다.
 
-## Guidelines
+## 명령
 
-- Propagate trace headers through HTTP, queues, and RPC.
-- Instrument the most critical paths first.
-- Sample at the entry point to keep traces complete.
-- Avoid collecting sensitive data in span attributes.
+```bash
+rg -n "traceparent|tracestate" src -S
+```
+W3C Trace Context 헤더 처리 위치를 찾습니다.
 
-## Pitfalls
+```bash
+rg -n "X-Request-ID|Correlation" src -S
+```
+상관 ID 전달 여부를 확인합니다.
 
-- Missing propagation breaks traces into fragments.
-- High-cardinality attributes can explode storage costs.
-- Sampling too aggressively hides tail latency issues.
+```bash
+rg -n "OTEL|OpenTelemetry" src -S
+```
+OpenTelemetry 설정 위치를 확인합니다.
+
+## 예시 헤더
+
+```text
+traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+```
+분산 트레이싱 컨텍스트 전파 예시입니다.
+
+## 운영 팁
+
+- HTTP, 큐, RPC 전반에 트레이스 헤더를 전파합니다.
+- 가장 중요한 경로부터 계측합니다.
+- 진입점에서 샘플링해 트레이스를 완전하게 유지합니다.
+- 스팬 속성에 민감 데이터를 수집하지 않습니다.
+- 장애 시점에는 샘플링 비율을 일시적으로 높입니다.
+
+## 주의사항
+
+- 전파 누락은 트레이스를 조각으로 분리합니다.
+- 높은 카디널리티 속성은 저장 비용을 폭발시킵니다.
+- 샘플링을 과도하게 하면 긴 꼬리 지연을 놓칠 수 있습니다.

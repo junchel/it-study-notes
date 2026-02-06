@@ -1,30 +1,49 @@
 ---
-title: "Deployment checklist basics"
-description: "Reduce release risk with a simple, repeatable checklist."
+title: "배포 체크리스트 기본"
+description: "간단하고 반복 가능한 체크리스트로 배포 위험을 줄입니다."
 pubDate: 2026-02-03
 tags: ["deployment", "operations", "reliability"]
 ---
 
-## Summary
+## 요약
 
-A deployment checklist prevents avoidable outages and ensures releases are repeatable.
+배포 체크리스트는 피할 수 있는 장애를 줄이고 릴리스를 반복 가능하게 만듭니다.
 
-## Key ideas
+## 핵심 개념
 
-- Validate preconditions before shipping.
-- Verify rollback plans and monitoring.
-- Communicate changes to stakeholders.
-- Record what changed for later review.
+- 배포 전 전제 조건을 검증합니다.
+- 롤백 계획과 모니터링을 확인합니다.
+- 변경 사항을 이해관계자에게 공유합니다.
+- 변경 내용을 기록해 추후 리뷰에 대비합니다.
+- 배포 전후 비교 지표를 준비합니다.
 
-## Guidelines
+## 명령
 
-- Confirm build and tests are green.
-- Verify config and secrets are up to date.
-- Ensure dashboards and alerts cover the new paths.
-- Run a post-deploy smoke test.
+```bash
+git status -sb
+```
+배포 전 변경 사항과 브랜치 상태를 확인합니다.
 
-## Pitfalls
+```bash
+npm test
+```
+배포 전 핵심 테스트를 실행합니다.
 
-- Skipping database migration checks.
-- Deploying without monitoring coverage.
-- No rollback plan when issues appear.
+```bash
+curl -I https://example.com/health
+```
+배포 후 헬스 체크가 정상인지 확인합니다.
+
+## 운영 팁
+
+- 빌드와 테스트가 통과했는지 확인합니다.
+- 설정과 시크릿이 최신인지 검증합니다.
+- 대시보드와 알림이 새 경로를 커버하는지 확인합니다.
+- 배포 후 스모크 테스트를 수행합니다.
+- 변경 내용과 롤백 방법을 배포 공지에 포함합니다.
+
+## 주의사항
+
+- 데이터베이스 마이그레이션 검증을 건너뜀.
+- 모니터링 커버리지 없이 배포함.
+- 문제가 발생했을 때 롤백 계획이 없음.

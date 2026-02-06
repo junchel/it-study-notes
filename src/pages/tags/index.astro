@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { slugify } from "../../utils/slugify";
+import { DEFAULT_LANG, t as translate } from "../../utils/i18n";
 
 const notes = await getCollection("notes", ({ data }) => !data.draft);
 const tagMap = new Map();
@@ -14,14 +15,15 @@ notes.forEach((note) => {
 });
 
 const tags = Array.from(tagMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
-<BaseLayout title="Tags" description="Explore IT notes by topic tags.">
+<BaseLayout title={t("tags.meta.title")} description={t("tags.meta.description")}>
   <div class="container">
     <section class="hero">
-      <span class="hero-badge">Topics</span>
-      <h1>Tags</h1>
-      <p>Group notes by technologies, tools, or certifications.</p>
+      <span class="hero-badge" data-i18n="tags.badge">{t("tags.badge")}</span>
+      <h1 data-i18n="tags.title">{t("tags.title")}</h1>
+      <p data-i18n="tags.lead">{t("tags.lead")}</p>
     </section>
 
     <section class="section">
@@ -31,7 +33,13 @@ const tags = Array.from(tagMap.entries()).sort((a, b) => a[0].localeCompare(b[0]
             <h3 class="note-title">
               <a href={`/tags/${slugify(tag)}/`}>{tag}</a>
             </h3>
-            <p class="note-description">{count} note(s)</p>
+            <p
+              class="note-description"
+              data-i18n="tags.count"
+              data-i18n-vars={JSON.stringify({ count })}
+            >
+              {t("tags.count", { count })}
+            </p>
           </article>
         ))}
       </div>

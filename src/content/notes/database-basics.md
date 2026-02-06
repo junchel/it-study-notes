@@ -1,30 +1,44 @@
-﻿---
-title: "Database fundamentals"
-description: "Relational vs NoSQL, indexes, backups, and query basics."
+---
+title: "데이터베이스 기초"
+description: "관계형 vs NoSQL, 인덱스, 백업, 쿼리 기본."
 pubDate: 2026-02-03
 tags: ["database", "sql", "it-basics"]
 ---
 
-## Summary
+## 요약
 
-Understand core database concepts to design reliable storage and queries.
+신뢰할 수 있는 저장소와 쿼리를 설계하려면 핵심 데이터베이스 개념을 이해해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Relational databases use schemas and SQL.
-- NoSQL favors flexible models and scale-out patterns.
-- Indexes speed reads but slow writes.
-- Backups and restores are mandatory.
+- 관계형 데이터베이스는 스키마와 SQL을 사용합니다.
+- NoSQL은 유연한 모델과 수평 확장 패턴을 선호합니다.
+- 인덱스는 읽기를 빠르게 하지만 쓰기를 느리게 합니다.
+- 백업과 복구는 필수합니다.
+- 정규화와 반정규화는 읽기/쓰기 패턴에 따라 선택합니다.
+- 트랜잭션은 일관성과 동시성을 보장합니다.
 
-## Commands or steps
+## 명령
 
 ```sql
--- Example: basic SQL query
 SELECT id, name FROM users WHERE active = true ORDER BY created_at DESC;
 ```
+활성 사용자 목록을 조회하는 기본 쿼리 예시입니다.
 
-## Pitfalls
+```sql
+EXPLAIN SELECT id, name FROM users WHERE active = true ORDER BY created_at DESC;
+```
+쿼리 실행 계획을 확인해 병목을 찾습니다.
 
-- Missing indexes for common queries.
-- Ignoring backup restore tests.
-- Storing large blobs without a storage strategy.
+## 운영 팁
+
+- 업무 성격에 맞는 저장소 유형과 인덱스를 선택합니다.
+- 슬로우 쿼리와 연결 수를 지속적으로 모니터링합니다.
+- 백업과 복구 시나리오를 문서화합니다.
+- 쓰기 폭주 구간에서는 배치 처리와 큐잉을 고려합니다.
+
+## 주의사항
+
+- 자주 사용하는 쿼리에 인덱스가 없으면 지연이 급증합니다.
+- 백업 복구 테스트를 무시하면 실제 복구가 실패합니다.
+- 대용량 바이너리를 저장 전략 없이 보관하면 비용이 폭증합니다.

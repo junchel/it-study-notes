@@ -1,29 +1,63 @@
 ---
-title: "Load testing basics"
-description: "Plan and run safe load tests to validate performance."
+title: "부하 테스트 기본"
+description: "안전한 부하 테스트 설계와 실행을 위한 실무 가이드."
 pubDate: 2026-02-03
 tags: ["performance", "testing", "operations"]
 ---
 
-## Summary
+## 요약
 
-Load testing helps you understand how a system behaves under expected and peak traffic.
+부하 테스트는 예상/피크 트래픽에서 시스템이 어떻게 동작하는지 확인하고 병목을 찾는 과정합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Define a target workload (RPS, concurrency, duration).
-- Test one bottleneck at a time.
-- Measure latency percentiles, error rate, and resource usage.
+- **부하 프로파일**: RPS, 동시성, 지속 시간을 정의합니다.
+- **지표**: p95/p99 지연, 오류율, 리소스 사용량이 핵심합니다.
+- **안전 장치**: 스테이징 환경 사용, 상한선 설정, 롤백/중단 기준을 준비합니다.
 
-## Simple workflow
+## 실무 절차
 
-1. Pick a single endpoint or flow.
-2. Establish a baseline with a small load.
-3. Increase load gradually while observing metrics.
-4. Capture bottlenecks and remediation ideas.
+1. 단일 시나리오(엔드포인트/플로우)를 선택합니다.
+2. 낮은 부하로 기준선을 측정합니다.
+3. 단계적으로 부하를 증가시키며 병목을 기록합니다.
+4. 개선 후 동일 조건으로 재측정합니다.
 
-## Pitfalls
+## 명령
 
-- Running tests in production without safeguards.
-- Using unrealistic payloads or cache-warmed results only.
-- Ignoring dependencies like databases or third-party APIs.
+```bash
+curl -s -o /dev/null -w "%{http_code} %{time_total}\n" https://example.com/
+```
+간단한 기준선 지연을 측정합니다.
+
+```bash
+hey -n 1000 -c 50 https://example.com/
+```
+1,000회 요청을 동시성 50으로 실행해 기본 부하를 확인합니다(hey 필요).
+
+```bash
+wrk -t4 -c100 -d30s https://example.com/
+```
+4스레드/100동시/30초 조건으로 부하를 가합니다(wrk 필요).
+
+```bash
+k6 run script.js
+```
+시나리오 기반 테스트를 실행합니다(k6 필요).
+
+## 결과 해석
+
+- **오류율 상승**: 타임아웃, 연결 제한, 백엔드 병목을 의심합니다.
+- **p95/p99 상승**: 큐잉, GC, DB 락, 외부 API 지연을 점검합니다.
+- **CPU 100% 고정**: 스로틀링이나 단일 스레드 병목 가능성이 큽니다.
+
+## 운영 팁
+
+- 실제 트래픽 패턴과 유사한 시나리오를 사용합니다.
+- 워밍업을 포함해 부하를 점진적으로 증가시킵니다.
+- 응답 시간뿐 아니라 인프라 지표도 함께 관찰합니다.
+
+## 주의사항
+
+- 프로덕션에서 무제한 테스트를 실행하지 않습니다.
+- 캐시가 과도하게 워밍된 결과만 보면 착시가 생깁니다.
+- DB나 외부 API 같은 의존성 부하도 함께 고려해야 합니다.

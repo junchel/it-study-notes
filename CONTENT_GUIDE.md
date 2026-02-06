@@ -1,44 +1,63 @@
-﻿# Content Guide
+﻿# 콘텐츠 가이드
 
-## New note template
+## 새 노트 템플릿
 
-Create a new Markdown file in `src/content/notes/`.
+`src/content/notes/`에 새 Markdown 파일을 생성합니다.
 
 ```md
 ---
-title: "Your note title"
-description: "Short summary for lists and SEO"
+title: "노트 제목"
+description: "목록/검색에 사용할 한 줄 요약"
 pubDate: 2026-02-03
 tags: ["networking", "linux"]
 ---
 
-## Summary
+## 요약
 
-Write a short overview of the problem or topic.
+주제의 핵심을 2~3문장으로 정리합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Bullet points that highlight the core ideas.
+- 핵심 아이디어를 간결하게 정리합니다.
 
-## Commands or steps
+## 명령
 
-- Include terminal commands or step-by-step procedures.
+```bash
+command
+```
+명령의 목적과 기대 결과를 한 문장으로 설명합니다.
 
-## Pitfalls
+## 운영 팁
 
-- Common mistakes or gotchas.
+- 실무에서 도움이 되는 운영 팁을 정리합니다.
 
-## References
+## 주의사항
 
-List URLs or citations you used.
+- 흔한 실수나 위험 요소를 정리합니다.
+
+## 참고
+
+사용한 공식 문서나 근거를 기록합니다.
 ```
 
-## Tag rules
+## 작성 규칙
 
-- Use short nouns or noun phrases.
-- Reuse existing tags to keep navigation clean.
-- Avoid duplicates like `API` and `apis`.
+- 본문은 한국어를 기본으로 작성합니다.
+- 서술형 문장은 합니다체를 사용합니다(예: \"합니다\", \"할 수 있습니다\").
+- 명령은 **1줄**만 포함하고, **바로 아래에 1줄 설명**을 둡니다.
+- 구성 파일(YAML/JSON 등)은 다중 줄 가능하며, 블록 아래에 1줄 설명을 둡니다.
+- 체크리스트만 필요한 경우 `## 체크리스트` 섹션을 사용합니다.
+- 단계형 플레이북은 `## 절차` 섹션을 사용합니다.
+- 체크리스트는 코드 블록이 아닌 목록으로 작성합니다.
+- 제목/요약은 검색과 목록에 노출되므로 짧고 명확하게 작성합니다.
 
-## Drafts
+## 태그 규칙
 
-Add `draft: true` in the frontmatter to hide a note from the build.
+- 짧은 명사 또는 명사구를 사용합니다.
+- 기존 태그를 재사용해 탐색 구조를 유지합니다.
+- 중복 태그(`api` vs `apis`)를 피합니다.
+- 소문자 영문 태그를 기본으로 사용합니다.
+
+## 드래프트
+
+`draft: true`를 프런트매터에 추가하면 빌드에서 제외됩니다.

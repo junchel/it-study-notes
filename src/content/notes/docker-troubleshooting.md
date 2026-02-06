@@ -1,32 +1,63 @@
-﻿---
-title: "Docker troubleshooting checklist"
-description: "Common Docker issues and a quick diagnostic flow."
+---
+title: "Docker 트러블슈팅 체크리스트"
+description: "자주 발생하는 Docker 문제와 빠른 진단 흐름."
 pubDate: 2026-02-03
 tags: ["docker", "troubleshooting", "devops"]
 ---
 
-## Summary
+## 요약
 
-Most Docker issues come from networking, volumes, or permissions.
+대부분의 Docker 문제는 네트워킹, 볼륨, 권한에서 발생합니다.
 
-## Steps
+## 핵심 개념
 
-1. Check container status and logs.
-2. Verify port mappings.
-3. Inspect volumes and file permissions.
-4. Confirm network reachability.
+- 컨테이너 로그와 이벤트가 1차 진단입니다.
+- 네트워크/볼륨/리소스 상태를 확인합니다.
+- 이미지/태그 불일치를 점검합니다.
 
-## Commands or steps
+## 절차
+
+1. 컨테이너 상태와 로그를 확인합니다.
+2. 포트 매핑을 검증합니다.
+3. 볼륨과 파일 권한을 점검합니다.
+4. 네트워크 연결성을 확인합니다.
+
+## 명령
 
 ```bash
 docker ps -a
+```
+모든 컨테이너 상태를 확인합니다.
+
+```bash
 docker logs <container-id>
+```
+지정한 컨테이너 로그를 확인합니다.
+
+```bash
 docker inspect <container-id>
+```
+컨테이너 설정과 네트워크 정보를 확인합니다.
+
+```bash
+docker events --since 10m
+```
+최근 Docker 이벤트를 확인해 장애 원인을 추적합니다.
+
+```bash
 docker exec -it <container-id> sh
 ```
+컨테이너 내부에 접속해 직접 점검합니다.
 
-## Pitfalls
+## 운영 팁
 
-- Forgetting port mappings.
-- Mounting wrong host paths.
-- Running containers without resource limits.
+- 데몬 로그와 컨테이너 로그를 분리해 확인합니다.
+- 불필요한 이미지 정리는 용량을 확인한 뒤 진행합니다.
+- 리소스 제한을 확인해 OOM을 예방합니다.
+- 네트워크 충돌이 의심되면 브리지 네트워크 목록을 점검합니다.
+
+## 주의사항
+
+- 포트 매핑을 잊음.
+- 잘못된 호스트 경로를 마운트함.
+- 리소스 제한 없이 컨테이너를 실행함.

@@ -3,116 +3,125 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import NoteCard from "../components/NoteCard.astro";
 import Search from "../components/Search.astro";
 import { getCollection } from "astro:content";
+import { DEFAULT_LANG, t as translate } from "../utils/i18n";
+import { PATHS } from "../utils/paths";
 
-const notes = (await getCollection("notes", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 6);
+const allNotes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+const notes = allNotes.slice(0, 6);
+const tagSet = new Set();
+allNotes.forEach((note) => {
+  if (!note.data.tags) return;
+  note.data.tags.forEach((tag) => tagSet.add(tag));
+});
+const stats = [
+  { labelKey: "home.hero.stats.notes", value: allNotes.length },
+  { labelKey: "home.hero.stats.tags", value: tagSet.size },
+  { labelKey: "home.hero.stats.paths", value: PATHS.length }
+];
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
 <BaseLayout
-  title="Home"
-  description="A living knowledge base for IT study notes, labs, and references."
+  title={t("home.meta.title")}
+  description={t("home.meta.description")}
 >
   <div class="container">
-    <section class="hero">
-      <span class="hero-badge">IT knowledge base</span>
-      <h1>Turn IT study sessions into a searchable, growing library.</h1>
-      <p>
-        Capture commands, troubleshooting notes, and architectures. Connect related
-        ideas and surface them later with fast search.
-      </p>
-      <div class="hero-actions">
-        <a class="button" href="/notes/">Browse notes</a>
-        <a class="button secondary" href="/about/">How it works</a>
+    <section class="hero hero-split hero-shell">
+      <div class="hero-copy">
+        <span class="hero-badge" data-i18n="home.hero.badge">
+          {t("home.hero.badge")}
+        </span>
+        <h1 class="hero-title">
+          <span class="hero-title-kicker" data-i18n="home.hero.titleTop">
+            {t("home.hero.titleTop")}
+          </span>
+          <span class="hero-title-emphasis" data-i18n="home.hero.titleBottom">
+            {t("home.hero.titleBottom")}
+          </span>
+        </h1>
+        <p data-i18n="home.hero.body">{t("home.hero.body")}</p>
+        <ul class="hero-highlights">
+          <li data-i18n="home.hero.point1">{t("home.hero.point1")}</li>
+          <li data-i18n="home.hero.point2">{t("home.hero.point2")}</li>
+          <li data-i18n="home.hero.point3">{t("home.hero.point3")}</li>
+        </ul>
+        <div class="hero-actions">
+          <a class="button" href="/notes/" data-i18n="home.hero.primary">
+            {t("home.hero.primary")}
+          </a>
+          <a class="button secondary" href="/about/" data-i18n="home.hero.secondary">
+            {t("home.hero.secondary")}
+          </a>
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <div class="hero-panel-card search-card">
+          <Search />
+        </div>
+        <div class="hero-panel-card">
+          <div class="hero-stats">
+          {stats.map((stat) => (
+            <div class="hero-stat">
+              <div class="hero-stat-value">{stat.value}</div>
+              <div class="hero-stat-label" data-i18n={stat.labelKey}>
+                {t(stat.labelKey)}
+              </div>
+            </div>
+          ))}
+          </div>
+        </div>
+        <div class="hero-panel-card command-preview">
+          <h2 class="command-preview-title" data-i18n="home.command.title">
+            {t("home.command.title")}
+          </h2>
+          <ul class="command-preview-list">
+            <li class="command-preview-item">
+              <code class="command-line">curl -I https://example.com</code>
+              <p data-i18n="home.command.item1">{t("home.command.item1")}</p>
+            </li>
+            <li class="command-preview-item">
+              <code class="command-line">journalctl -u nginx -n 60 --no-pager</code>
+              <p data-i18n="home.command.item2">{t("home.command.item2")}</p>
+            </li>
+            <li class="command-preview-item">
+              <code class="command-line">kubectl get pods -A --field-selector=status.phase!=Running</code>
+              <p data-i18n="home.command.item3">{t("home.command.item3")}</p>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2 data-i18n="home.section.paths">{t("home.section.paths")}</h2>
+        <a href="/paths/" data-i18n="home.section.paths.link">
+          {t("home.section.paths.link")}
+        </a>
+      </div>
+      <div class="path-grid">
+        {PATHS.map((path, index) => (
+          <article class="path-card">
+            <span class="path-index">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 data-i18n={`path.${path.id}.title`}>
+                {t(`path.${path.id}.title`)}
+              </h3>
+              <p data-i18n={`path.${path.id}.desc`}>{t(`path.${path.id}.desc`)}</p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
 
     <section class="section">
       <div class="section-title">
-        <h2>Search</h2>
-      </div>
-      <Search />
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h2>Learning paths</h2>
-        <a href="/paths/">View paths</a>
-      </div>
-      <div class="note-grid">
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">IT foundations</h3>
-            <p class="note-description">Linux, Windows, and networking fundamentals.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">DevOps starter</h3>
-            <p class="note-description">Docker, CI/CD, and observability basics.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Cloud & platform</h3>
-            <p class="note-description">IAM, cloud networking, and managed services.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Security essentials</h3>
-            <p class="note-description">SSH keys, TLS, and HTTP fundamentals.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Operations & reliability</h3>
-            <p class="note-description">Monitoring and incident response basics.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Data & storage</h3>
-            <p class="note-description">Databases, indexing, and backups.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">System design</h3>
-            <p class="note-description">Scalability, caching, and reliability.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Troubleshooting playbooks</h3>
-            <p class="note-description">Repeatable debugging workflows.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Infrastructure as code</h3>
-            <p class="note-description">Terraform and automation basics.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Security operations</h3>
-            <p class="note-description">Detection, modeling, and response.</p>
-          </div>
-        </article>
-        <article class="note-card">
-          <div class="note-card-top">
-            <h3 class="note-title">Incident scenarios</h3>
-            <p class="note-description">Practice real incident cases.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h2>Latest notes</h2>
-        <a href="/notes/">View all</a>
+        <h2 data-i18n="home.section.latest">{t("home.section.latest")}</h2>
+        <a href="/notes/" data-i18n="home.section.latest.link">
+          {t("home.section.latest.link")}
+        </a>
       </div>
       <div class="note-grid">
         {notes.map((note) => (

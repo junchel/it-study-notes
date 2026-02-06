@@ -1,30 +1,68 @@
 ---
-title: "Idempotency keys basics"
-description: "Make unsafe operations retryable by using idempotency keys."
+title: "멱등성 키 기본"
+description: "멱등성 키로 위험한 작업을 안전하게 재시도합니다."
 pubDate: 2026-02-03
 tags: ["api", "reliability", "backend"]
 ---
 
-## Summary
+## 요약
 
-Idempotency keys let clients safely retry requests that create or change data.
+멱등성 키는 동일한 요청이 여러 번 도착해도 결과가 한 번만 반영되게 합니다. 결제, 주문 생성 같은 위험 요청에 필수이며 재시도와 장애 복구에 효과적입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Clients send a unique key with each unsafe request.
-- Servers store the key and the result for later reuse.
-- Replayed requests with the same key return the original result.
-- Keys should expire after a reasonable TTL.
+- 클라이언트는 위험 요청마다 고유한 키를 보냅니다.
+- 서버는 키와 응답을 저장하고 중복 요청에 동일한 결과를 반환합니다.
+- 키는 사용자/테넌트 범위로 스코프되어야 합니다.
+- TTL을 설정해 저장소를 정리하고 충돌을 방지합니다.
 
-## Guidelines
+## 절차
 
-- Require idempotency keys for `POST` or side-effecting endpoints.
-- Scope keys to a user or tenant to avoid cross-user reuse.
-- Store request fingerprints with the key to detect mismatches.
-- Choose a TTL that matches business needs and retry windows.
+1. 멱등성 키 정책(헤더 이름, 스코프, TTL)을 정의합니다.
+2. 요청 도착 시 키를 기반으로 저장소에서 기존 결과를 조회합니다.
+3. 기존 결과가 있으면 동일 응답을 반환합니다.
+4. 결과가 없으면 요청을 처리하고 결과를 저장합니다.
+5. TTL 만료 및 저장소 정리 정책을 적용합니다.
 
-## Pitfalls
+## 체크리스트
 
-- Reusing keys across different requests can hide mistakes.
-- Short TTLs can allow duplicate processing.
-- Non-deterministic responses break idempotency guarantees.
+- 위험 요청(결제/주문/환불)에 멱등성 키가 적용됨
+- 키가 사용자/테넌트 범위로 구분됨
+- 요청 본문 해시를 함께 저장해 불일치를 감지함
+- TTL과 청소 정책이 정의됨
+- 중복 요청 시 동일 응답을 반환함
+
+## 명령
+
+```bash
+grep -R -n "Idempotency-Key" src
+```
+멱등성 키 처리 위치를 찾습니다.
+
+```bash
+curl -H "Idempotency-Key: abc123" -H "Content-Type: application/json" -d '{"item":"book"}' -X POST https://api.example.com/orders
+```
+멱등성 키를 포함한 주문 요청을 전송합니다.
+
+```bash
+curl -H "Idempotency-Key: abc123" -H "Content-Type: application/json" -d '{"item":"book"}' -X POST https://api.example.com/orders
+```
+같은 키로 재요청해 중복 처리가 발생하지 않는지 확인합니다.
+
+```bash
+redis-cli GET idempotency:abc123
+```
+저장소에 결과가 기록되었는지 확인합니다.
+
+## 운영 팁
+
+- 응답 본문과 상태 코드까지 저장하면 클라이언트가 일관된 결과를 받습니다.
+- 키를 재사용하지 않도록 클라이언트 SDK에서 자동 생성합니다.
+- 실패 응답도 저장해 중복 시 동일 오류를 반환합니다.
+- TTL은 재시도 창보다 충분히 길게 설정합니다.
+
+## 주의사항
+
+- 서로 다른 요청에 동일 키를 사용하면 데이터 불일치가 발생합니다.
+- TTL이 너무 짧으면 중복 요청이 다시 처리됩니다.
+- 비결정적 응답은 멱등성 보장을 깨뜨립니다.

@@ -1,33 +1,36 @@
-﻿---
-title: "Incident response basics"
-description: "A lightweight checklist for handling IT incidents."
+---
+title: "인시던트 대응 기본"
+description: "IT 인시던트를 처리하기 위한 간단한 체크리스트."
 pubDate: 2026-02-03
 tags: ["incident-response", "sre", "operations"]
 ---
 
-## Summary
+## 요약
 
-A consistent incident process reduces downtime and chaos.
+일관된 인시던트 프로세스는 다운타임과 혼란을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Declare incident severity early.
-- Assign roles: incident lead, comms, and investigators.
-- Capture timeline and key actions for postmortems.
+- 초기에 심각도를 선언합니다.
+- 역할을 지정합니다: 인시던트 리드, 커뮤니케이션, 조사 담당.
+- 포스트모템을 위해 타임라인과 핵심 조치를 기록합니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-1. Acknowledge and assess impact
-2. Stabilize the system
-3. Communicate updates
-4. Identify root cause
-5. Add follow-up actions
-```
+- 1. 인지 및 영향 평가
+- 2. 시스템 안정화
+- 3. 업데이트 공유
+- 4. 근본 원인 식별
+- 5. 후속 조치 추가
 
-## Pitfalls
+## 운영 팁
 
-- Skipping communication updates.
-- Fixing symptoms without identifying root cause.
-- No post-incident review.
+- 대응 역할과 연락 체계를 사전에 정의합니다.
+- 복구가 최우선이며 분석은 이후에 수행합니다.
+- 타임라인 기록을 즉시 시작합니다.
+
+## 주의사항
+
+- 커뮤니케이션 업데이트를 건너뜀.
+- 근본 원인 없이 증상만 해결함.
+- 사고 후 리뷰 없음.

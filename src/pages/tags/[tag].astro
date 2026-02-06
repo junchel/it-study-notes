@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import NoteCard from "../../components/NoteCard.astro";
 import { getCollection } from "astro:content";
 import { slugify } from "../../utils/slugify";
+import { DEFAULT_LANG, t as translate } from "../../utils/i18n";
 
 export async function getStaticPaths() {
   const notes = await getCollection("notes", ({ data }) => !data.draft);
@@ -25,14 +26,19 @@ const { tag, notes } = Astro.props;
 const sortedNotes = [...notes].sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
+const pageTitle = t("tag.meta.title", { tag });
+const pageDescription = t("tag.meta.description", { tag });
 ---
 
-<BaseLayout title={`Tag: ${tag}`} description={`Notes tagged with ${tag}.`}>
+<BaseLayout title={pageTitle} description={pageDescription}>
   <div class="container">
     <section class="hero">
-      <span class="hero-badge">Tag</span>
+      <span class="hero-badge" data-i18n="tag.badge">{t("tag.badge")}</span>
       <h1>{tag}</h1>
-      <p>{notes.length} note(s)</p>
+      <p data-i18n="tag.count" data-i18n-vars={JSON.stringify({ count: notes.length })}>
+        {t("tag.count", { count: notes.length })}
+      </p>
     </section>
 
     <section class="section">

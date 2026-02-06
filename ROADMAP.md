@@ -1,114 +1,148 @@
-﻿# Roadmap
+# 로드맵
 
-## Now
+## 현재
 
-- GitHub repo `it-study-notes` created and pushed.
-- GitHub Pages enabled with GitHub Actions.
-- Custom domain set to `jjchwordpress.cloud`.
-- Repo variables set:
+- UI 기본 문구를 한국어로 전환하고 네비게이션/섹션 라벨 KR/EN 토글을 추가함.
+- UI를 프리미엄 에디토리얼 톤으로 리디자인하고 히어로/카드/검색 스타일을 개선함.
+- 히어로 아트워크, 노트 상세 매거진 레이아웃, 절제된 모션을 적용함.
+- 메뉴/푸터 고급화와 노트 카드 밀도 조정을 적용함.
+- 네비게이션 활성 상태, 스크롤 연동 목차 하이라이트, 노트 본문 타이포그래피를 고급화함.
+- 모바일 메뉴 토글/드로어를 추가하고 접근성 폴백(노-JS 시 메뉴 노출)을 적용함.
+- 모바일 드로어 백드롭/ARIA 동기화, 홈 커맨드 프리뷰 패널, 노트 카드 CTA/깊이감을 추가하고 `localhost:4322`에서 실출력 검증함.
+- 홈 메인 타이틀("IT 학습을 검색 가능한 지식 라이브러리로.")을 2단 마스트헤드 UI로 재구성해 시각 위계를 개선함.
+- 실무 심화 배치 06 완료: `src/content/notes/alerting-monitoring-tuning.md`, `src/content/notes/api-error-handling-basics.md`, `src/content/notes/api-pagination-basics.md`, `src/content/notes/api-rate-limiting-basics.md`, `src/content/notes/api-troubleshooting-playbook.md`, `src/content/notes/api-versioning-basics.md`, `src/content/notes/audit-logging-basics.md`, `src/content/notes/auth-incident-response.md`, `src/content/notes/automation-scripting-basics.md`, `src/content/notes/autoscaling-basics.md`.
+- 실무 심화 배치 07 완료: `src/content/notes/backup-dr-basics.md`, `src/content/notes/backup-restore-drills.md`, `src/content/notes/bing-webmaster-tools-setup.md`, `src/content/notes/blue-green-deployments.md`, `src/content/notes/cache-invalidation-basics.md`, `src/content/notes/caching-basics.md`, `src/content/notes/canary-deployments.md`, `src/content/notes/capacity-planning-basics.md`, `src/content/notes/cdn-basics.md`, `src/content/notes/change-management-basics.md`.
+- 실무 심화 배치 08 완료: `src/content/notes/ci-cd-basics.md`, `src/content/notes/cicd-rollback-strategies.md`, `src/content/notes/circuit-breaker-basics.md`, `src/content/notes/cloud-basics.md`, `src/content/notes/cloud-cost-basics.md`, `src/content/notes/cloud-cost-optimization-playbook.md`, `src/content/notes/cloud-network-security.md`, `src/content/notes/cloud-security-baseline.md`, `src/content/notes/content-security-policy-basics.md`, `src/content/notes/correlation-ids-basics.md`.
+- 실무 심화 배치 09 완료: `src/content/notes/cors-basics.md`, `src/content/notes/csrf-basics.md`, `src/content/notes/custom-domain-dns-setup.md`, `src/content/notes/database-backup-strategy.md`, `src/content/notes/database-basics.md`, `src/content/notes/database-connection-pooling.md`, `src/content/notes/database-locking-basics.md`, `src/content/notes/database-migrations-basics.md`, `src/content/notes/database-replication-basics.md`, `src/content/notes/database-sharding-basics.md`.
+- 실무 심화 배치 10 완료: `src/content/notes/database-transactions-basics.md`, `src/content/notes/deadlocks-basics.md`, `src/content/notes/deployment-checklist-basics.md`, `src/content/notes/distributed-tracing-basics.md`, `src/content/notes/dns-dhcp-basics.md`, `src/content/notes/dns-troubleshooting-playbook.md`, `src/content/notes/docker-basics.md`, `src/content/notes/docker-image-optimization.md`, `src/content/notes/docker-troubleshooting.md`, `src/content/notes/feature-flags-basics.md`.
+- 실무 심화 배치 11 완료: `src/content/notes/firewall-rules-basics.md`, `src/content/notes/first-30-days-it-roadmap.md`, `src/content/notes/git-workflow-basics.md`, `src/content/notes/github-actions-basics.md`, `src/content/notes/google-search-console-setup.md`, `src/content/notes/health-checks-basics.md`, `src/content/notes/http-api-basics.md`, `src/content/notes/http-caching-headers.md`, `src/content/notes/http-security-headers.md`, `src/content/notes/http-status-codes.md`.
+- 실무 심화 배치 12 완료: `src/content/notes/http-timeouts-retries.md`, `src/content/notes/http2-http3-basics.md`, `src/content/notes/iam-basics.md`, `src/content/notes/iam-policy-design.md`, `src/content/notes/idempotency-keys-basics.md`, `src/content/notes/incident-communication-basics.md`, `src/content/notes/incident-db-pool-exhaustion.md`, `src/content/notes/incident-disk-full.md`, `src/content/notes/incident-dns-outage.md`, `src/content/notes/incident-failed-deployment.md`.
+- 한국어 실무 심화 노트 153개 완료 (알파벳 순서 기준 `zero-trust-basics.md` + `welcome.md`까지).
+- GitHub 저장소 `it-study-notes` 생성 및 푸시 완료.
+- GitHub Pages 활성화 및 GitHub Actions 연결 완료.
+- 커스텀 도메인 `jjchwordpress.cloud` 설정 완료.
+- 저장소 변수 설정:
   - `SITE_URL` = `https://jjchwordpress.cloud`
   - `SITE_BASE` = `/`
-- Added a DNS setup guide note: `src/content/notes/custom-domain-dns-setup.md`.
-- Added Google Search Console setup note: `src/content/notes/google-search-console-setup.md`.
-- Added indexing checklist note: `src/content/notes/search-engine-indexing-checklist.md`.
-- Added Bing Webmaster Tools setup note: `src/content/notes/bing-webmaster-tools-setup.md`.
-- Added a 30-day IT study roadmap note: `src/content/notes/first-30-days-it-roadmap.md`.
-- Added ops/web fundamentals notes:
+- DNS 설정 가이드 노트 추가: `src/content/notes/custom-domain-dns-setup.md`.
+- Google Search Console 설정 노트 추가: `src/content/notes/google-search-console-setup.md`.
+- 인덱싱 체크리스트 노트 추가: `src/content/notes/search-engine-indexing-checklist.md`.
+- Bing Webmaster Tools 설정 노트 추가: `src/content/notes/bing-webmaster-tools-setup.md`.
+- 30일 IT 학습 로드맵 노트 추가: `src/content/notes/first-30-days-it-roadmap.md`.
+- 운영/웹 기본 노트 추가:
   - `src/content/notes/linux-systemd-basics.md`
   - `src/content/notes/logrotate-basics.md`
   - `src/content/notes/reverse-proxy-basics.md`
   - `src/content/notes/http-status-codes.md`
-- Added service and security notes:
+- 서비스/보안 노트 추가:
   - `src/content/notes/windows-services-basics.md`
   - `src/content/notes/ssh-hardening-basics.md`
   - `src/content/notes/dns-troubleshooting-playbook.md`
   - `src/content/notes/nginx-tls-basics.md`
-- Added monitoring and networking notes:
+- 모니터링/네트워킹 노트 추가:
   - `src/content/notes/sli-slo-basics.md`
   - `src/content/notes/synthetic-monitoring-basics.md`
   - `src/content/notes/traceroute-mtr-basics.md`
   - `src/content/notes/ufw-firewall-basics.md`
-- Added web and performance notes:
+- 웹/성능 노트 추가:
   - `src/content/notes/tcp-udp-basics.md`
   - `src/content/notes/http2-http3-basics.md`
   - `src/content/notes/load-testing-basics.md`
   - `src/content/notes/backup-restore-drills.md`
-- Added API and deployment notes:
+- API/배포 노트 추가:
   - `src/content/notes/api-rate-limiting-basics.md`
   - `src/content/notes/cors-basics.md`
   - `src/content/notes/api-versioning-basics.md`
   - `src/content/notes/blue-green-deployments.md`
-- Added data and security notes:
+- 데이터/보안 노트 추가:
   - `src/content/notes/database-connection-pooling.md`
   - `src/content/notes/redis-basics.md`
   - `src/content/notes/http-security-headers.md`
   - `src/content/notes/correlation-ids-basics.md`
-- Added platform and CI notes:
+- 플랫폼/CI 노트 추가:
   - `src/content/notes/kubernetes-resource-requests-limits.md`
   - `src/content/notes/docker-image-optimization.md`
   - `src/content/notes/github-actions-basics.md`
   - `src/content/notes/secrets-rotation-basics.md`
-- Added scheduling and deployment notes:
+- 스케줄링/배포 노트 추가:
   - `src/content/notes/linux-cron-basics.md`
   - `src/content/notes/systemd-timers-basics.md`
   - `src/content/notes/kubernetes-probes-basics.md`
   - `src/content/notes/canary-deployments.md`
-- Added ops and security notes:
+- 운영/보안 노트 추가:
   - `src/content/notes/linux-disk-usage-basics.md`
   - `src/content/notes/nginx-logging-basics.md`
   - `src/content/notes/feature-flags-basics.md`
   - `src/content/notes/jwt-security-pitfalls.md`
-- Added incident and platform notes:
+- 사고/플랫폼 노트 추가:
   - `src/content/notes/incident-severity-levels.md`
   - `src/content/notes/uptime-checklist.md`
   - `src/content/notes/kubernetes-namespaces-basics.md`
   - `src/content/notes/ssl-certificate-renewal.md`
-- Added reliability and deployment notes:
+- 신뢰성/배포 노트 추가:
   - `src/content/notes/log-levels-basics.md`
   - `src/content/notes/http-timeouts-retries.md`
   - `src/content/notes/database-migrations-basics.md`
   - `src/content/notes/kubernetes-rollouts-basics.md`
-- Added API and observability notes:
+- API/관측 노트 추가:
   - `src/content/notes/api-pagination-basics.md`
   - `src/content/notes/idempotency-keys-basics.md`
   - `src/content/notes/service-discovery-basics.md`
   - `src/content/notes/distributed-tracing-basics.md`
-- Added resilience and web security notes:
+- 회복력/웹 보안 노트 추가:
   - `src/content/notes/circuit-breaker-basics.md`
   - `src/content/notes/csrf-basics.md`
   - `src/content/notes/session-management-basics.md`
   - `src/content/notes/health-checks-basics.md`
-- Added API and scaling notes:
+- API/스케일링 노트 추가:
   - `src/content/notes/api-error-handling-basics.md`
   - `src/content/notes/request-validation-basics.md`
   - `src/content/notes/autoscaling-basics.md`
   - `src/content/notes/cache-invalidation-basics.md`
-- Added web security notes:
+- 웹 보안 노트 추가:
   - `src/content/notes/xss-basics.md`
   - `src/content/notes/content-security-policy-basics.md`
   - `src/content/notes/password-storage-basics.md`
   - `src/content/notes/audit-logging-basics.md`
-- Added database concurrency notes:
+- 데이터베이스 동시성 노트 추가:
   - `src/content/notes/transaction-isolation-levels.md`
   - `src/content/notes/database-locking-basics.md`
   - `src/content/notes/deadlocks-basics.md`
   - `src/content/notes/query-plan-basics.md`
-- Added release and ops process notes:
+- 릴리스/운영 프로세스 노트 추가:
   - `src/content/notes/deployment-checklist-basics.md`
   - `src/content/notes/rollback-strategy-basics.md`
   - `src/content/notes/change-management-basics.md`
   - `src/content/notes/incident-triage-basics.md`
-- Next: configure DNS for `jjchwordpress.cloud` to point to GitHub Pages.
-- Next: confirm deploy completes and site loads at `https://jjchwordpress.cloud`.
+- 명령 블록 설명 문장 표준화 및 `welcome` 요약 추가.
+- 다중 명령 블록을 단일 명령 + 1줄 설명 형태로 분해.
+- 노트 내 남은 영어-only 라인 정리.
+- 섹션 헤더(핵심 개념/명령/운영 팁) 표준화.
+- 콘텐츠 가이드 한국어화 및 템플릿 정비.
+- 텍스트 체크리스트 섹션을 `## 체크리스트`로 정리.
+- 플레이북 헤더를 `단계` → `절차`로 표준화.
+- README 한국어화 및 로컬 개발 트러블슈팅 추가.
+- ARCHITECTURE 문서 한국어화.
+- 프로덕션 빌드(astro build + pagefind) 검증 완료.
+- 체크리스트 섹션의 텍스트 블록을 목록 형태로 정리.
+- 문장 종결을 합니다체로 통일.
+- 나머지 문장 종결(입니다/됩니다/있습니다)을 합니다체로 통일.
+- 실무 체크리스트 헤더를 체크리스트로 통일.
+- 체크리스트 코드 블록을 목록으로 정리.
+- 설명 접두어를 제거하고 문장 품질을 정리.
+- 체크리스트 섹션의 불필요한 설명 문장을 제거.
+- '수 있습니다' 문형을 복원해 문장 품질을 개선.
+- CONTENT_GUIDE에 합니다체 문장 스타일 규칙 추가.
+- 빌드 시 duplicate content id 경고가 발생해 원인 조사가 필요함.
 
-## Next
+## 다음
 
-- Connect Google Search Console and submit `https://jjchwordpress.cloud/sitemap.xml`.
-- Expand tags and add series pages if needed.
-- Add a reading time field to notes (optional).
+- Google Search Console 연결 및 `https://jjchwordpress.cloud/sitemap.xml` 제출.
+- 태그 확장 및 시리즈 페이지 필요 시 추가.
+- 노트 읽기 시간 필드 추가(선택).
 
-## Later
+## 이후
 
-- Add diagrams or embedded media.
-- Add an archive view by year or topic.
-- Add a lightweight changelog page.
+- 다이어그램 또는 임베디드 미디어 추가.
+- 연도/주제별 아카이브 뷰 추가.
+- 간단한 변경 로그 페이지 추가.

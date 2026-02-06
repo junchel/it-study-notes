@@ -1,33 +1,58 @@
 ---
-title: "Traceroute and MTR basics"
-description: "Diagnose network paths and latency with traceroute and mtr."
+title: "Traceroute/MTR 기초"
+description: "네트워크 경로와 지연을 진단하는 기본 도구와 해석 방법을 정리합니다."
 pubDate: 2026-02-03
-tags: ["networking", "troubleshooting", "performance"]
+tags: ["network", "operations", "diagnostics"]
 ---
 
-## Summary
+## 요약
 
-Traceroute and MTR help you see the network path and identify where latency or packet loss occurs.
+Traceroute와 MTR은 네트워크 경로와 손실을 분석하는 데 유용합니다. 라우팅 문제를 빠르게 진단할 수 있습니다.
 
-## Commands
+## 핵심 개념
+
+- traceroute는 경로를 홉 단위로 추적합니다.
+- mtr은 traceroute와 ping을 결합해 지연과 손실을 지속 측정합니다.
+- 중간 노드의 응답 제한은 정상일 수 있습니다.
+- 최종 목적지 응답이 더 중요합니다.
+
+## 체크리스트
+
+- 목적지까지의 평균 지연을 확인합니다.
+- 특정 홉에서 손실이 지속되는지 확인합니다.
+- 단일 시간대가 아닌 여러 시간대에 측정합니다.
+- CDN/프록시 경로 여부를 고려합니다.
+
+## 명령
 
 ```bash
-# Linux/macOS
-traceroute example.com
-mtr -rwzbc 100 example.com
-
-# Windows
-tracert example.com
-pathping example.com
+traceroute -n example.com
 ```
+DNS 해석 없이 경로를 추적해 응답을 빠르게 확인합니다.
 
-## How to read results
+```bash
+mtr -rw example.com
+```
+지연과 패킷 손실을 실시간으로 확인합니다.
 
-- Look for spikes in latency between hops.
-- Consistent loss at one hop suggests a network issue.
-- Some routers deprioritize ICMP, so loss alone can be misleading.
+```bash
+mtr -rw -c 100 example.com
+```
+100회 샘플로 손실률을 통계적으로 확인합니다.
 
-## Pitfalls
+```bash
+traceroute -T -p 443 example.com
+```
+TCP 443 포트로 경로를 측정해 방화벽 영향을 확인합니다.
 
-- ICMP filtering can make paths appear broken.
-- Always compare results from multiple networks if possible.
+## 운영 팁
+
+- 경로 손실은 항상 장애가 아니므로 최종 응답을 확인합니다.
+- ISP 간 구간은 제어가 어려우므로 우회 경로를 준비합니다.
+- 결과를 캡처해 사고 보고서에 첨부합니다.
+
+## 주의사항
+
+- ICMP 차단 환경에서는 결과가 왜곡됩니다.
+- 네트워크 혼잡 시간에는 지연이 일시적으로 상승합니다.
+- 홉별 손실은 QoS 정책의 영향을 받을 수 있습니다.

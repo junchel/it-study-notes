@@ -1,27 +1,62 @@
 ---
-title: "API rate limiting basics"
-description: "Protect services with rate limits and fair usage policies."
+title: "API 속도 제한 기본"
+description: "속도 제한과 공정 사용 정책으로 서비스를 보호합니다."
 pubDate: 2026-02-03
 tags: ["api", "security", "performance"]
 ---
 
-## Summary
+## 요약
 
-Rate limiting prevents abuse, stabilizes performance, and protects downstream services.
+속도 제한은 남용을 방지하고 성능을 안정화하며 다운스트림 서비스를 보호합니다.
 
-## Common strategies
+## 핵심 개념
 
-- **Token bucket**: allows bursts, refills over time.
-- **Leaky bucket**: smooths traffic to a steady rate.
-- **Fixed window**: resets counters at fixed intervals.
+- 레이트 리밋은 공정성과 안정성을 위한 장치입니다.
+- 사용자/키/아이피 기준을 정의합니다.
+- 제한 초과 시 응답 정책을 명확히 합니다.
+- 분산 환경에서는 카운터 일관성과 지연을 고려합니다.
+- 버스트 허용 여부와 평균 처리량을 분리해 설계합니다.
 
-## Implementation ideas
+## 일반 전략
 
-- Enforce limits at the edge (CDN, gateway).
-- Use request identifiers: IP, API key, user ID.
-- Return `429 Too Many Requests` with retry guidance.
+- **토큰 버킷**: 버스트를 허용하고 시간이 지나며 토큰이 보충됩니다.
+- **누수 버킷**: 트래픽을 일정 속도로 평탄화합니다.
+- **고정 윈도우**: 일정 주기마다 카운터를 리셋합니다.
+- **슬라이딩 윈도우**: 경계 구간의 급격한 허용량 변화를 완화합니다.
 
-## Pitfalls
+## 구현 아이디어
 
-- Overly strict limits break valid users.
-- Not handling distributed counters correctly.
+- 엣지(CDN, 게이트웨이)에서 제한을 적용합니다.
+- 요청 식별자를 사용합니다: IP, API 키, 사용자 ID.
+- 재시도 안내와 함께 `429 Too Many Requests`를 반환합니다.
+
+## 명령
+
+```bash
+curl -I https://api.example.com | rg -i "ratelimit"
+```
+레이트 리밋 헤더 적용 여부를 확인합니다.
+
+```bash
+curl -i https://api.example.com/health | rg -i "retry-after|429"
+```
+제한 초과 응답과 재시도 안내가 포함되는지 확인합니다.
+
+```bash
+rg -n "rate limit|ratelimit" config/ -S
+```
+레이트 리밋 설정 위치를 점검합니다.
+
+## 운영 팁
+
+- 사용자 등급별 제한을 다르게 설계합니다.
+- 응답 헤더에 현재 제한 상태를 포함합니다.
+- Retry-After로 재시도 시점을 안내합니다.
+- 제한 초과 응답 본문을 표준화해 클라이언트 처리 비용을 줄입니다.
+- 우회 시도를 막기 위해 식별자 위·변조 검증을 추가합니다.
+
+## 주의사항
+
+- 너무 엄격한 제한은 정상 사용자를 막습니다.
+- 분산 카운터를 올바르게 처리하지 못하면 제한이 무력화합니다.
+- 제한 대상이 불명확하면 클라이언트가 예측하지 못합니다.

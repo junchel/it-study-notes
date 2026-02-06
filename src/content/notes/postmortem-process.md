@@ -1,31 +1,46 @@
-﻿---
-title: "Postmortem process"
-description: "How to run blameless postmortems and track action items."
+---
+title: "포스트모템 프로세스"
+description: "비난 없는 포스트모템과 액션 아이템 추적 방법."
 pubDate: 2026-02-03
 tags: ["operations", "incident-response", "postmortem"]
 ---
 
-## Summary
+## 요약
 
-Postmortems document what happened and prevent repeated incidents.
+포스트모템은 사고를 기록하고 재발 방지 조치를 추적하는 과정합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Focus on learning, not blame.
-- Capture timeline, impact, and contributing factors.
-- Track action items to closure.
+- **Blameless**: 개인 비난보다 시스템 개선에 집중합니다.
+- **타임라인**: 사건의 흐름과 결정 지점을 기록합니다.
+- **액션 아이템**: 구체적 담당자/기한을 가진 후속 조치합니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Summarize impact and duration
-- Capture timeline and root cause
-- Define follow-up actions
+- 영향 범위/지속 시간 요약
+- 타임라인 및 근본 원인 기록
+- 재발 방지 액션 아이템 정의
+
+## 명령
+
+```bash
+git tag -a postmortem-2026-02-05 -m "incident summary"
 ```
+릴리스 시점과 사고를 연결하기 위해 태그를 남깁니다.
 
-## Pitfalls
+```bash
+git log --since="2026-02-05 10:00" --until="2026-02-05 12:00" --oneline
+```
+사고 시간대의 변경 내역을 확인합니다.
 
-- Skipping action items or owners.
-- Writing vague root causes.
-- No follow-up reviews.
+## 운영 팁
+
+- 개인 책임보다 시스템 개선에 집중합니다.
+- 타임라인과 영향 범위를 명확히 기록합니다.
+- 액션 아이템의 담당과 기한을 지정합니다.
+
+## 주의사항
+
+- 액션 아이템에 담당자/기한이 없으면 실행되지 않습니다.
+- 모호한 근본 원인은 개선을 어렵게 합니다.
+- 후속 리뷰 없이는 반복 사고가 발생합니다.

@@ -1,30 +1,46 @@
 ---
-title: "Password storage basics"
-description: "Store passwords safely with hashing and proper parameters."
+title: "비밀번호 저장 기본"
+description: "안전한 해싱과 파라미터로 비밀번호를 보호합니다."
 pubDate: 2026-02-03
 tags: ["security", "auth", "backend"]
 ---
 
-## Summary
+## 요약
 
-Passwords must be stored as strong hashes to resist offline attacks.
+비밀번호는 오프라인 공격에 견딜 수 있도록 강한 해시로 저장해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use adaptive hashing algorithms like Argon2, bcrypt, or scrypt.
-- Add a unique salt per password.
-- Tune parameters to be slow enough to deter brute force.
-- Never store plaintext or reversible passwords.
+- **적응형 해시**: Argon2/bcrypt/scrypt처럼 느리고 조정 가능한 해시를 사용합니다.
+- **솔트**: 사용자별 고유 솔트를 추가해 레인보우 테이블을 무력화합니다.
+- **파라미터**: 공격 비용을 높이기 위해 시간/메모리 비용을 설정합니다.
 
-## Guidelines
+## 권장 사항
 
-- Prefer Argon2id when available and well supported.
-- Store algorithm parameters with the hash for upgrades.
-- Enforce strong password policies and rate limits.
-- Rotate hashes when parameters are updated.
+- 가능하면 Argon2id를 우선 사용합니다.
+- 해시 문자열에 파라미터를 포함해 향후 업그레이드를 가능하게 합니다.
+- 로그인 시도에 속도 제한과 지연을 적용합니다.
 
-## Pitfalls
+## 명령
 
-- Using fast hashes like SHA-256 for passwords.
-- Reusing salts or using a global salt.
-- Logging or exposing passwords in error reports.
+```bash
+argon2 "password" -id -t 3 -m 16 -p 1 -l 32 -r
+```
+Argon2id로 해시를 생성하고 파라미터를 함께 출력합니다(테스트용).
+
+```bash
+htpasswd -nB user
+```
+bcrypt 해시를 생성합니다(Apache 도구, 테스트 용도).
+
+## 운영 팁
+
+- bcrypt 또는 Argon2를 권장 비용으로 사용합니다.
+- 사용자별 고유 솔트를 적용합니다.
+- 비밀번호 재설정 흐름을 엄격히 보호합니다.
+
+## 주의사항
+
+- SHA-256 같은 빠른 해시는 비밀번호 저장에 부적합합니다.
+- 글로벌 솔트 재사용은 위험합니다.
+- 에러 로그에 비밀번호가 포함되지 않도록 주의합니다.

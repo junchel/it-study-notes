@@ -1,26 +1,59 @@
-﻿---
-title: "Welcome to your IT knowledge base"
-description: "How to structure and grow your IT study notes."
+---
+title: "IT 지식베이스에 오신 것을 환영합니다"
+description: "IT 학습 노트를 구조화하고 성장시키는 방법."
 pubDate: 2026-02-03
 tags: ["workflow", "it-basics"]
 ---
 
-## Why this exists
+## 요약
 
-This site is a searchable home for IT study notes, labs, and quick references.
+이 사이트는 실무 관점의 IT 노트를 체계적으로 정리하고 빠르게 찾을 수 있도록 만든 지식베이스입니다.
 
-## How to write new notes
+## 핵심 개념
 
-1. Create a new Markdown file in `src/content/notes/`.
-2. Add frontmatter metadata (title, description, tags).
-3. Capture commands, steps, and troubleshooting tips.
-4. Build the site to update the search index.
+- 노트는 실무 관점으로 구조화해 재사용성을 높입니다.
+- 명령은 한 줄과 한 줄 설명으로 표준화합니다.
+- 검색과 탐색을 위해 제목과 요약을 명확히 작성합니다.
 
-## Suggested structure
+## 왜 이 사이트가 필요한가
 
-- Problem or goal
-- Key ideas
-- Commands or steps
-- Pitfalls
-- References
-- Next steps
+이 사이트는 IT 학습 노트, 랩, 빠른 참조를 위한 검색 가능한 공간입니다.
+
+## 새 노트 작성 방법
+
+1. `src/content/notes/`에 새 Markdown 파일을 만듭니다.
+2. 프런트매터 메타데이터(제목, 설명, 태그)를 추가합니다.
+3. 명령어, 절차, 트러블슈팅 팁을 기록합니다.
+4. 빌드하여 검색 인덱스를 업데이트합니다.
+
+## 권장 구조
+
+- 문제 또는 목표
+- 핵심 아이디어
+- 명령/절차
+- 주의사항
+- 참고 자료
+- 다음 단계
+
+## 명령
+
+```bash
+npm install
+```
+의존성을 설치합니다.
+
+```bash
+npm run dev
+```
+로컬 개발 서버를 실행합니다.
+
+## 운영 팁
+
+- 작은 주제부터 시작해 반복적으로 확장합니다.
+- 명령 결과와 기대값을 함께 기록합니다.
+- 참고 자료는 최신 상태를 유지합니다.
+
+## 주의사항
+
+- 운영 환경 적용 전 반드시 검증합니다.
+- 민감한 정보는 노트에 기록하지 않습니다.

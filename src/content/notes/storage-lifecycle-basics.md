@@ -1,31 +1,63 @@
-﻿---
-title: "Storage and object lifecycle basics"
-description: "Lifecycle policies, tiering, and cost control for object storage."
+---
+title: "스토리지 라이프사이클 기초"
+description: "데이터 보존, 아카이브, 삭제를 체계적으로 관리하는 기본 원칙을 정리합니다."
 pubDate: 2026-02-03
-tags: ["storage", "cloud", "cost"]
+tags: ["storage", "operations", "cost"]
 ---
 
-## Summary
+## 요약
 
-Lifecycle rules reduce costs by moving data to cheaper tiers.
+스토리지 라이프사이클은 비용과 규제를 동시에 만족해야 합니다. 보존 기간과 접근 빈도에 따라 계층화가 필요합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use lifecycle policies to transition or expire objects.
-- Separate hot and cold data.
-- Monitor storage growth trends.
+- 핫/웜/콜드 스토리지로 계층을 나눕니다.
+- 보존 정책은 법적 요구사항과 비용을 함께 고려합니다.
+- 삭제 정책은 복구 가능 기간을 포함합니다.
+- 백업과 아카이브를 혼동하지 않습니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Define retention requirements
-- Apply lifecycle policies
-- Review storage reports monthly
+- 데이터 분류 기준을 문서화합니다.
+- 보존 기간과 삭제 일정을 정책으로 정의합니다.
+- 비용 추이를 모니터링합니다.
+- 중요한 데이터는 복구 절차를 검증합니다.
+
+## 명령
+
+```bash
+du -h /data | sort -hr | head -n 10
 ```
+대용량 디렉터리를 찾아 정리 우선순위를 정합니다.
 
-## Pitfalls
+```bash
+find /data -type f -mtime +90 -print | head -n 20
+```
+90일 이상 된 파일을 찾습니다.
 
-- No retention policy for logs/backups.
-- Accidental deletion without versioning.
-- Keeping cold data in hot tiers.
+```bash
+tar -czf archive-2026-02.tar.gz /data/project
+```
+장기 보관이 필요한 데이터를 압축 아카이브로 만듭니다.
+
+```bash
+sha256sum archive-2026-02.tar.gz > archive-2026-02.tar.gz.sha256
+```
+아카이브 무결성을 기록합니다.
+
+```bash
+rm -rf /data/tmp/*
+```
+정리 대상 임시 파일을 삭제합니다.
+
+## 운영 팁
+
+- 삭제 전 샘플 검증으로 오삭제를 방지합니다.
+- 계층 이동 정책은 비용-지연 트레이드오프를 명확히 합니다.
+- 삭제 이력은 감사 목적으로 보관합니다.
+
+## 주의사항
+
+- 규정상 보존 의무 데이터는 자동 삭제 대상에서 제외합니다.
+- 대규모 삭제는 I/O 부하를 유발하므로 시간을 분산합니다.
+- 삭제 정책은 백업 정책과 함께 설계합니다.

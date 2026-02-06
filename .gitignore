@@ -6,3 +6,4 @@ dist/
 .env.*
 lol_net_tune_admin.*
 sample.txt
+.ralph/

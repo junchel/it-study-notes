@@ -1,32 +1,53 @@
-﻿---
-title: "Backup and disaster recovery basics"
-description: "RPO, RTO, and practical backup strategies for IT systems."
+---
+title: "백업 및 재해복구 기본"
+description: "RPO, RTO와 실전 백업 전략을 정리합니다."
 pubDate: 2026-02-03
 tags: ["backup", "disaster-recovery", "operations"]
 ---
 
-## Summary
+## 요약
 
-Backups and recovery plans reduce downtime and data loss during incidents.
+백업과 복구 계획은 사고 시 다운타임과 데이터 손실을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- RPO: how much data loss is acceptable.
-- RTO: how long recovery can take.
-- Test restores regularly to validate backups.
+- RPO는 허용 가능한 데이터 손실 범위입니다.
+- RTO는 복구에 허용되는 시간입니다.
+- 복원 테스트를 정기적으로 수행해 백업을 검증합니다.
+- 3-2-1 규칙(3개 사본, 2개 매체, 1개 오프사이트)을 적용합니다.
+- 전체/증분/차등 백업의 복구 시간을 비교해 선택합니다.
+- 백업 메타데이터와 복구 절차 문서를 함께 관리합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Define RPO/RTO targets
-- Choose backup frequency
-- Automate backups
-- Test restores quarterly
+```bash
+rsync -a --delete /data/ /backup/data/
 ```
+운영 디렉터리를 백업 대상 위치로 동기화합니다.
 
-## Pitfalls
+```bash
+tar -czf /backup/app-$(date +%F).tar.gz /var/app
+```
+운영 파일을 압축해 시점 백업을 생성합니다.
 
-- Assuming backups work without restore tests.
-- Storing backups in the same failure domain.
-- Missing encryption or access control.
+## 체크리스트
+
+- RPO/RTO 목표를 정의합니다.
+- 백업 주기를 결정합니다.
+- 백업을 자동화합니다.
+- 분기별 복원 테스트를 수행합니다.
+- 백업 보존 정책과 암호화를 적용합니다.
+
+## 운영 팁
+
+- RTO/RPO 목표를 명확히 정의합니다.
+- 백업은 다른 리전에 저장해 장애에 대비합니다.
+- 복구 절차를 정기적으로 검증합니다.
+- 복구 시나리오별 담당자와 연락망을 문서화합니다.
+- 백업 실패 알림과 재시도 정책을 설정합니다.
+
+## 주의사항
+
+- 복원 테스트 없이 백업이 작동한다고 가정하면 실패합니다.
+- 동일 장애 영역에 백업을 저장하면 재해 복구가 불가능합니다.
+- 암호화 또는 접근 통제가 없으면 데이터 유출 위험이 큽니다.

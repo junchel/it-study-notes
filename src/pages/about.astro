@@ -1,32 +1,29 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { DEFAULT_LANG, t as translate } from "../utils/i18n";
+
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
-<BaseLayout title="About" description="About this IT study notes site.">
+<BaseLayout title={t("about.meta.title")} description={t("about.meta.description")}>
   <div class="container">
     <section class="hero">
-      <span class="hero-badge">About</span>
-      <h1>How this IT knowledge base is built</h1>
-      <p>
-        The site is a static IT knowledge base built with Astro. Each note is a
-        Markdown file with structured frontmatter for tools, commands, and labs.
-      </p>
+      <span class="hero-badge" data-i18n="about.badge">{t("about.badge")}</span>
+      <h1 data-i18n="about.title">{t("about.title")}</h1>
+      <p data-i18n="about.lead">{t("about.lead")}</p>
     </section>
 
     <section class="section">
       <article class="prose">
-        <h2>Workflow</h2>
+        <h2 data-i18n="about.workflow.title">{t("about.workflow.title")}</h2>
         <ol>
-          <li>Write a Markdown note for a tool, system, or lab.</li>
-          <li>Build the site to generate HTML and the search index.</li>
-          <li>Deploy to GitHub Pages for free hosting.</li>
+          <li data-i18n="about.workflow.item1">{t("about.workflow.item1")}</li>
+          <li data-i18n="about.workflow.item2">{t("about.workflow.item2")}</li>
+          <li data-i18n="about.workflow.item3">{t("about.workflow.item3")}</li>
         </ol>
 
-        <h2>Search</h2>
-        <p>
-          Pagefind generates a static search index, so search works without a
-          backend or extra cost.
-        </p>
+        <h2 data-i18n="about.search.title">{t("about.search.title")}</h2>
+        <p data-i18n="about.search.body">{t("about.search.body")}</p>
       </article>
     </section>
   </div>

@@ -1,31 +1,51 @@
-﻿---
-title: "Capacity planning basics"
-description: "Forecast growth and avoid resource exhaustion."
+---
+title: "용량 계획 기본"
+description: "성장을 예측하고 자원 고갈을 방지합니다."
 pubDate: 2026-02-03
 tags: ["performance", "capacity", "operations"]
 ---
 
-## Summary
+## 요약
 
-Capacity planning prevents outages by anticipating load growth.
+용량 계획은 부하 증가를 예측해 장애를 예방합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Track usage trends over time.
-- Define scaling thresholds and lead time.
-- Validate forecasts with real usage data.
+- 시간에 따른 사용량 추세를 추적합니다.
+- 스케일 임계값과 리드타임을 정의합니다.
+- 실제 사용 데이터로 예측을 검증합니다.
+- 계절성, 이벤트성 트래픽을 별도로 고려합니다.
+- 비용 한도와 성능 목표를 함께 관리합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Capture baseline metrics
-- Forecast growth quarterly
-- Review scaling runbooks
+```bash
+uptime
 ```
+현재 시스템 부하 평균을 확인합니다.
 
-## Pitfalls
+```bash
+vmstat 1 5
+```
+CPU, 메모리, I/O 병목을 빠르게 관찰합니다.
 
-- Underestimating peak traffic.
-- No headroom for incidents.
-- Forecasting without data.
+## 체크리스트
+
+- 기준선 메트릭을 수집합니다.
+- 분기별 성장 예측을 업데이트합니다.
+- 스케일링 런북을 정기적으로 리뷰합니다.
+- 임계값 초과 시 확장 리드타임을 계산합니다.
+
+## 운영 팁
+
+- p95 사용량과 성장률을 기준으로 계획합니다.
+- 장애 대비 헤드룸을 확보합니다.
+- 확장 트리거와 한계를 문서화합니다.
+- 스케일 한계에 도달하기 전 알림 임계값을 둡니다.
+- 비용 예산과 예약 자원 전략을 함께 검토합니다.
+
+## 주의사항
+
+- 피크 트래픽을 과소평가하면 장애로 이어집니다.
+- 사고 대응을 위한 여유 용량이 없으면 복구가 지연됩니다.
+- 데이터 없이 예측하면 계획이 지속적으로 빗나갑니다.

@@ -1,27 +1,58 @@
 ---
-title: "Synthetic monitoring basics"
-description: "Use synthetic checks to catch outages before users do."
+title: "합성 모니터링 기초"
+description: "사용자 시나리오를 주기적으로 실행해 장애를 조기에 발견하는 방법을 정리합니다."
 pubDate: 2026-02-03
-tags: ["observability", "monitoring", "operations"]
+tags: ["monitoring", "sre", "operations"]
 ---
 
-## Summary
+## 요약
 
-Synthetic monitoring runs automated checks against your service to verify availability, latency, and critical workflows.
+합성 모니터링은 실제 사용자가 오기 전에 장애를 감지합니다. 핵심 경로를 대표하는 시나리오가 중요합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use simple HTTP checks for uptime.
-- Add multi-step flows for login or checkout.
-- Run from multiple regions for better coverage.
+- 가상의 사용자 여정으로 가용성과 성능을 측정합니다.
+- 에러뿐 아니라 지연 시간과 응답 품질을 봅니다.
+- 지역별/네트워크별 분산 실행으로 차이를 감지합니다.
+- 실제 모니터링과 함께 사용해야 합니다.
 
-## What to monitor
+## 체크리스트
 
-- Home page and API health endpoints.
-- Authentication flow.
-- Key business transactions.
+- 로그인, 결제 등 핵심 플로우를 정의합니다.
+- 실패 시 경보 기준을 명확히 합니다.
+- 결과를 대시보드와 SLO에 연결합니다.
+- 시나리오 변경 시 테스트를 다시 검증합니다.
 
-## Pitfalls
+## 명령
 
-- Too many checks create alert noise.
-- A successful status code doesn't guarantee correct content.
+```bash
+curl -s -o /dev/null -w "%{http_code} %{time_total}\n" https://example.com/
+```
+HTTP 상태 코드와 응답 시간을 간단히 측정합니다.
+
+```bash
+curl -s -X POST https://example.com/login -d "id=test&pw=***" -o /dev/null -w "%{http_code}\n"
+```
+로그인 엔드포인트가 정상 동작하는지 확인합니다.
+
+```bash
+curl -s https://example.com/health | jq '.status'
+```
+헬스 체크 API가 기대한 상태를 반환하는지 확인합니다.
+
+```bash
+rg -n "Synthetic" dashboards/ -S
+```
+합성 모니터링 대시보드가 연결되어 있는지 확인합니다.
+
+## 운영 팁
+
+- 경고 임계치는 사용자 영향이 있는 구간에서 설정합니다.
+- 테스트 계정과 데이터는 별도로 관리합니다.
+- 장애 복구 후에는 시나리오를 재검증합니다.
+
+## 주의사항
+
+- 합성 테스트는 실제 트래픽을 완전히 대체하지 못합니다.
+- 테스트 데이터가 실제 데이터와 섞이지 않도록 분리합니다.
+- 과도한 테스트는 서비스 부하를 유발할 수 있습니다.

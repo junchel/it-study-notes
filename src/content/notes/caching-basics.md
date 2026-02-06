@@ -1,31 +1,52 @@
-﻿---
-title: "Caching strategies basics"
-description: "Client, CDN, and server-side caching patterns."
+---
+title: "캐싱 전략 기본"
+description: "클라이언트, CDN, 서버 측 캐싱 패턴."
 pubDate: 2026-02-03
 tags: ["caching", "performance", "architecture"]
 ---
 
-## Summary
+## 요약
 
-Caching reduces latency and backend load by reusing computed results.
+캐싱은 계산된 결과를 재사용해 지연 시간을 줄이고 백엔드 부하를 낮춥니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use CDN for static assets.
-- Cache hot data with TTLs.
-- Invalidate cache carefully to avoid stale content.
+- 정적 자산은 CDN으로 제공합니다.
+- 핫 데이터는 TTL을 두고 캐시합니다.
+- 캐시 무효화를 신중히 처리해 stale 콘텐츠를 방지합니다.
+- 캐시 계층은 클라이언트, 엣지, 애플리케이션, 데이터 계층으로 나뉩니다.
+- 읽기 빈도가 높은 데이터는 read-through 패턴이 유리합니다.
+- 캐시 스탬피드를 방지하기 위한 락 또는 요청 합치기 전략이 필요합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Identify hot paths
-- Choose cache layer (CDN, Redis, in-memory)
-- Set TTL and invalidation rules
+```bash
+curl -I https://example.com/assets/app.css
 ```
+정적 자산의 캐시 헤더를 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "cache|ttl|redis" src -S
+```
+애플리케이션 내 캐시 적용 지점을 찾습니다.
 
-- Serving stale data due to poor invalidation.
-- Caching personalized data without isolation.
-- Ignoring cache stampedes.
+## 체크리스트
+
+- 핫 경로를 식별합니다.
+- 캐시 계층(CDN, Redis, in-memory)을 선택합니다.
+- TTL과 무효화 규칙을 설정합니다.
+- 캐시 적중률과 메모리 사용량을 모니터링합니다.
+
+## 운영 팁
+
+- 캐시 키를 단순하고 예측 가능하게 설계합니다.
+- 개인화 데이터는 캐싱 대상에서 제외합니다.
+- 무효화 전략을 사전에 정의합니다.
+- 데이터 변경이 잦은 엔드포인트는 캐시 TTL을 낮춥니다.
+- 스파이크 구간에는 사전 워밍업을 고려합니다.
+
+## 주의사항
+
+- 무효화가 부실하면 오래된 데이터가 제공됩니다.
+- 개인화 데이터를 분리 없이 캐시하면 정보가 섞입니다.
+- 캐시 스탬피드를 무시하면 백엔드가 과부하됩니다.

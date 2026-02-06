@@ -1,28 +1,53 @@
 ---
-title: "Database connection pooling"
-description: "Reduce overhead and improve stability by reusing DB connections."
+title: "데이터베이스 커넥션 풀링"
+description: "DB 연결을 재사용해 오버헤드를 줄이고 안정성을 높입니다."
 pubDate: 2026-02-03
 tags: ["database", "performance", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Connection pooling keeps a fixed number of database connections open and reuses them, improving latency and preventing resource spikes.
+커넥션 풀링은 고정된 수의 DB 연결을 유지하며 재사용해 지연을 줄이고 리소스 급증을 방지합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Opening connections is expensive.
-- Pools cap concurrent connections.
-- Idle connections are reused to avoid churn.
+- 연결 생성은 비용이 큽니다.
+- 풀은 동시 연결 수를 제한합니다.
+- 유휴 연결을 재사용해 연결 생성/해제를 줄입니다.
+- 풀 타임아웃과 최대 수명으로 커넥션 누수를 완화합니다.
 
-## What to monitor
+## 모니터링 항목
 
-- Active connections vs pool size.
-- Queue wait time for a connection.
-- Slow queries that hold connections too long.
+- 활성 연결 수 vs 풀 크기.
+- 연결 대기 큐의 대기 시간.
+- 연결을 오래 점유하는 느린 쿼리.
 
-## Pitfalls
+## 명령
 
-- Pool too small causes request queuing.
-- Pool too large can exhaust the database.
-- Leaking connections is a common failure mode.
+```bash
+psql -c "select count(*) from pg_stat_activity;"
+```
+현재 연결 수를 확인해 풀 포화 여부를 판단합니다.
+
+```bash
+psql -c "select state, count(*) from pg_stat_activity group by 1;"
+```
+연결 상태별 분포를 확인합니다.
+
+```bash
+rg -n "pool|maxPool|connection" config/ -S
+```
+풀 크기 설정 위치를 찾습니다.
+
+## 운영 팁
+
+- 풀 크기는 DB 동시 연결 한도를 기준으로 설정합니다.
+- 커넥션 누수를 감지할 수 있도록 타임아웃을 둡니다.
+- 읽기/쓰기 워크로드에 별도 풀을 고려합니다.
+- 풀 포화 시 대기 큐 길이와 타임아웃을 함께 점검합니다.
+
+## 주의사항
+
+- 풀이 너무 작으면 요청 대기가 발생합니다.
+- 풀이 너무 크면 DB가 고갈됩니다.
+- 커넥션 누수는 흔한 장애 원인입니다.

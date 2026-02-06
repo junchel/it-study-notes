@@ -1,23 +1,67 @@
-﻿---
-title: "Incident scenario: failed deployment"
-description: "Rollback and stabilize after a bad release."
+---
+title: "인시던트 시나리오: 배포 실패"
+description: "잘못된 릴리스 이후 롤백하고 안정화합니다."
 pubDate: 2026-02-03
 tags: ["ci-cd", "incident-response", "operations"]
 ---
 
-## Summary
+## 요약
 
-When a deployment causes issues, rollback quickly and restore service.
+배포 실패는 즉시 롤백 또는 핫픽스 판단이 필요합니다. 영향 범위를 좁히고 정상 버전으로 신속히 복구한 뒤 재발 방지를 수행합니다.
 
-## Steps
+## 핵심 개념
 
-1. Identify the failing version.
-2. Roll back to the last known good release.
-3. Confirm recovery via health checks and metrics.
-4. Create a postmortem and fix forward.
+- 자동 롤백 기준과 수동 개입 기준을 명확히 합니다.
+- 롤백 가능 아티팩트(이미지, 패키지)를 보관합니다.
+- 배포 후 검증(헬스 체크/메트릭)을 빠르게 수행합니다.
 
-## Pitfalls
+## 절차
 
-- No rollback artifacts.
-- Rolling back without schema compatibility.
-- Skipping post-release validation.
+1. 실패한 버전과 영향을 받는 서비스 범위를 확인합니다.
+2. 자동 롤백 기준을 충족하면 즉시 롤백합니다.
+3. 헬스 체크와 핵심 지표로 복구 여부를 확인합니다.
+4. 필요 시 설정/데이터베이스 호환성을 점검합니다.
+5. 포스트모템으로 원인과 재발 방지 계획을 기록합니다.
+
+## 체크리스트
+
+- 롤백 가능한 아티팩트가 보관됨
+- 배포 전후 헬스 체크와 지표 비교가 있음
+- 스키마 호환성 검증 절차가 있음
+- 배포 중단 및 롤백 권한이 명확함
+- 재발 방지 액션이 문서화됨
+
+## 명령
+
+```bash
+git log --oneline -n 5
+```
+최근 배포 또는 변경 사항을 확인합니다.
+
+```bash
+kubectl rollout status deploy/app
+```
+배포 상태를 확인합니다.
+
+```bash
+kubectl rollout undo deploy/app
+```
+최근 배포를 이전 버전으로 롤백합니다.
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://example.com/health
+```
+서비스 헬스 체크로 복구 여부를 확인합니다.
+
+## 운영 팁
+
+- 배포 파이프라인에 자동 롤백 조건을 명확히 정의합니다.
+- 배포 창에는 트래픽 급증을 피하고 관찰 시간을 확보합니다.
+- 변경 범위를 작게 유지해 롤백 판단을 빠르게 합니다.
+- 배포 후 회귀 테스트를 자동화합니다.
+
+## 주의사항
+
+- 롤백 아티팩트가 없으면 복구 시간이 크게 늘어납니다.
+- 스키마 변경이 하위 호환이 아니면 롤백이 어렵습니다.
+- 배포 후 검증을 생략하면 장애가 장기화됩니다.

@@ -1,31 +1,68 @@
-﻿---
-title: "Incident communication basics"
-description: "How to keep stakeholders informed during incidents."
+---
+title: "인시던트 커뮤니케이션 기본"
+description: "사고 중 이해관계자에게 정보를 전달하는 방법."
 pubDate: 2026-02-03
 tags: ["incident-response", "operations", "communication"]
 ---
 
-## Summary
+## 요약
 
-Clear communication reduces confusion and speeds resolution.
+명확한 커뮤니케이션은 혼란을 줄이고 해결 속도를 높입니다. 사실과 추정을 구분해 공유하고, 일관된 채널과 일정으로 신뢰를 유지해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Share impact, scope, and updates on a cadence.
-- Use a single source of truth (status page or incident channel).
-- Document decisions and timelines.
+- 단일 진실의 출처(상태 페이지, 인시던트 채널)를 유지합니다.
+- 업데이트 주기와 다음 공지 시간을 명확히 합니다.
+- 영향 범위, 현재 상태, 다음 단계로 구성합니다.
+- 내부/외부 메시지를 분리해 관리합니다.
 
-## Commands or steps
+## 절차
 
-```text
-Checklist
-- Assign a comms lead
-- Publish updates every 15-30 min
-- Close with a summary and next steps
+1. 인시던트를 선언하고 커뮤니케이션 담당자를 지정합니다.
+2. 단일 채널을 만들고 모든 업데이트를 그 채널에 모읍니다.
+3. 영향 범위와 현재 대응 내용을 요약해 최초 공지를 발행합니다.
+4. 15~30분 주기로 업데이트하고 다음 공지 시간을 함께 안내합니다.
+5. 복구 후 원인 요약과 재발 방지 계획을 공유합니다.
+
+## 체크리스트
+
+- 커뮤니케이션 담당자와 승인 루트가 정의됨
+- 최초 공지에 영향 범위와 대응 상태가 포함됨
+- 업데이트 주기와 다음 공지 시간이 고지됨
+- 내부/외부 메시지가 구분됨
+- 종료 공지에 원인과 재발 방지가 포함됨
+
+## 명령
+
+```bash
+date -u "+%Y-%m-%dT%H:%M:%SZ"
 ```
+업데이트 타임스탬프를 UTC로 기록합니다.
 
-## Pitfalls
+```bash
+git log --oneline -n 5
+```
+최근 배포/변경 이력을 빠르게 확인합니다.
 
-- Silent periods without updates.
-- Conflicting information from multiple channels.
-- No post-incident summary.
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://example.com/health
+```
+외부 헬스 체크 상태 코드를 확인합니다.
+
+```bash
+journalctl -u app -n 50 --no-pager
+```
+최근 오류 로그를 확인해 공지 내용에 반영합니다.
+
+## 운영 팁
+
+- 공지는 짧고 반복 가능한 템플릿으로 작성합니다.
+- 원인 추정은 명확히 표시하고, 확정 정보와 분리합니다.
+- 이해관계자별 채널(경영진/고객/내부)을 구분합니다.
+- 진행 상황이 없어도 예정된 주기에 맞춰 업데이트합니다.
+
+## 주의사항
+
+- 업데이트가 없는 침묵 구간은 신뢰를 떨어뜨립니다.
+- 여러 채널에서 상충되는 메시지를 내보내면 혼란이 커집니다.
+- 사고 종료 후 요약 공지가 없으면 재발 방지 학습이 약해집니다.

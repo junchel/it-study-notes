@@ -1,31 +1,51 @@
-﻿---
-title: "Cloud network security basics"
-description: "Security groups, NACLs, and WAF layers in cloud networking."
+---
+title: "클라우드 네트워크 보안 기본"
+description: "보안 그룹, NACL, WAF 계층을 이해합니다."
 pubDate: 2026-02-03
 tags: ["cloud", "security", "networking"]
 ---
 
-## Summary
+## 요약
 
-Cloud network security is layered with security groups, NACLs, and optional WAFs.
+클라우드 네트워크 보안은 보안 그룹, NACL, 필요 시 WAF로 계층화합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Security groups are stateful; NACLs are stateless.
-- Use least privilege for inbound and outbound rules.
-- WAF protects web apps from common attacks.
+- 보안 그룹은 상태 저장(stateful), NACL은 상태 비저장(stateless)합니다.
+- 인바운드/아웃바운드 규칙에 최소 권한을 적용합니다.
+- WAF는 웹 앱을 일반적인 공격으로부터 보호합니다.
+- 네트워크 세그먼트별로 접근 경로를 분리합니다.
+- 로그 수집과 경보는 필수 운영 요소입니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Harden security groups
-- Restrict NACLs per subnet
-- Enable WAF for public endpoints
+```bash
+aws ec2 describe-security-groups --query "SecurityGroups[].GroupId"
 ```
+보안 그룹 목록을 확인합니다.
 
-## Pitfalls
+```bash
+aws ec2 describe-network-acls --query "NetworkAcls[].NetworkAclId"
+```
+NACL 목록을 확인합니다.
 
-- Wide-open inbound rules.
-- Conflicting NACLs and security group rules.
-- No visibility into blocked traffic.
+## 체크리스트
+
+- 보안 그룹 강화
+- 서브넷별 NACL 제한
+- 공개 엔드포인트에 WAF 활성화
+- 플로우 로그 활성화
+
+## 운영 팁
+
+- 기본 정책은 차단으로 두고 필요한 트래픽만 허용합니다.
+- 보안 그룹과 네트워크 ACL을 역할별로 분리해 관리합니다.
+- 플로우 로그를 활성화해 비정상 접근을 추적합니다.
+- 인바운드 규칙에는 만료 기한을 둬 정리합니다.
+- 외부 노출 엔드포인트는 정기적으로 스캔합니다.
+
+## 주의사항
+
+- 인바운드 규칙을 광범위하게 열어두면 침투 위험이 커집니다.
+- NACL과 보안 그룹 규칙이 충돌하면 예기치 않은 차단이 발생합니다.
+- 차단된 트래픽에 대한 가시성이 없으면 대응이 늦습니다.

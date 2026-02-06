@@ -1,28 +1,62 @@
 ---
-title: "Canary deployments"
-description: "Roll out changes gradually to reduce risk."
+title: "카나리 배포"
+description: "변경을 점진적으로 롤아웃해 위험을 줄입니다."
 pubDate: 2026-02-03
 tags: ["deployment", "ci-cd", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Canary deployments send a small percentage of traffic to a new version before full rollout.
+카나리 배포는 전체 롤아웃 전에 소수의 트래픽을 새 버전에 보내는 방식입니다.
 
-## Benefits
+## 핵심 개념
 
-- Early detection of issues.
-- Safer rollbacks.
-- Real user validation.
+- 일부 트래픽만 새 버전에 보내 위험을 낮춥니다.
+- 모니터링 지표로 자동 중지/확대를 수행합니다.
+- 카나리 단계별 기준을 명확히 합니다.
+- 비교 기준(베이스라인)과 통계 유의성을 확보합니다.
+- 세션 고정이나 사용자 군 분리를 고려합니다.
 
-## Workflow
+## 장점
 
-1. Deploy new version to a small subset.
-2. Monitor error rates and latency.
-3. Gradually increase traffic.
-4. Complete rollout or rollback.
+- 문제를 조기에 발견할 수 있습니다.
+- 더 안전한 롤백이 가능합니다.
+- 실제 사용자 트래픽으로 검증할 수 있습니다.
 
-## Pitfalls
+## 워크플로
 
-- If metrics are weak, bad changes can slip through.
-- Ensure canary and baseline traffic are comparable.
+1. 새 버전을 소수의 대상에 배포합니다.
+2. 오류율과 지연 시간을 모니터링합니다.
+3. 트래픽 비율을 점진적으로 늘립니다.
+4. 전체 롤아웃 또는 롤백을 결정합니다.
+
+## 명령
+
+```bash
+kubectl rollout status deploy/app -n prod
+```
+카나리 롤아웃 진행 상태를 확인합니다.
+
+```bash
+kubectl get rs -n prod --sort-by=.metadata.creationTimestamp
+```
+카나리와 기존 버전의 레플리카셋을 확인합니다.
+
+```bash
+kubectl describe deploy app -n prod
+```
+배포 전략과 현재 파드 상태를 확인합니다.
+
+## 운영 팁
+
+- 대표 트래픽을 선택해 카나리 대상군을 구성합니다.
+- 중단 지표와 임계값을 사전에 정의합니다.
+- 점진적으로 비율을 높이며 검증합니다.
+- 기능 플래그로 노출 범위를 세밀하게 제어합니다.
+- 실패 시 즉시 복구할 수 있는 롤백 계획을 준비합니다.
+
+## 주의사항
+
+- 지표가 약하면 나쁜 변경이 통과할 수 있습니다.
+- 카나리와 기준 트래픽의 비교 가능성을 확보해야 합니다.
+- 상태 있는 워크로드는 데이터 동기화 계획이 필요합니다.

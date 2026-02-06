@@ -1,27 +1,59 @@
 ---
-title: "Feature flags basics"
-description: "Ship features safely with progressive rollout."
+title: "피처 플래그 기본"
+description: "점진적 롤아웃으로 기능을 안전하게 배포합니다."
 pubDate: 2026-02-03
 tags: ["deployment", "reliability", "product"]
 ---
 
-## Summary
+## 요약
 
-Feature flags let you enable or disable functionality without redeploying, reducing risk during rollouts.
+피처 플래그는 재배포 없이 기능을 켜고 끌 수 있어 롤아웃 위험을 줄입니다.
 
-## Use cases
+## 핵심 개념
 
-- Gradual rollout to a small percentage.
-- Enable for internal users only.
-- Quick rollback without a full deploy.
+- 배포와 릴리스를 분리합니다.
+- 롤아웃과 롤백을 세밀하게 제어합니다.
+- 플래그 생명주기 관리가 필요합니다.
+- 플래그는 관측 지표와 함께 운영합니다.
 
-## Best practices
+## 사용 사례
 
-- Keep flags short-lived and clean them up.
-- Record who can toggle flags.
-- Monitor metrics during rollouts.
+- 소수 비율로 점진적 롤아웃.
+- 내부 사용자에게만 활성화.
+- 전체 배포 없이 빠른 롤백.
 
-## Pitfalls
+## 모범 사례
 
-- Too many flags create complexity.
-- Long-lived flags can hide dead code paths.
+- 플래그 수명을 짧게 유지하고 정리합니다.
+- 누가 플래그를 토글할 수 있는지 기록합니다.
+- 롤아웃 중 메트릭을 모니터링합니다.
+
+## 명령
+
+```bash
+rg -n "feature flag|flag" src -S
+```
+기능 플래그 사용 지점을 확인합니다.
+
+```bash
+rg -n "FLAG_|FEATURE_" config/ -S
+```
+플래그 설정 키를 점검합니다.
+
+```bash
+rg -n "experiment|rollout" config/ -S
+```
+롤아웃 비율 설정 위치를 확인합니다.
+
+## 운영 팁
+
+- 플래그 소유자와 제거 시점을 명확히 합니다.
+- 대상 그룹을 제한해 위험을 줄입니다.
+- 실험 종료 후 플래그를 정리합니다.
+- 플래그 상태 변경 이력을 기록합니다.
+
+## 주의사항
+
+- 플래그가 너무 많으면 복잡도가 증가합니다.
+- 오래된 플래그가 죽은 코드 경로를 숨깁니다.
+- 플래그 상태가 환경마다 다르면 혼란이 커집니다.

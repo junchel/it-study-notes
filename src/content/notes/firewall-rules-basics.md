@@ -1,31 +1,49 @@
-﻿---
-title: "Firewall rules basics"
-description: "Design and audit firewall rules for least privilege."
+---
+title: "방화벽 규칙 기본"
+description: "최소 권한을 위해 방화벽 규칙을 설계하고 점검합니다."
 pubDate: 2026-02-03
 tags: ["networking", "security", "firewall"]
 ---
 
-## Summary
+## 요약
 
-Firewall rules control traffic flow and reduce risk.
+방화벽 규칙은 트래픽 흐름을 제어하고 위험을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Start with default deny.
-- Allow only required ports and sources.
-- Review rules regularly.
+- 기본 차단에서 시작합니다.
+- 필요한 포트와 소스만 허용합니다.
+- 규칙을 정기적으로 리뷰합니다.
+- 인바운드와 아웃바운드 정책을 분리합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Define allowed ports
-- Restrict source ranges
-- Audit rules quarterly
+```bash
+sudo ufw status verbose
 ```
+UFW 방화벽 규칙과 기본 정책을 확인합니다.
 
-## Pitfalls
+```bash
+sudo iptables -S
+```
+iptables 규칙을 나열해 현재 정책을 확인합니다.
 
-- Wide-open rules (0.0.0.0/0).
-- Rules without clear ownership.
-- No documentation for exceptions.
+## 체크리스트
+
+- 허용 포트 정의
+- 소스 범위 제한
+- 분기별 규칙 감사
+- 만료 규칙 정리
+
+## 운영 팁
+
+- 기본 거부 규칙을 적용하고 예외를 최소화합니다.
+- 규칙을 목적별로 그룹화해 관리합니다.
+- 만료 기간을 두어 불필요한 규칙을 제거합니다.
+- 외부 노출 포트는 정기적으로 스캔합니다.
+
+## 주의사항
+
+- 과도하게 열려 있는 규칙(0.0.0.0/0)은 위험합니다.
+- 명확한 오너 없는 규칙은 유지보수가 어렵습니다.
+- 예외에 대한 문서화가 없으면 재검토가 어렵습니다.

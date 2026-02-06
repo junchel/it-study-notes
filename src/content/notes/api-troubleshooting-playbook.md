@@ -1,31 +1,71 @@
-﻿---
-title: "API troubleshooting playbook"
-description: "A step-by-step approach to diagnosing failing APIs."
+---
+title: "API 트러블슈팅 플레이북"
+description: "문제 API를 진단하기 위한 단계별 접근법."
 pubDate: 2026-02-03
 tags: ["troubleshooting", "api", "http", "operations"]
 ---
 
-## Summary
+## 요약
 
-Use a layered approach to diagnose API outages quickly and consistently.
+계층적 접근으로 API 장애를 빠르고 일관되게 진단합니다. 재현 가능한 요청과 기준선을 확보하면 원인 범위를 빠르게 좁힐 수 있습니다.
 
-## Steps
+## 핵심 개념
 
-1. Confirm scope: single endpoint or all services.
-2. Check status codes and latency trends.
-3. Verify DNS, TLS, and upstream connectivity.
-4. Inspect logs with a narrow time window.
-5. Roll back recent deploys if needed.
+- 증상(오류율/지연)부터 원인을 좁힙니다.
+- 로그, 메트릭, 트레이스를 함께 봅니다.
+- 최근 배포와 설정 변경을 우선 확인합니다.
+- 정상 요청과 비교할 기준선을 확보합니다.
+- 외부 의존성(인증, 결제, 스토리지)의 영향을 분리합니다.
 
-## Commands or steps
+## 절차
+
+1. 범위를 확인합니다: 단일 엔드포인트인지 전체 서비스인지.
+2. 상태 코드와 지연 시간 추이를 확인합니다.
+3. DNS, TLS, 업스트림 연결성을 검증합니다.
+4. 좁은 시간 창으로 로그를 확인합니다.
+5. 필요하면 최근 배포를 롤백합니다.
+6. 재현 요청을 기준으로 패턴과 상관관계를 정리합니다.
+
+## 체크리스트
+
+- 동일 요청을 재현할 수 있는지 확인합니다.
+- 오류율과 지연이 어떤 구간에서 급증하는지 확인합니다.
+- DNS/TLS/라우팅 문제를 우선 배제합니다.
+- 최근 배포와 설정 변경을 우선 확인합니다.
+- 임시 완화(캐시, 레이트 리밋, 기능 플래그)를 검토합니다.
+
+## 명령
 
 ```bash
 curl -v https://api.example.com/health
+```
+헬스 엔드포인트의 상세 응답과 연결 과정을 확인합니다.
+
+```bash
+curl -s -w "dns:%{time_namelookup} connect:%{time_connect} tls:%{time_appconnect} ttfb:%{time_starttransfer} total:%{time_total}\n" -o /dev/null https://api.example.com/v1/users
+```
+DNS, 연결, TLS, TTFB 시간을 분리해 지연 원인을 추정합니다.
+
+```bash
 curl -I https://api.example.com/v1/users
 ```
+응답 헤더와 상태 코드를 빠르게 확인합니다.
 
-## Pitfalls
+```bash
+dig api.example.com +short
+```
+DNS 응답이 정상적으로 반환되는지 확인합니다.
 
-- Skipping DNS/TLS checks.
-- Ignoring recent deploys or config changes.
-- Chasing symptoms without a baseline.
+## 운영 팁
+
+- curl로 재현하고 요청/응답을 그대로 기록합니다.
+- 요청 ID로 로그를 교차 확인합니다.
+- 정상 요청과 비교해 차이를 좁힙니다.
+- 지표 변화와 배포/설정 변경 시점을 타임라인으로 정리합니다.
+- 임시 완화 조치를 적용한 뒤 반드시 되돌림 계획을 남깁니다.
+
+## 주의사항
+
+- DNS/TLS 검사를 건너뛰면 원인 파악이 지연됩니다.
+- 최근 배포나 설정 변경을 무시하면 동일 문제가 반복됩니다.
+- 기준선 없이 증상만 쫓으면 재발 방지가 어렵습니다.

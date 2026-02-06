@@ -1,30 +1,56 @@
 ---
-title: "Autoscaling basics"
-description: "Scale services up and down based on demand safely."
+title: "오토스케일링 기본"
+description: "수요에 따라 서비스를 안전하게 확장·축소합니다."
 pubDate: 2026-02-03
 tags: ["cloud", "scalability", "operations"]
 ---
 
-## Summary
+## 요약
 
-Autoscaling keeps services responsive while controlling cost.
+오토스케일링은 서비스 응답성을 유지하면서 비용을 통제합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Scale on metrics like CPU, latency, or queue depth.
-- Use cooldown periods to avoid rapid oscillation.
-- Plan for warm-up time and slow-start.
-- Combine horizontal and vertical scaling where needed.
+- CPU, 지연 시간, 큐 깊이 같은 지표로 스케일합니다.
+- 빠른 진동을 막기 위해 쿨다운 시간을 둡니다.
+- 워밍업 시간과 슬로우 스타트를 고려합니다.
+- 필요하면 수평·수직 스케일을 함께 사용합니다.
+- 최소/최대 인스턴스 수를 명확히 설정합니다.
+- 스케일 이벤트의 비용과 리소스 한계를 함께 고려합니다.
 
-## Guidelines
+## 명령
 
-- Start with conservative thresholds and adjust with data.
-- Protect stateful services with careful scaling rules.
-- Ensure health checks and readiness gates are in place.
-- Monitor cost impact as you scale.
+```bash
+kubectl get hpa -A
+```
+클러스터의 HPA 목록과 현재 스케일 상태를 확인합니다.
 
-## Pitfalls
+```bash
+kubectl describe hpa app -n prod
+```
+스케일 기준과 목표 지표를 확인합니다.
 
-- Scaling too aggressively causes flapping and instability.
-- Slow startup times can make scaling ineffective.
-- Missing limits can cause runaway costs.
+```bash
+kubectl top pods -n prod
+```
+현재 리소스 사용량을 확인해 스케일 트리거의 적절성을 판단합니다.
+
+```bash
+kubectl get deploy app -n prod
+```
+현재 레플리카 수와 배포 상태를 확인합니다.
+
+## 운영 팁
+
+- 보수적인 임계값에서 시작해 데이터로 조정합니다.
+- 상태가 있는 서비스는 신중한 스케일 규칙이 필요합니다.
+- 헬스 체크와 레디니스 게이트를 준비합니다.
+- 스케일링 시 비용 영향을 모니터링합니다.
+- 정해진 이벤트(캠페인, 피크 시간)는 스케줄 기반 스케일을 고려합니다.
+- 스케일 아웃 후 캐시 워밍과 연결 제한을 점검합니다.
+
+## 주의사항
+
+- 과도한 스케일링은 플래핑과 불안정을 유발합니다.
+- 느린 시작 시간은 스케일링 효과를 낮춥니다.
+- 제한이 없으면 비용이 폭주할 수 있습니다.

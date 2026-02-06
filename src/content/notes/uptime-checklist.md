@@ -1,30 +1,63 @@
 ---
-title: "Uptime checklist"
-description: "Quick checks to validate service availability."
+title: "가용성 체크리스트"
+description: "서비스 가용성을 높이기 위한 운영 점검 항목을 정리합니다."
 pubDate: 2026-02-03
-tags: ["operations", "reliability", "troubleshooting"]
+tags: ["sre", "operations", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Use this checklist when a service looks down or degraded.
+가용성은 단일 기능이 아니라 운영 전반의 합입니다. 체크리스트로 반복 점검해야 합니다.
 
-## Checklist
+## 핵심 개념
 
-- Confirm DNS resolves correctly.
-- Check HTTP response from edge and origin.
-- Verify SSL/TLS certificate validity.
-- Confirm upstream dependencies (DB, cache).
-- Review recent deploys or config changes.
+- 핵심 경로 기반의 헬스 체크가 필요합니다.
+- 장애 대응과 복구 목표를 명확히 해야 합니다.
+- 알림은 증상 기반으로 구성합니다.
+- 용량 계획과 배포 전략이 가용성에 큰 영향을 줍니다.
 
-## Quick commands
+## 체크리스트
+
+- L7/L4 헬스 체크가 정상인지 확인합니다.
+- 자동 확장과 장애 조치가 동작하는지 검증합니다.
+- 장애 시점의 롤백 절차가 준비되어 있는지 확인합니다.
+- 상태 페이지와 커뮤니케이션 템플릿을 준비합니다.
+
+## 명령
 
 ```bash
-curl -I https://example.com
-dig example.com
+curl -s https://example.com/health | jq '.status'
 ```
+헬스 체크 엔드포인트가 정상인지 확인합니다.
 
-## Pitfalls
+```bash
+curl -I https://example.com | head -n 5
+```
+프론트 도메인이 200 응답을 반환하는지 확인합니다.
 
-- CDN cache can mask origin failures.
-- Local DNS cache can mislead results.
+```bash
+kubectl get pods -n prod | rg -n "CrashLoopBackOff|Error"
+```
+오류 상태 파드를 빠르게 확인합니다.
+
+```bash
+kubectl get hpa -n prod
+```
+자동 확장 상태를 확인합니다.
+
+```bash
+rg -n "rollback" docs/runbooks -S
+```
+롤백 절차가 런북에 명시되어 있는지 확인합니다.
+
+## 운영 팁
+
+- 정기적으로 장애 복구 연습을 수행합니다.
+- 가용성 목표와 비용을 함께 관리합니다.
+- 장애 후에는 원인 제거와 재발 방지를 포함합니다.
+
+## 주의사항
+
+- 체크리스트는 실제 운영 흐름과 연결되어야 합니다.
+- 자동 확장만으로는 모든 장애를 막을 수 없습니다.
+- 알림 과다로 중요한 신호를 놓치지 않도록 합니다.

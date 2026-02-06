@@ -1,36 +1,63 @@
 ---
-title: "TCP vs UDP basics"
-description: "Understand reliability, latency, and use cases for TCP and UDP."
+title: "TCP/UDP 기초"
+description: "전송 계층 프로토콜의 차이와 운영 관점의 확인 포인트를 정리합니다."
 pubDate: 2026-02-03
-tags: ["networking", "performance"]
+tags: ["network", "infrastructure", "operations"]
 ---
 
-## Summary
+## 요약
 
-TCP and UDP are the two main transport protocols used by most networked applications. This note highlights when to use each and how to troubleshoot.
+TCP는 신뢰성과 순서를 보장하고, UDP는 지연이 낮다. 서비스 특성과 트래픽 패턴에 맞게 선택해야 합니다.
 
-## Key differences
+## 핵심 개념
 
-- **TCP**: connection-oriented, reliable, ordered delivery.
-- **UDP**: connectionless, best-effort, lower overhead.
-- TCP retransmits lost packets; UDP does not.
+- TCP는 연결 지향, UDP는 비연결 지향입니다.
+- TCP는 재전송과 혼잡 제어를 제공합니다.
+- UDP는 실시간 성격의 트래픽에 적합합니다.
+- NAT/방화벽 정책이 연결성에 영향을 줍니다.
 
-## Common use cases
+## 체크리스트
 
-- TCP: HTTP/HTTPS, SSH, databases.
-- UDP: DNS, streaming, real-time gaming, VoIP.
+- 서비스가 요구하는 지연/신뢰성 요구사항을 정의합니다.
+- 방화벽/보안 그룹에서 포트를 허용합니다.
+- MTU와 패킷 손실률을 모니터링합니다.
+- 재전송/타임아웃 설정을 점검합니다.
 
-## Commands
+## 명령
 
 ```bash
-# show listening TCP/UDP sockets
-ss -tuln
-
-# quick DNS test (UDP)
-dig example.com
+ss -lntp
 ```
+현재 열려 있는 TCP 리스닝 포트를 확인합니다.
 
-## Pitfalls
+```bash
+ss -lnup
+```
+현재 열려 있는 UDP 리스닝 포트를 확인합니다.
 
-- Packet loss impacts TCP as latency increases due to retransmits.
-- UDP apps must handle loss and ordering at the application layer.
+```bash
+tcpdump -i eth0 tcp port 443 -c 20
+```
+HTTPS 트래픽의 TCP 패킷 흐름을 확인합니다.
+
+```bash
+tcpdump -i eth0 udp port 53 -c 20
+```
+DNS 트래픽의 UDP 패킷 흐름을 확인합니다.
+
+```bash
+mtr -rw example.com
+```
+경로 손실과 지연을 측정해 네트워크 상태를 점검합니다.
+
+## 운영 팁
+
+- UDP 서비스는 재전송 로직을 애플리케이션에서 구현합니다.
+- 대규모 연결에서는 TCP 커넥션 추적 한도를 고려합니다.
+- 로드밸런서의 프로토콜 지원 범위를 확인합니다.
+
+## 주의사항
+
+- 패킷 손실은 TCP에서 지연 폭증을 유발할 수 있습니다.
+- UDP는 방화벽에서 쉽게 차단될 수 있습니다.
+- NAT 환경에서 UDP 세션 유지 시간이 짧을 수 있습니다.

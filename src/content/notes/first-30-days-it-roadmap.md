@@ -1,47 +1,83 @@
 ---
-title: "First 30 days IT study roadmap"
-description: "A simple 4-week plan to build foundational IT skills with notes."
+title: "첫 30일 IT 학습 로드맵"
+description: "4주 동안 IT 기본기를 쌓기 위한 간단한 학습 계획."
 pubDate: 2026-02-03
 tags: ["learning", "roadmap", "planning"]
 ---
 
-## Summary
+## 요약
 
-This roadmap helps you build steady progress over four weeks while creating reusable notes.
+이 로드맵은 4주 동안 꾸준히 진행하며 재사용 가능한 노트를 만드는 데 도움을 줍니다.
 
-## Week 1: Foundations
+## 핵심 개념
 
-- Learn Linux CLI basics and file permissions.
-- Review networking fundamentals and DNS.
-- Create notes for each topic with commands and pitfalls.
+- 기초 환경 설정과 문서화가 우선입니다.
+- 관측과 알림 체계를 빠르게 구축합니다.
+- 반복 작업을 자동화하며 학습을 기록합니다.
+- 학습 산출물을 바로 노트로 남겨 재사용성을 높입니다.
 
-## Week 2: Systems and DevOps basics
+## 1주차: 기초
 
-- Study Git workflow and CI/CD basics.
-- Learn Docker basics and container troubleshooting.
-- Add short lab notes for common commands.
+- 리눅스 CLI 기본과 파일 권한 학습.
+- 네트워킹 기초와 DNS 복습.
+- 각 주제에 대해 명령어와 주의사항이 포함된 노트 작성.
 
-## Week 3: Cloud and security
+## 2주차: 시스템과 DevOps 기본
 
-- Review IAM, VPC networking, and TLS basics.
-- Add notes for authentication and secrets management.
-- Draft a cloud security baseline checklist.
+- Git 워크플로와 CI/CD 기본 학습.
+- Docker 기본과 컨테이너 트러블슈팅 학습.
+- 자주 쓰는 명령어를 짧은 랩 노트로 정리.
 
-## Week 4: Reliability and incidents
+## 3주차: 클라우드와 보안
 
-- Learn observability, alerting, and SRE basics.
-- Work through incident response and postmortem flow.
-- Add at least two incident scenario notes.
+- IAM, VPC 네트워킹, TLS 기본 복습.
+- 인증과 시크릿 관리 노트 추가.
+- 클라우드 보안 베이스라인 체크리스트 초안 작성.
 
-## Daily routine (15 to 45 minutes)
+## 4주차: 신뢰성과 인시던트
 
-1. Choose one small topic.
-2. Write the summary and key ideas.
-3. Add commands or steps.
-4. Note pitfalls and follow-up questions.
+- 관측성, 알림, SRE 기본 학습.
+- 인시던트 대응 및 포스트모템 흐름 실습.
+- 최소 두 개의 인시던트 시나리오 노트 추가.
 
-## Pitfalls
+## 일일 루틴 (15~45분)
 
-- Trying to cover too much at once.
-- Skipping notes for small but important steps.
-- Not revisiting older notes to refine them.
+1. 작은 주제 하나를 선택합니다.
+2. 요약과 핵심 아이디어를 작성합니다.
+3. 명령/절차를 추가합니다.
+4. 주의사항과 후속 질문을 기록합니다.
+
+## 명령
+
+```bash
+git clone https://github.com/junchel/it-study-notes.git
+```
+노트 저장소를 로컬에 복제합니다.
+
+```bash
+npm install
+```
+의존성 설치 후 로컬 실행 준비를 합니다.
+
+```bash
+npm run dev
+```
+학습 노트를 로컬에서 확인합니다.
+
+```bash
+git status -sb
+```
+학습 중 변경 사항을 확인합니다.
+
+## 운영 팁
+
+- 가시성 확보를 위해 모니터링부터 정비합니다.
+- 핵심 시스템의 운영 문서를 빠르게 정리합니다.
+- 작은 개선을 빠르게 배포해 신뢰를 구축합니다.
+- 매주 한 번 회고하여 학습 방향을 조정합니다.
+
+## 주의사항
+
+- 한 번에 너무 많은 내용을 다루려 함.
+- 작지만 중요한 단계에 대한 노트를 생략함.
+- 오래된 노트를 다시 다듬지 않음.

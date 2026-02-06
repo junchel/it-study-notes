@@ -1,32 +1,55 @@
-﻿---
-title: "Linux performance debugging"
-description: "Use top, vmstat, iostat, and other tools to find bottlenecks."
+---
+title: "Linux 성능 디버깅"
+description: "top, vmstat, iostat 등으로 병목을 찾습니다."
 pubDate: 2026-02-03
 tags: ["linux", "performance", "troubleshooting"]
 ---
 
-## Summary
+## 요약
 
-Performance debugging starts with CPU, memory, disk, and network checks.
+성능 디버깅은 CPU, 메모리, 디스크, 네트워크 확인에서 시작합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Identify the bottleneck before making changes.
-- Compare current metrics to a baseline.
-- Look for saturation and queueing.
+- 변경 전에 병목을 먼저 식별합니다.
+- 현재 메트릭을 기준선과 비교합니다.
+- 포화와 큐잉을 확인합니다.
 
-## Commands or steps
+## 명령
 
 ```bash
 top
+```
+프로세스와 CPU 사용률을 실시간으로 확인합니다.
+
+```bash
 htop
+```
+인터랙티브 UI로 프로세스 자원을 확인합니다.
+
+```bash
 vmstat 1 5
+```
+1초 간격으로 5회 가상 메모리 통계를 확인합니다.
+
+```bash
 iostat -x 1 5
+```
+디스크 I/O 상세 지표를 1초 간격으로 5회 확인합니다.
+
+```bash
 free -m
 ```
+메모리 사용량을 MB 단위로 확인합니다.
 
-## Pitfalls
+## 운영 팁
 
-- Optimizing without a baseline.
-- Ignoring disk IO wait times.
-- Forgetting that noisy neighbors can skew results.
+- 문제 발생 전후의 지표를 함께 수집합니다.
+- CPU, 메모리, 디스크 IO를 분리해 원인을 좁힙니다.
+- 프로덕션에서는 경량 도구부터 사용합니다.
+
+## 주의사항
+
+- 기준선 없이 최적화함.
+- 디스크 IO 대기 시간을 무시함.
+- 노이즈 네이버 영향을 잊음.

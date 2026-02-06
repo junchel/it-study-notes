@@ -1,30 +1,56 @@
 ---
-title: "Change management basics"
-description: "Introduce changes safely with approvals, communication, and tracking."
+title: "변경 관리 기본"
+description: "승인, 커뮤니케이션, 추적으로 안전하게 변경합니다."
 pubDate: 2026-02-03
 tags: ["operations", "process", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Change management reduces risk by making changes visible and coordinated.
+변경 관리는 변경을 가시화하고 조율함으로써 위험을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Classify changes by risk and urgency.
-- Use lightweight approvals for higher-risk changes.
-- Communicate impact windows ahead of time.
-- Record decisions for auditability.
+- 변경을 위험도와 긴급도로 분류합니다.
+- 고위험 변경에는 가벼운 승인 절차를 적용합니다.
+- 영향 시간대를 사전에 공유합니다.
+- 의사결정을 기록해 감사 가능성을 확보합니다.
+- 변경 캘린더로 충돌을 방지합니다.
+- 롤백 가능성과 테스트 범위를 함께 평가합니다.
 
-## Guidelines
+## 명령
 
-- Require a change summary and rollback plan.
-- Schedule high-risk changes during staffed hours.
-- Capture pre- and post-change metrics.
-- Review failed changes in postmortems.
+```bash
+git log --oneline -n 20
+```
+최근 변경 이력을 확인합니다.
 
-## Pitfalls
+```bash
+git diff --stat HEAD~1
+```
+최근 변경의 영향 범위를 빠르게 파악합니다.
 
-- Overly heavy process that slows routine work.
-- No visibility into who changed what.
-- Skipping reviews for high-risk changes.
+```bash
+rg -n "CHANGELOG|release notes" docs/ -S
+```
+변경 기록 문서 위치를 점검합니다.
+
+## 변경 요청 템플릿
+
+- 변경 목적과 영향 범위를 정의합니다.
+- 롤백 방법과 제한 사항을 명시합니다.
+- 테스트 범위와 검증 지표를 기록합니다.
+
+## 운영 팁
+
+- 변경 요약과 롤백 계획을 요구합니다.
+- 고위험 변경은 인력이 있는 시간대에 수행합니다.
+- 변경 전후 메트릭을 수집합니다.
+- 실패한 변경은 포스트모템에서 리뷰합니다.
+- 긴급 변경도 최소한의 리뷰와 기록을 유지합니다.
+
+## 주의사항
+
+- 과도한 프로세스로 일상 작업이 느려지면 우회가 발생합니다.
+- 누가 무엇을 바꿨는지 가시성이 없으면 원인 추적이 어렵습니다.
+- 고위험 변경 리뷰를 건너뛰면 장애 확률이 상승합니다.

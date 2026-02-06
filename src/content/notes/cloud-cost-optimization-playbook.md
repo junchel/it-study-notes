@@ -1,31 +1,56 @@
-﻿---
-title: "Cloud cost optimization playbook"
-description: "A practical workflow for reducing cloud spend."
+---
+title: "클라우드 비용 최적화 플레이북"
+description: "클라우드 비용을 줄이기 위한 실전 워크플로."
 pubDate: 2026-02-03
 tags: ["cloud", "cost", "operations"]
 ---
 
-## Summary
+## 요약
 
-Cost optimization starts with visibility, then right-sizing and cleanup.
+비용 최적화는 가시성 확보 후 적정 규모 조정과 정리 작업으로 이어집니다.
 
-## Key ideas
+## 핵심 개념
 
-- Identify idle or oversized resources.
-- Use savings plans or reserved capacity where applicable.
-- Set budgets and alerts.
+- 유휴 또는 과대 리소스를 식별합니다.
+- 적용 가능하면 절감 플랜이나 예약 용량을 사용합니다.
+- 예산과 알림을 설정합니다.
+- 비용 절감과 신뢰성은 함께 고려합니다.
 
-## Commands or steps
+## 절차
 
-```text
-Checklist
-- Review top 10 services by cost
-- Right-size compute
-- Remove unused storage/snapshots
+1. 비용 상위 서비스와 계정을 식별합니다.
+2. 유휴/과대 리소스를 분류해 제거 또는 축소합니다.
+3. 예약/약정 할인 적용 가능 여부를 검토합니다.
+4. 예산과 경보를 설정하고 주기적으로 리뷰합니다.
+
+## 체크리스트
+
+- 비용 상위 10개 서비스 검토
+- 컴퓨트 적정 규모 조정
+- 미사용 스토리지/스냅샷 제거
+- 예약/약정 할인 적용 여부 확인
+
+## 명령
+
+```bash
+aws ce get-cost-and-usage --time-period Start=2026-02-01,End=2026-02-05 --granularity DAILY --metrics BlendedCost
 ```
+비용 상위 구간과 추이를 확인합니다.
 
-## Pitfalls
+```bash
+aws ec2 describe-instances --query "Reservations[].Instances[].InstanceId"
+```
+활성 인스턴스를 나열해 과대 리소스를 식별합니다.
 
-- Optimizing without usage data.
-- Cutting costs at the expense of reliability.
-- No ownership for cost reviews.
+## 운영 팁
+
+- 리소스 태그를 표준화해 비용을 추적합니다.
+- 비업무 시간에는 비프로덕션 자원을 종료합니다.
+- 예산 경보와 예약 인스턴스 검토를 정기화합니다.
+- 팀별 비용 리포트를 공유해 책임을 명확히 합니다.
+
+## 주의사항
+
+- 사용 데이터 없이 최적화를 진행하면 역효과가 납니다.
+- 신뢰성을 희생하며 비용을 절감하면 장애 위험이 증가합니다.
+- 비용 리뷰의 오너가 없으면 개선이 지속되지 않습니다.

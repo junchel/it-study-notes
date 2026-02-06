@@ -1,30 +1,58 @@
 ---
-title: "Session management basics"
-description: "Keep user sessions secure with strong cookies and expiration."
+title: "세션 관리 기초"
+description: "로그인 상태와 사용자 컨텍스트를 안전하게 유지하는 실무 원칙을 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "auth", "web"]
+tags: ["security", "backend", "web"]
 ---
 
-## Summary
+## 요약
 
-Session management keeps authentication secure while supporting smooth user experiences.
+세션은 인증 상태를 유지하는 핵심 데이터입니다. 안전한 저장, 적절한 만료, 무효화 전략이 필수입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Session IDs should be random and unguessable.
-- Server-side sessions store state; cookies store identifiers.
-- Expiration can be fixed or sliding.
-- Secure cookie flags reduce theft risks.
+- 세션은 서버 저장형과 토큰 기반으로 나뉩니다.
+- 쿠키 속성(Secure, HttpOnly, SameSite)이 보안을 좌우합니다.
+- 세션 고정/탈취를 방지하는 재발급 전략이 필요합니다.
+- 분산 환경에서는 중앙 세션 스토어가 필요합니다.
 
-## Guidelines
+## 체크리스트
 
-- Use `HttpOnly`, `Secure`, and `SameSite` cookie flags.
-- Rotate session IDs on login and privilege changes.
-- Set reasonable idle and absolute expiration times.
-- Store minimal data in the session.
+- 로그인/권한 상승 시 세션 ID를 재발급합니다.
+- 세션 만료와 유휴 타임아웃을 분리해 관리합니다.
+- 로그아웃 시 서버 세션을 즉시 무효화합니다.
+- 민감 요청은 재인증 또는 MFA로 보호합니다.
 
-## Pitfalls
+## 명령
 
-- Long-lived sessions increase account takeover risk.
-- Storing secrets in cookies or local storage.
-- Session fixation from unrotated IDs.
+```bash
+curl -I https://example.com/login | rg -i "set-cookie"
+```
+세션 쿠키가 올바른 속성으로 설정되었는지 확인합니다.
+
+```bash
+redis-cli TTL session:abc123
+```
+세션 만료 시간이 기대한 값인지 확인합니다.
+
+```bash
+redis-cli GET session:abc123
+```
+세션 값이 최소한의 데이터만 포함하는지 확인합니다.
+
+```bash
+curl -s -b "session=abc123" https://example.com/account | head -n 5
+```
+유효한 세션 쿠키로 접근 가능한지 확인합니다.
+
+## 운영 팁
+
+- 세션 스토어 장애 시 대응 방식을 런북에 포함합니다.
+- 장기 로그인 기능은 리프레시 토큰과 분리해 운영합니다.
+- 세션 크기를 최소화해 저장 비용과 지연을 줄입니다.
+
+## 주의사항
+
+- HttpOnly 미설정은 XSS에 취약합니다.
+- SameSite=None은 반드시 Secure와 함께 사용합니다.
+- 토큰 기반 세션은 서버 무효화 전략을 별도로 설계해야 합니다.

@@ -1,31 +1,58 @@
-﻿---
-title: "VPN and remote access basics"
-description: "Secure remote access patterns and VPN fundamentals."
+---
+title: "VPN 원격 접속 기초"
+description: "원격 근무를 위한 VPN 구성과 운영 포인트를 정리합니다."
 pubDate: 2026-02-03
-tags: ["networking", "vpn", "security"]
+tags: ["security", "network", "operations"]
 ---
 
-## Summary
+## 요약
 
-VPNs encrypt traffic and provide secure access to internal resources.
+VPN은 원격 사용자의 트래픽을 안전하게 연결합니다. 인증과 접속 정책이 보안 수준을 결정합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Site-to-site vs client VPNs solve different problems.
-- Always enforce MFA for remote access.
-- Split tunneling reduces bandwidth use but increases risk.
+- 터널링으로 트래픽을 암호화합니다.
+- 인증/인가와 단말 보안이 함께 필요합니다.
+- 분할 터널링 여부는 보안과 성능의 트레이드오프입니다.
+- 접속 로그는 감사에 필수입니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Choose VPN type
-- Enforce MFA
-- Monitor access logs
+- MFA를 필수로 설정합니다.
+- VPN 사용자 그룹을 분리합니다.
+- 접속 허용 시간/지역 정책을 설정합니다.
+- 접속 실패 알림을 모니터링합니다.
+
+## 명령
+
+```bash
+scutil --nc list
 ```
+macOS에서 등록된 VPN 서비스 목록을 확인합니다.
 
-## Pitfalls
+```bash
+netstat -rn | head -n 20
+```
+라우팅 테이블에서 VPN 경로를 확인합니다.
 
-- Weak authentication or shared accounts.
-- No logging on VPN access.
-- Allowing unrestricted access to internal networks.
+```bash
+ifconfig | rg -n "utun|ppp" -n
+```
+VPN 인터페이스가 올라왔는지 확인합니다.
+
+```bash
+curl -s https://ifconfig.me
+```
+VPN 연결 후 공인 IP가 변경되었는지 확인합니다.
+
+## 운영 팁
+
+- VPN 접속 정책 변경은 공지와 함께 진행합니다.
+- 유휴 시간 제한을 적용합니다.
+- VPN 클라이언트 버전을 표준화합니다.
+
+## 주의사항
+
+- VPN 과부하는 전체 업무 장애로 이어질 수 있습니다.
+- 분할 터널링은 내부 리소스 보호에 주의가 필요합니다.
+- 로깅 정책은 개인정보 규정과 함께 설계합니다.

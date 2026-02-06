@@ -1,6 +1,12 @@
-﻿<footer class="site-footer" data-pagefind-ignore>
+﻿---
+import { DEFAULT_LANG, I18N } from "../utils/i18n";
+
+const t = (key) => I18N[DEFAULT_LANG]?.[key] ?? key;
+---
+
+<footer class="site-footer" data-pagefind-ignore>
   <div class="container footer-inner">
-    <p>Built with Astro. Focused on practical IT study and reference.</p>
-    <a class="footer-link" href="/rss.xml">RSS</a>
+    <p data-i18n="footer.copy">{t("footer.copy")}</p>
+    <a class="footer-link" href="/rss.xml" data-i18n="footer.rss">{t("footer.rss")}</a>
   </div>
 </footer>

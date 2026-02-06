@@ -1,40 +1,63 @@
-﻿---
-title: "SSH keys and access basics"
-description: "Generate and manage SSH keys safely for servers and Git."
+---
+title: "SSH 키 기초"
+description: "안전한 SSH 키 생성과 관리 방법을 정리합니다."
 pubDate: 2026-02-03
-tags: ["ssh", "security", "workflow"]
+tags: ["security", "linux", "operations"]
 ---
 
-## Summary
+## 요약
 
-SSH keys provide secure authentication without passwords when configured correctly.
+SSH 키는 비밀번호보다 안전한 인증 수단입니다. 키 생성, 배포, 권한 관리가 핵심입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Keep private keys secret and protected with a passphrase.
-- Use an SSH agent to avoid retyping passphrases.
-- Configure per-host settings in `~/.ssh/config`.
+- Ed25519 키가 기본 권장입니다.
+- 개인 키는 절대 공유하지 않습니다.
+- 키는 사용자/서비스별로 분리합니다.
+- 주기적으로 키를 교체합니다.
 
-## Commands or steps
+## 체크리스트
+
+- 개인 키는 암호로 보호합니다.
+- `authorized_keys`에 최소한의 키만 등록합니다.
+- 키 파일 권한을 제한합니다.
+- 유출 대비를 위해 키 철회 절차를 준비합니다.
+
+## 명령
 
 ```bash
-ssh-keygen -t ed25519 -C "your@email"
-ssh-add ~/.ssh/id_ed25519
-ssh -i ~/.ssh/id_ed25519 user@host
+ssh-keygen -t ed25519 -C "dev-laptop" -f ~/.ssh/id_ed25519
+```
+Ed25519 키 쌍을 생성합니다.
+
+```bash
 chmod 600 ~/.ssh/id_ed25519
 ```
-
-Example config:
+개인 키 권한을 소유자만 읽도록 제한합니다.
 
 ```bash
-Host my-server
-  HostName 203.0.113.10
-  User ubuntu
-  IdentityFile ~/.ssh/id_ed25519
+ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server
 ```
+공개 키를 서버에 안전하게 배포합니다.
 
-## Pitfalls
+```bash
+ssh -i ~/.ssh/id_ed25519 user@server
+```
+키 기반 인증으로 접속을 검증합니다.
 
-- Committing private keys to a repo.
-- Incorrect file permissions on `~/.ssh`.
-- Mixing multiple keys without a config file.
+```bash
+ssh-keygen -lf ~/.ssh/id_ed25519.pub
+```
+공개 키의 지문을 확인해 신뢰성을 검증합니다.
+
+## 운영 팁
+
+- SSH 에이전트를 사용해 키 노출을 줄입니다.
+- 인프라 계정은 별도 키를 사용합니다.
+- 키 로테이션 주기를 문서화합니다.
+
+## 주의사항
+
+- 개인 키를 Git에 커밋하지 않습니다.
+- 백업 시 개인 키 암호화 상태를 유지합니다.
+- 키 분실 시 복구 경로가 없어질 수 있습니다.

@@ -1,30 +1,71 @@
 ---
-title: "Rollback strategy basics"
-description: "Plan safe rollbacks to recover quickly from bad releases."
+title: "롤백 전략 기초"
+description: "문제 배포를 빠르고 안전하게 되돌리는 실무 전략을 정리합니다."
 pubDate: 2026-02-03
 tags: ["deployment", "reliability", "operations"]
 ---
 
-## Summary
+## 요약
 
-Rollback strategies reduce downtime and restore service quickly after regressions.
+롤백은 장애 확산을 막는 가장 빠른 복구 수단입니다. 실무에서는 속도, 일관성, 데이터 안전성을 동시에 고려해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Rollback should be fast, tested, and low-risk.
-- Data migrations can make rollback harder.
-- Blue-green and canary releases simplify rollback.
-- Feature flags provide rapid disablement.
+- 롤백은 배포와 동일한 수준으로 자동화되어야 합니다.
+- 스키마/데이터 변경은 롤백 난이도를 급격히 높입니다.
+- 블루-그린, 카나리, 기능 플래그는 롤백 리스크를 줄입니다.
+- 롤백 판단 기준을 사전에 합의해야 지연이 줄어듭니다.
 
-## Guidelines
+## 체크리스트
 
-- Keep rollback steps documented and scripted.
-- Pair releases with backward-compatible migrations.
-- Practice rollbacks in staging.
-- Define clear decision criteria for rollback triggers.
+- 배포 버전과 롤백 버전을 명확히 추적합니다.
+- 다운타임/데이터 손실 허용치를 문서화합니다.
+- 롤백 시나리오를 스테이징에서 정기 리허설합니다.
+- 마이그레이션은 되돌릴 수 있는 형태로 설계합니다.
+- 알림, 대시보드, 런북을 롤백 기준과 연결합니다.
 
-## Pitfalls
+## 절차와 명령
 
-- Irreversible schema changes without a plan.
-- Manual rollbacks that are slow and error-prone.
-- Waiting too long to roll back.
+```bash
+kubectl rollout status deploy/api
+```
+현재 배포 상태를 확인해 롤백 판단 근거를 만듭니다.
+
+```bash
+kubectl rollout undo deploy/api --to-revision=12
+```
+특정 리비전으로 되돌리며 변경 범위를 명시적으로 제한합니다.
+
+```bash
+helm rollback api 24
+```
+Helm 릴리스를 지정한 버전으로 되돌려 차이를 최소화합니다.
+
+```bash
+git revert --no-edit <bad_commit_sha>
+```
+문제 커밋을 되돌리는 새 커밋을 생성해 히스토리를 보존합니다.
+
+```bash
+flyway info
+```
+마이그레이션 상태를 확인해 롤백 가능 여부를 판단합니다.
+
+## 운영 팁
+
+- 롤백 기준과 승인 단계를 사전에 합의합니다.
+- 이전 버전 아티팩트를 항상 보관합니다.
+- 자동 롤백 시나리오를 플레이북으로 정리합니다.
+
+## 주의사항
+
+- 비가역 스키마 변경은 롤백 대신 핫픽스가 필요할 수 있습니다.
+- 롤백 후 캐시, CDN, 세션이 불일치하지 않도록 정리합니다.
+- 롤백 지연은 장애 비용을 크게 키우므로 기준을 단순화합니다.
+- 데이터 정합성 문제가 있으면 읽기 전용 모드 전환도 고려합니다.
+
+## 판단 기준 예시
+
+- 오류율이 5분 평균 2배 이상 증가.
+- 핵심 트랜잭션 성공률이 99.9% 이하로 하락.
+- 주요 고객군에서 재현 가능한 치명 버그 확인.

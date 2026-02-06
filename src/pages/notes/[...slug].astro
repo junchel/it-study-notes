@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TagList from "../../components/TagList.astro";
 import { getCollection } from "astro:content";
+import { DEFAULT_LANG, t as translate } from "../../utils/i18n";
 
 export async function getStaticPaths() {
   const notes = await getCollection("notes", ({ data }) => !data.draft);
@@ -11,20 +12,102 @@ export async function getStaticPaths() {
   }));
 }
 
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 const { note } = Astro.props;
-const { Content } = await note.render();
-const { data } = note;
-const displayDate = (data.updatedDate || data.pubDate).toLocaleDateString();
+const { Content, headings } = await note.render();
+const { data, body } = note;
+const displayDate = (data.updatedDate || data.pubDate).toLocaleDateString("ko-KR");
+const tocItems = (headings || []).filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+const plainText = body.replace(/```[\\s\\S]*?```/g, "").replace(/[#>*_`-]/g, "");
+const wordCount = plainText.trim().split(/\\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(wordCount / 200));
 ---
 
 <BaseLayout title={data.title} description={data.description}>
+  <div class="reading-progress" data-reading-progress>
+    <span class="reading-progress-bar" data-reading-progress-bar></span>
+  </div>
   <div class="container">
-    <article class="prose">
-      <p class="note-date">{displayDate}</p>
-      <h1>{data.title}</h1>
-      <p>{data.description}</p>
-      <TagList tags={data.tags} />
-      <Content />
-    </article>
+    <section class="note-hero">
+      <div class="note-hero-card">
+        <h1>{data.title}</h1>
+        <p class="note-lead">{data.description}</p>
+        <div class="note-meta">
+          <span class="note-meta-chip">
+            <span data-i18n="note.meta.date">{t("note.meta.date")}</span>
+            {` ${displayDate}`}
+          </span>
+          <span
+            class="note-meta-chip"
+            data-i18n="note.meta.reading"
+            data-i18n-vars={JSON.stringify({ minutes: readingMinutes })}
+          >
+            {t("note.meta.reading", { minutes: readingMinutes })}
+          </span>
+        </div>
+        <TagList tags={data.tags} />
+      </div>
+    </section>
+    <div class="note-layout">
+      {tocItems.length > 0 ? (
+        <aside class="note-toc" data-pagefind-ignore>
+          <h2 class="toc-title" data-i18n="note.toc.title">{t("note.toc.title")}</h2>
+          <ul class="toc-list">
+            {tocItems.map((heading) => (
+              <li class={heading.depth === 3 ? "toc-item toc-item-sub" : "toc-item"}>
+                <a class="toc-link" href={`#${heading.slug}`} data-toc-link={heading.slug}>
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      ) : null}
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
   </div>
 </BaseLayout>
+
+<script>
+  const progressBar = document.querySelector("[data-reading-progress-bar]");
+  const article = document.querySelector(".prose");
+  const updateProgress = () => {
+    if (!progressBar || !article) return;
+    const articleTop = article.getBoundingClientRect().top + window.scrollY;
+    const articleHeight = article.scrollHeight;
+    const viewport = window.innerHeight;
+    const available = Math.max(articleHeight - viewport * 0.6, 1);
+    const value = Math.min(Math.max((window.scrollY - articleTop + viewport * 0.2) / available, 0), 1);
+    progressBar.style.transform = `scaleX(${value})`;
+  };
+  updateProgress();
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  window.addEventListener("resize", updateProgress);
+
+  const links = Array.from(document.querySelectorAll("[data-toc-link]"));
+  if (links.length) {
+    const setActive = (id) => {
+      links.forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("data-toc-link") === id);
+      });
+    };
+    const targets = links
+      .map((link) => document.getElementById(link.getAttribute("data-toc-link") || ""))
+      .filter(Boolean);
+    if (targets.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible.length) setActive(visible[0].target.id);
+        },
+        { rootMargin: "-20% 0px -65% 0px", threshold: [0, 1] }
+      );
+      targets.forEach((target) => observer.observe(target));
+      setActive(targets[0].id);
+    }
+  }
+</script>

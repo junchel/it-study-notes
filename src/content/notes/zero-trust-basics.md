@@ -1,31 +1,58 @@
-﻿---
-title: "Zero Trust basics"
-description: "Principles and practical steps for adopting a zero trust security model."
+---
+title: "제로 트러스트 기초"
+description: "신뢰하지 않고 검증하는 보안 모델의 핵심 원칙을 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "zero-trust", "architecture"]
+tags: ["security", "architecture", "identity"]
 ---
 
-## Summary
+## 요약
 
-Zero Trust assumes no implicit trust and continuously verifies identity, device, and context.
+제로 트러스트는 내부 네트워크도 신뢰하지 않습니다. 지속적 인증과 최소 권한이 핵심입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Verify explicitly: identity, device posture, and context.
-- Use least privilege and micro-segmentation.
-- Assume breach and monitor continuously.
+- 기본 가정은 "검증 후 허용"입니다.
+- 사용자, 기기, 위치, 위험도를 지속적으로 평가합니다.
+- 네트워크 분할과 마이크로 세그멘테이션이 중요합니다.
+- 강력한 로깅과 가시성이 전제입니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Enforce MFA for all accounts
-- Segment networks by risk
-- Log and alert on anomalous access
+- 모든 접근에 MFA를 적용합니다.
+- 자산을 분류하고 접근 정책을 세분화합니다.
+- 네트워크 분할 정책을 명확히 합니다.
+- 이상 징후를 SIEM과 연동합니다.
+
+## 명령
+
+```bash
+rg -n "MFA|2FA" docs/policies -S
 ```
+정책 문서에 MFA 기준이 포함되어 있는지 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "network segmentation|micro" docs/architecture -S
+```
+네트워크 분할 정책이 문서화되어 있는지 확인합니다.
 
-- Treating Zero Trust as a product, not a model.
-- Ignoring legacy systems without compensating controls.
-- Overly complex policies that block productivity.
+```bash
+rg -n "least privilege" docs/policies -S
+```
+최소 권한 원칙이 명시되어 있는지 확인합니다.
+
+```bash
+rg -n "audit" docs/security -S
+```
+감사 로깅 정책이 준비되어 있는지 확인합니다.
+
+## 운영 팁
+
+- 정책 변경은 단계적으로 적용해 영향 범위를 줄입니다.
+- 자산 인벤토리를 최신 상태로 유지합니다.
+- 보안 규칙은 정기적으로 재평가합니다.
+
+## 주의사항
+
+- 전환 초기에는 운영 부담이 증가할 수 있습니다.
+- 사용자 경험과 보안 간 균형이 필요합니다.
+- 정책 예외가 누적되면 모델이 약화됩니다.

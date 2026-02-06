@@ -1,31 +1,51 @@
-﻿---
-title: "Cloud cost optimization basics"
-description: "Budgets, right-sizing, and cost visibility for cloud workloads."
+---
+title: "클라우드 비용 최적화 기본"
+description: "예산, 적정 규모 조정, 비용 가시성을 확보합니다."
 pubDate: 2026-02-03
 tags: ["cloud", "cost", "operations"]
 ---
 
-## Summary
+## 요약
 
-Cost control starts with visibility and simple guardrails.
+비용 통제는 가시성과 간단한 가드레일부터 시작합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Set budgets and alerts early.
-- Right-size compute resources based on usage.
-- Clean up unused storage and snapshots.
+- 예산과 알림을 초기에 설정합니다.
+- 사용량 기반으로 컴퓨트 리소스를 적정 규모로 조정합니다.
+- 사용하지 않는 스토리지와 스냅샷을 정리합니다.
+- 예약 인스턴스/세이빙 플랜으로 장기 비용을 절감합니다.
+- 태그와 계정 분리를 통해 비용 귀속을 명확히 합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Enable cost explorer or billing reports
-- Set budget alerts
-- Review idle resources monthly
+```bash
+aws ce get-cost-and-usage --time-period Start=2026-02-01,End=2026-02-05 --granularity DAILY --metrics BlendedCost
 ```
+AWS 비용 추이를 요약해 확인합니다.
 
-## Pitfalls
+```bash
+aws s3 ls
+```
+스토리지 버킷 목록을 확인해 정리 대상을 식별합니다.
 
-- Leaving test environments running.
-- Storing large volumes without lifecycle policies.
-- Ignoring egress costs.
+## 체크리스트
+
+- 비용 탐색기 또는 청구 리포트 활성화
+- 예산 알림 설정
+- 유휴 리소스 월간 점검
+- 예약/약정 할인 검토
+
+## 운영 팁
+
+- 리소스 태그를 표준화해 비용 분석을 쉽게 합니다.
+- 유휴 자원을 주기적으로 정리합니다.
+- 예산 초과 경보를 설정합니다.
+- 주간 단위로 상위 비용 서비스 랭킹을 확인합니다.
+- 비업무 시간에 자동 종료 정책을 적용합니다.
+
+## 주의사항
+
+- 테스트 환경을 켜둔 채 방치하면 비용이 누적됩니다.
+- 라이프사이클 정책 없이 대용량을 저장하면 비용이 급증합니다.
+- 이그레스 비용을 무시하면 예산이 빠르게 소진됩니다.

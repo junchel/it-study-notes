@@ -1,27 +1,71 @@
 ---
-title: "HTTP timeouts and retries"
-description: "Prevent cascading failures with sensible timeout and retry settings."
+title: "HTTP 타임아웃과 재시도"
+description: "적절한 타임아웃과 재시도로 연쇄 장애를 예방합니다."
 pubDate: 2026-02-03
 tags: ["http", "reliability", "performance"]
 ---
 
-## Summary
+## 요약
 
-Timeouts and retries protect services from slow dependencies and reduce cascading failures.
+타임아웃과 재시도는 느린 의존성으로부터 서비스를 보호하고 연쇄 장애를 줄입니다. 모든 홉에서 타임아웃을 정렬하고, 재시도는 멱등성과 백오프를 전제로 제한해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Set timeouts at every hop (client, proxy, server).
-- Retries should be limited and use backoff.
-- Only retry idempotent requests safely.
+- 전체 요청 데드라인과 단계별 타임아웃을 분리해 설계합니다.
+- 연결/읽기/쓰기/유휴 타임아웃을 명확히 구분합니다.
+- 재시도는 멱등 요청에 한정하고 지터가 포함된 백오프를 사용합니다.
+- 재시도 예산과 최대 시도 횟수를 적용해 폭주를 막습니다.
+- `Retry-After` 등 서버 힌트를 존중합니다.
 
-## Guidelines
+## 절차
 
-- Keep timeouts slightly above normal p95 latency.
-- Use jitter to avoid retry storms.
-- Fail fast when a dependency is down.
+1. p95/p99 지연과 SLO를 기준으로 요청 예산을 정의합니다.
+2. 클라이언트, 프록시, 애플리케이션, DB의 타임아웃을 순서대로 정렬합니다.
+3. 재시도 가능한 오류(5xx, 연결 끊김 등)와 불가능한 오류를 구분합니다.
+4. 백오프+지터, 최대 시도 수, 전체 재시도 시간 제한을 설정합니다.
+5. 멱등 요청에만 재시도를 허용하고, 필요한 경우 멱등성 키를 추가합니다.
+6. 타임아웃/재시도 지표를 관찰하며 임계값을 조정합니다.
 
-## Pitfalls
+## 체크리스트
 
-- No timeouts can cause thread exhaustion.
-- Aggressive retries can amplify outages.
+- 모든 홉(클라이언트, LB, API, DB)에 타임아웃이 설정됨
+- 업스트림 타임아웃이 다운스트림보다 짧음
+- 멱등 요청만 재시도됨
+- 재시도 횟수와 전체 재시도 시간 제한이 있음
+- 타임아웃/재시도 지표와 로그가 수집됨
+
+## 명령
+
+```bash
+curl -m 2 https://example.com/health
+```
+2초 전체 타임아웃으로 빠른 실패 여부를 확인합니다.
+
+```bash
+curl -o /dev/null -s -w "connect=%{time_connect} ttfb=%{time_starttransfer} total=%{time_total}\n" https://example.com
+```
+연결/TTFB/전체 시간을 분리해 병목 구간을 파악합니다.
+
+```bash
+curl --retry 3 --retry-connrefused --retry-delay 1 https://example.com/api
+```
+연결 오류에 한해 제한된 재시도를 수행합니다.
+
+```bash
+grep -R -n "timeout|retry|backoff|deadline" config/
+```
+타임아웃과 재시도 설정 위치를 점검합니다.
+
+## 운영 팁
+
+- 전체 요청 데드라인을 헤더로 전달해 다운스트림과 공유합니다.
+- 느린 외부 API에는 회로 차단기와 동시성 제한을 함께 적용합니다.
+- 장거리 네트워크(모바일 등)는 연결 타임아웃을 별도로 조정합니다.
+- 재시도는 실패율이 높을 때 자동으로 줄이는 예산 모델을 사용합니다.
+
+## 주의사항
+
+- 타임아웃이 없으면 스레드/커넥션 고갈로 확산됩니다.
+- 모든 요청에 동일한 긴 타임아웃을 적용하면 지연이 누적됩니다.
+- 비멱등 요청에 재시도를 적용하면 데이터 중복이 발생합니다.
+- 재시도 폭주는 장애를 증폭시키므로 지터와 상한을 반드시 둡니다.

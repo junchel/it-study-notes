@@ -1,28 +1,69 @@
 ---
-title: "Secrets rotation basics"
-description: "Rotate credentials to reduce exposure and risk."
+title: "시크릿 로테이션 기초"
+description: "키·토큰을 주기적으로 교체해 침해 가능성을 낮추는 실무 방법을 정리합니다."
 pubDate: 2026-02-03
-tags: ["security", "operations", "secrets"]
+tags: ["security", "operations", "backend"]
 ---
 
-## Summary
+## 요약
 
-Regular secret rotation reduces the impact of leaked credentials and enforces good hygiene.
+시크릿 로테이션은 유출에 대비하는 가장 현실적인 방어선입니다. 교체 절차를 자동화하고 다운타임을 피해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Automate rotation where possible.
-- Use short-lived tokens.
-- Store secrets in a dedicated manager.
+- 이중 시크릿(새/구)을 병행해 무중단 교체를 수행합니다.
+- 로테이션 주기는 위험도와 운영 비용의 균형입니다.
+- 교체 실패 시 즉시 롤백 가능한 경로를 마련합니다.
+- 의존 서비스까지 포함해 체계적으로 교체합니다.
 
-## Basic workflow
+## 체크리스트
 
-1. Create a new secret version.
-2. Deploy it to all services.
-3. Verify systems use the new secret.
-4. Revoke the old secret.
+- 새 시크릿 배포 후 구 시크릿을 단계적으로 폐기합니다.
+- 로테이션 시점과 변경 내역을 감사 로그로 남깁니다.
+- 앱 재시작 필요 여부와 순서를 문서화합니다.
+- 롤백 시나리오를 사전에 테스트합니다.
 
-## Pitfalls
+## 명령
 
-- Rotating without a rollback plan can cause outages.
-- Hardcoded secrets slow down rotation.
+```bash
+openssl rand -hex 32
+```
+새로운 토큰 값을 생성합니다.
+
+```bash
+ssh-keygen -t ed25519 -C "rotation-2026-02" -f ~/.ssh/app_key_202602
+```
+새 SSH 키를 만들어 점진적으로 교체합니다.
+
+```bash
+kubectl create secret generic api-key --from-literal=key=<new_key> -o yaml --dry-run=client
+```
+새 시크릿을 미리 생성해 적용 전 검토합니다.
+
+```bash
+kubectl apply -f api-key.yaml
+```
+새 시크릿을 클러스터에 적용합니다.
+
+```bash
+kubectl rollout restart deploy/api
+```
+새 시크릿이 반영되도록 애플리케이션을 순차 재시작합니다.
+
+## 운영 팁
+
+- 회전 주기와 책임자를 명확히 지정합니다.
+- 이중 유효 기간을 둬 무중단 회전을 보장합니다.
+- 회전 후 애플리케이션 재적재 절차를 자동화합니다.
+
+## 주의사항
+
+- 일부 라이브러리는 런타임 시크릿 재로딩을 지원하지 않습니다.
+- 만료가 겹치지 않도록 구 시크릿 폐기 시점을 조절합니다.
+- 자동화 실패 시 수동 절차가 준비되어 있어야 합니다.
+
+## 권장 주기 예시
+
+- 고위험 외부 공개 서비스: 30~90일
+- 내부 업무 시스템: 90~180일
+- 인프라 계정: 30~60일

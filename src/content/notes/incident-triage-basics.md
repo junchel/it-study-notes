@@ -1,30 +1,42 @@
 ---
-title: "Incident triage basics"
-description: "Assess impact fast and route incidents to the right owners."
+title: "인시던트 트리아지 기본"
+description: "영향을 빠르게 평가하고 적절한 담당자에게 라우팅합니다."
 pubDate: 2026-02-03
 tags: ["incident-response", "operations", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Triage focuses effort on the most impactful incidents first.
+트리아지는 가장 영향이 큰 인시던트에 먼저 집중하게 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Severity reflects user impact and urgency.
-- Fast containment beats deep diagnosis early on.
-- Clear ownership reduces confusion.
-- Communication cadence keeps stakeholders aligned.
+- 심각도는 사용자 영향과 긴급성을 반영합니다.
+- 초기에는 깊은 진단보다 빠른 차단이 중요합니다.
+- 명확한 오너십이 혼란을 줄입니다.
+- 커뮤니케이션 주기는 이해관계자를 정렬합니다.
 
-## Guidelines
+## 명령
 
-- Classify severity quickly using agreed criteria.
-- Assign an incident lead and a communications owner.
-- Establish a shared timeline and next update time.
-- Capture key signals and hypotheses as you go.
+```bash
+rg -n "runbook|oncall|triage" docs/ -S
+```
+트리아지 런북과 온콜 정보를 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "incident" config/ -S
+```
+인시던트 관련 설정을 점검합니다.
 
-- Waiting for perfect information before acting.
-- Multiple responders making uncoordinated changes.
-- No clear owner for external communications.
+## 운영 팁
+
+- 합의된 기준으로 심각도를 빠르게 분류합니다.
+- 인시던트 리드와 커뮤니케이션 오너를 지정합니다.
+- 공유 타임라인과 다음 업데이트 시간을 설정합니다.
+- 진행 중 핵심 신호와 가설을 기록합니다.
+
+## 주의사항
+
+- 완벽한 정보가 올 때까지 기다림.
+- 여러 담당자가 조율 없이 변경함.
+- 외부 커뮤니케이션 오너가 없음.

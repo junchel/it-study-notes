@@ -1,31 +1,58 @@
-﻿---
-title: "SRE fundamentals"
-description: "SLOs, SLIs, error budgets, and reliability practices."
+---
+title: "SRE 기본"
+description: "신뢰성 엔지니어링의 핵심 원칙과 실무 운영 기준을 정리합니다."
 pubDate: 2026-02-03
-tags: ["sre", "reliability", "operations"]
+tags: ["sre", "operations", "reliability"]
 ---
 
-## Summary
+## 요약
 
-SRE treats reliability as a measurable engineering discipline.
+SRE는 서비스 신뢰성을 엔지니어링 관점에서 관리합니다. 목표(SLO), 측정(SLI), 자동화가 핵심입니다.
 
-## Key ideas
+## 핵심 개념
 
-- SLI: the metric you measure.
-- SLO: the target you aim for.
-- Error budget: how much failure is acceptable.
+- SLI는 측정 지표, SLO는 목표, SLA는 외부 약속입니다.
+- 오류 예산은 안정성과 개발 속도의 균형 장치입니다.
+- 반복 가능한 운영은 자동화로 대체합니다.
+- 사고 대응은 사전 계획과 사후 개선이 한 세트입니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Define critical user journeys
-- Set SLIs and SLOs
-- Track error budgets
+- 핵심 사용자 여정에 대한 SLI/SLO를 정의합니다.
+- 오류 예산 소진 기준과 대응 절차를 합의합니다.
+- 알림은 증상 기반으로 구성합니다.
+- 런북과 자동화 스크립트를 최신 상태로 유지합니다.
+
+## 명령과 점검
+
+```bash
+curl -s "http://localhost:9090/api/v1/query?query=up" | jq '.data.result | length'
 ```
+모니터링 대상의 수가 기대한 값인지 확인합니다.
 
-## Pitfalls
+```bash
+curl -s "http://localhost:9090/api/v1/query?query=rate(http_requests_total[5m])"
+```
+트래픽 SLI를 조회해 서비스 부하 추이를 파악합니다.
 
-- Setting SLOs without business agreement.
-- Too many alerts with no clear action.
-- Ignoring error budgets when shipping features.
+```bash
+kubectl get pods -n prod | wc -l
+```
+프로덕션 파드 수가 정상 범위인지 빠르게 점검합니다.
+
+```bash
+rg -n "SLO" docs/runbooks -S
+```
+런북 문서에 SLO 기준이 명시되어 있는지 확인합니다.
+
+## 운영 팁
+
+- 신규 기능은 SLO 영향 분석과 함께 배포합니다.
+- 반복 장애는 포스트모템으로 근본 원인을 제거합니다.
+- 운영 지표는 팀 간 합의된 정의를 사용합니다.
+
+## 주의사항
+
+- 과도한 SLO는 운영 비용을 급격히 증가시킵니다.
+- 내부 지표만 보면 사용자 경험을 놓치기 쉽습니다.
+- 알림 과잉은 대응 품질을 낮춥니다.

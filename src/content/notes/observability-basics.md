@@ -1,29 +1,58 @@
-﻿---
-title: "Observability basics"
-description: "Logs, metrics, traces, and a practical monitoring checklist."
+---
+title: "관측성 기본"
+description: "로그, 메트릭, 트레이스와 실무 모니터링 체크리스트."
 pubDate: 2026-02-03
 tags: ["monitoring", "devops", "observability"]
 ---
 
-## Summary
+## 요약
 
-Observability helps you detect, diagnose, and prevent incidents with logs, metrics, and traces.
+관측성은 로그/메트릭/트레이스를 통해 장애를 탐지하고 원인을 좁혀가는 능력을 의미합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Metrics show trends; logs show events; traces show request flow.
-- Start with the golden signals: latency, traffic, errors, saturation.
-- Alert on symptoms, not on raw resource thresholds alone.
+- **메트릭**: 추세와 상태(지연, 에러율 등).
+- **로그**: 사건과 컨텍스트(요청 ID 등).
+- **트레이스**: 서비스 간 흐름과 병목.
+- **골든 시그널**: 지연, 트래픽, 에러, 포화도.
 
-## Commands or steps
+## 체크리스트
+
+- 요청 ID/상관 ID 도입
+- 골든 시그널 대시보드 구성
+- SLO와 알림 임계값 정의
+- 배포 이벤트와 지표를 연결
+
+## 명령
 
 ```bash
-# Example: basic Linux log tailing
 tail -f /var/log/syslog
 ```
+시스템 로그를 실시간으로 확인합니다.
 
-## Pitfalls
+```bash
+journalctl -u nginx --since "30 min ago"
+```
+특정 서비스의 최근 로그를 좁은 창으로 확인합니다.
 
-- Too many alerts causing fatigue.
-- Missing context in logs (no request IDs).
-- Monitoring without clear SLOs.
+```bash
+curl -s http://localhost:9090/metrics | head
+```
+Prometheus 지표 노출 여부를 빠르게 확인합니다.
+
+```bash
+curl -s http://localhost:9090/api/v1/query?query=up
+```
+주요 타깃 상태 지표를 즉시 조회합니다.
+
+## 운영 팁
+
+- 골든 시그널과 SLO를 기준으로 모니터링 지표를 선택합니다.
+- 로그, 메트릭, 트레이스에 공통 식별자를 적용합니다.
+- 경고는 실제 조치가 필요한 항목만 남깁니다.
+
+## 주의사항
+
+- 알림이 너무 많으면 장애 대응 속도가 오히려 느려집니다.
+- 요청 ID가 없으면 로그 상관관계 분석이 어렵습니다.
+- SLO 없이 모니터링만 하면 우선순위가 흐려집니다.

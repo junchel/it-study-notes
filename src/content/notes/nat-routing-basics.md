@@ -1,31 +1,51 @@
-﻿---
-title: "NAT and routing basics"
-description: "Understand NAT, gateways, and routing tables."
+---
+title: "NAT와 라우팅 기본"
+description: "NAT, 게이트웨이, 라우팅 테이블을 이해합니다."
 pubDate: 2026-02-03
 tags: ["networking", "routing", "nat"]
 ---
 
-## Summary
+## 요약
 
-Routing decides where traffic goes; NAT translates addresses between networks.
+라우팅은 트래픽의 경로를 결정하고, NAT는 주소를 변환해 네트워크를 연결합니다.
 
-## Key ideas
+## 핵심 개념
 
-- NAT enables private subnets to reach the internet.
-- Routing tables decide next hops.
-- Asymmetric routing causes hard-to-debug issues.
+- **SNAT**: 내부에서 외부로 나갈 때 소스 주소를 변환합니다.
+- **DNAT**: 외부에서 내부로 들어올 때 목적지 주소를 변환합니다.
+- **라우팅 테이블**: 다음 홉을 결정하는 규칙 집합합니다.
+- **비대칭 라우팅**: 왕복 경로가 달라 디버깅이 어려워집니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Validate routes and gateways
-- Confirm NAT placement
-- Trace paths end-to-end
+```bash
+ip route
 ```
+현재 라우팅 테이블을 확인해 기본 게이트웨이를 점검합니다.
 
-## Pitfalls
+```bash
+ip rule
+```
+정책 기반 라우팅 규칙을 확인합니다(멀티 테이블 환경).
 
-- Missing routes for return traffic.
-- NAT in the wrong subnet.
-- Overlapping CIDR ranges.
+```bash
+iptables -t nat -L -n -v
+```
+NAT 테이블 규칙과 패킷 카운트를 확인합니다.
+
+```bash
+traceroute 8.8.8.8
+```
+실제 경로를 추적해 비대칭이나 우회 경로를 찾습니다.
+
+## 운영 팁
+
+- NAT 테이블과 라우팅 경로를 문서화합니다.
+- 리턴 경로가 올바른지 확인합니다.
+- 포트 고갈을 모니터링합니다.
+
+## 주의사항
+
+- 반환 경로가 없으면 연결이 끊깁니다.
+- NAT가 잘못된 서브넷에 있으면 외부 통신이 실패합니다.
+- CIDR이 겹치면 라우팅 충돌이 발생합니다.

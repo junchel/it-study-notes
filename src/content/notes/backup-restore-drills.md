@@ -1,28 +1,61 @@
 ---
-title: "Backup restore drills"
-description: "Verify backups by practicing restores on a schedule."
+title: "백업 복구 드릴"
+description: "일정에 맞춘 복구 연습으로 백업을 검증합니다."
 pubDate: 2026-02-03
 tags: ["backup", "disaster-recovery", "operations"]
 ---
 
-## Summary
+## 요약
 
-Backups are only useful if you can restore them. This note outlines a simple restore drill process.
+백업은 복원할 수 있을 때만 유용합니다. 이 노트는 간단한 복구 드릴 절차를 정리합니다.
 
-## Drill checklist
+## 핵심 개념
 
-- Pick a representative dataset or service.
-- Restore into a staging or isolated environment.
-- Validate data integrity and app health.
-- Record the time-to-restore and blockers.
+- 백업은 복원 테스트로만 검증됩니다.
+- RPO/RTO와 복구 절차가 핵심입니다.
+- 장애 유형별 복구 시나리오를 준비합니다.
+- 복구 대상과 제외 대상 범위를 명확히 합니다.
+- 복구 후 데이터 정합성과 애플리케이션 건강성을 함께 확인합니다.
 
-## Frequency
+## 드릴 체크리스트
 
-- Critical systems: monthly.
-- Standard systems: quarterly.
+- 대표 데이터셋 또는 서비스를 선택합니다.
+- 스테이징 또는 격리된 환경으로 복원합니다.
+- 데이터 무결성과 앱 상태를 검증합니다.
+- 복구 소요 시간과 차단 요인을 기록합니다.
 
-## Pitfalls
+## 주기
 
-- Backups that exist but are not readable.
-- Missing encryption keys or credentials.
-- No runbook for the restore steps.
+- 핵심 시스템: 매월.
+- 일반 시스템: 분기별.
+
+## 명령
+
+```bash
+ls -lh backups/
+```
+최근 백업 파일과 크기를 확인합니다.
+
+```bash
+pg_restore --list backups/latest.dump
+```
+복원 대상 백업이 정상인지 목록으로 확인합니다.
+
+```bash
+sha256sum backups/latest.dump
+```
+백업 파일의 무결성을 해시로 확인합니다.
+
+## 운영 팁
+
+- 실제 데이터에 가까운 환경에서 복구 훈련을 합니다.
+- RTO/RPO 달성 여부를 측정합니다.
+- 복구 절차와 소요 시간을 기록합니다.
+- 실패 시 대체 경로와 의사결정 기준을 기록합니다.
+- 드릴 결과를 회고하고 절차를 개선합니다.
+
+## 주의사항
+
+- 백업은 존재하지만 읽을 수 없으면 복구가 불가능합니다.
+- 암호화 키나 자격 증명이 없으면 복원을 시작할 수 없습니다.
+- 복구 절차에 대한 런북이 없으면 대응이 지연됩니다.

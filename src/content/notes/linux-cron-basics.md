@@ -1,40 +1,70 @@
 ---
-title: "Linux cron basics"
-description: "Schedule recurring tasks using cron and crontab."
+title: "Linux cron 기본"
+description: "cron과 crontab으로 반복 작업을 예약합니다."
 pubDate: 2026-02-03
 tags: ["linux", "operations", "automation"]
 ---
 
-## Summary
+## 요약
 
-Cron runs scheduled commands at specific times. It is simple and reliable for recurring jobs.
+Cron은 특정 시간에 예약된 명령을 실행합니다. 반복 작업에 간단하고 안정적합니다.
 
-## Cron format
+## 핵심 개념
+
+- 크론은 주기 작업을 자동화합니다.
+- 실행 환경(PATH, 권한)이 기본 셸과 다릅니다.
+- 로그와 실패 알림을 반드시 확보합니다.
+
+## Cron 형식
 
 ```
 * * * * * command
 | | | | |
-| | | | └─ day of week (0-6)
-| | | └── month (1-12)
-| | └─── day of month (1-31)
-| └──── hour (0-23)
-└───── minute (0-59)
+| | | | └─ 요일 (0-6)
+| | | └── 월 (1-12)
+| | └─── 일 (1-31)
+| └──── 시 (0-23)
+└───── 분 (0-59)
 ```
 
-## Common commands
+Cron 스케줄 형식의 각 필드를 설명합니다.
+
+## 자주 쓰는 명령
 
 ```bash
-# edit current user's crontab
 crontab -e
+```
+현재 사용자 crontab을 편집합니다.
 
-# list current user's jobs
+```bash
 crontab -l
+```
+현재 사용자 예약 작업 목록을 확인합니다.
 
-# system-wide cron files
+```bash
 ls /etc/cron.d
 ```
+시스템 전역 cron 정의 파일을 확인합니다.
 
-## Pitfalls
+## 명령
 
-- Cron runs with a minimal environment; set PATH explicitly.
-- Long-running jobs can overlap without lock files.
+```bash
+crontab -l
+```
+현재 사용자 크론 작업을 확인합니다.
+
+```bash
+ls /etc/cron.d
+```
+시스템 크론 정의 목록을 확인합니다.
+
+## 운영 팁
+
+- 절대 경로와 필요한 환경 변수를 명시합니다.
+- 표준 출력과 오류를 로그로 남깁니다.
+- 중복 실행을 방지하기 위해 락 파일을 사용합니다.
+
+## 주의사항
+
+- Cron은 최소 환경으로 실행되므로 PATH를 명시합니다.
+- 긴 작업은 락 파일 없이 겹칠 수 있습니다.

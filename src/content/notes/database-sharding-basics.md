@@ -1,31 +1,45 @@
-﻿---
-title: "Database sharding basics"
-description: "Distribute data across shards to scale writes and storage."
+---
+title: "데이터베이스 샤딩 기본"
+description: "데이터를 샤드로 분산해 쓰기와 스토리지를 확장합니다."
 pubDate: 2026-02-03
 tags: ["database", "sharding", "scalability"]
 ---
 
-## Summary
+## 요약
 
-Sharding splits data across multiple databases to scale horizontally.
+샤딩은 데이터를 여러 데이터베이스로 분할해 수평 확장을 가능하게 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Choose a shard key with even distribution.
-- Plan for rebalancing and resharding.
-- Keep cross-shard queries minimal.
+- 균등 분포를 만드는 샤드 키를 선택합니다.
+- 리밸런싱과 재샤딩을 계획합니다.
+- 샤드 간 쿼리를 최소화합니다.
+- 해시 기반과 범위 기반 샤딩의 장단점을 이해합니다.
+- 전역 트랜잭션은 비용이 크므로 최소화합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Define shard key
-- Design routing layer
-- Plan resharding strategy
+```bash
+python -c "import zlib; key='user_123'; print(zlib.crc32(key.encode()) % 8)"
 ```
+간단한 해시 기반 샤드 라우팅 예시를 확인합니다.
 
-## Pitfalls
+## 체크리스트
 
-- Hot shards from poor key choice.
-- Complex cross-shard joins.
-- No plan for resharding.
+- 샤드 키 정의
+- 라우팅 계층 설계
+- 재샤딩 전략 수립
+- 샤드별 메트릭과 핫키 감지 체계 구축
+
+## 운영 팁
+
+- 샤드 키는 균등 분포와 쿼리 패턴을 고려해 선택합니다.
+- 리샤딩 전략과 데이터 이동 절차를 사전에 마련합니다.
+- 전역 조회는 보조 인덱스나 집계 시스템으로 분리합니다.
+- 샤드 간 조인은 애플리케이션 계층에서 집계합니다.
+
+## 주의사항
+
+- 나쁜 키 선택으로 핫 샤드가 생기면 전체 성능이 떨어집니다.
+- 복잡한 샤드 간 조인은 유지보수가 어렵습니다.
+- 재샤딩 계획이 없으면 확장이 막힙니다.

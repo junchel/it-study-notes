@@ -1,31 +1,50 @@
-﻿---
-title: "Cloud security baseline"
-description: "Baseline security controls for cloud environments."
+---
+title: "클라우드 보안 베이스라인"
+description: "클라우드 환경을 위한 기본 보안 통제."
 pubDate: 2026-02-03
 tags: ["cloud", "security", "baseline"]
 ---
 
-## Summary
+## 요약
 
-A minimal control set that reduces risk and improves visibility across cloud accounts.
+클라우드 계정 전반의 위험을 줄이고 가시성을 높이는 최소 통제 세트입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Centralize identity and enforce MFA.
-- Enable logging, monitoring, and alerting.
-- Use least privilege and network segmentation.
+- 신원 관리를 중앙화하고 MFA를 강제합니다.
+- 로깅, 모니터링, 알림을 활성화합니다.
+- 최소 권한과 네트워크 분리를 적용합니다.
+- 루트/관리자 계정은 별도로 보호합니다.
+- 보안 기준은 자동 점검으로 유지합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- MFA for all users
-- Central logging and audit trails
-- Security group hardening
+```bash
+aws iam get-account-summary
 ```
+계정 보안 설정 요약을 확인합니다.
 
-## Pitfalls
+```bash
+aws cloudtrail describe-trails
+```
+감사 로그 수집 설정을 확인합니다.
 
-- Logging disabled for cost reasons.
-- Overly permissive network rules.
-- No alerting on admin actions.
+## 체크리스트
+
+- 모든 사용자에 MFA 적용
+- 중앙 로깅 및 감사 추적
+- 보안 그룹 강화
+- 루트 계정 접근 제한
+
+## 운영 팁
+
+- MFA와 최소 권한을 기본 정책으로 설정합니다.
+- 감사 로그를 중앙 수집합니다.
+- 보안 기준을 정기적으로 점검합니다.
+- 보안 점검 결과를 기준으로 액션 아이템을 관리합니다.
+
+## 주의사항
+
+- 비용 이유로 로깅을 비활성화하면 사고 탐지가 어려워집니다.
+- 네트워크 규칙이 과도하게 허용적이면 공격 표면이 커집니다.
+- 관리자 작업에 대한 알림이 없으면 이상 징후를 놓칩니다.

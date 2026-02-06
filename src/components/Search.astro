@@ -1,11 +1,19 @@
-﻿<div class="search">
-  <label class="search-label" for="search-input">Search IT notes</label>
+﻿---
+import { DEFAULT_LANG, t } from "../utils/i18n";
+---
+
+<div class="search">
+  <label class="search-label" for="search-input" data-i18n="search.label">
+    {t(DEFAULT_LANG, "search.label")}
+  </label>
   <input
     id="search-input"
     class="search-input"
     type="search"
     name="q"
-    placeholder="Type to search"
+    placeholder={t(DEFAULT_LANG, "search.placeholder")}
+    data-i18n="search.placeholder"
+    data-i18n-attr="placeholder"
     autocomplete="off"
   />
   <div id="search-status" class="search-status"></div>
@@ -16,10 +24,33 @@
   const input = document.getElementById("search-input");
   const resultsEl = document.getElementById("search-results");
   const statusEl = document.getElementById("search-status");
+  const i18n = window.__SITE_I18N__;
   let pagefind;
+  let lastStatus = null;
 
-  const setStatus = (message) => {
-    statusEl.textContent = message;
+  const format = (template, vars) =>
+    template.replace(/\{(\w+)\}/g, (_, key) =>
+      Object.prototype.hasOwnProperty.call(vars, key) ? String(vars[key]) : ""
+    );
+
+  const resolveText = (key, vars) => {
+    if (!i18n) return "";
+    const lang = document.documentElement.dataset.lang || i18n.defaultLang;
+    const template =
+      (i18n.messages[lang] && i18n.messages[lang][key]) ||
+      i18n.messages[i18n.defaultLang][key] ||
+      "";
+    return vars ? format(template, vars) : template;
+  };
+
+  const setStatus = (key, vars) => {
+    lastStatus = { key, vars };
+    statusEl.textContent = resolveText(key, vars);
+  };
+
+  const clearStatus = () => {
+    lastStatus = null;
+    statusEl.textContent = "";
   };
 
   const getPagefind = async () => {
@@ -29,7 +60,7 @@
       pagefind = mod.default || mod;
       return pagefind;
     } catch (err) {
-      setStatus("Search index not built yet.");
+      setStatus("search.status.noIndex");
       return null;
     }
   };
@@ -53,14 +84,14 @@
 
   const handleSearch = async (query) => {
     if (!query) {
-      setStatus("");
+      clearStatus();
       renderResults([]);
       return;
     }
     const pf = await getPagefind();
     if (!pf) return;
 
-    setStatus("Searching...");
+    setStatus("search.status.searching");
     const search = await pf.search(query);
     const data = await Promise.all(search.results.map((r) => r.data()));
     const items = data.map((item) => ({
@@ -68,11 +99,16 @@
       title: item.meta.title || item.title,
       excerpt: item.excerpt
     }));
-    setStatus(`${items.length} result(s)`);
+    setStatus("search.status.results", { count: items.length });
     renderResults(items);
   };
 
   input?.addEventListener("input", (event) => {
     handleSearch(event.target.value.trim());
+  });
+
+  window.addEventListener("site:lang", () => {
+    if (!lastStatus) return;
+    statusEl.textContent = resolveText(lastStatus.key, lastStatus.vars);
   });
 </script>

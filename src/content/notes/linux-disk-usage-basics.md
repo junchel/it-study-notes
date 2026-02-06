@@ -1,33 +1,43 @@
 ---
-title: "Linux disk usage basics"
-description: "Find large files and check filesystem usage quickly."
+title: "Linux 디스크 사용량 기본"
+description: "큰 파일을 찾고 파일시스템 사용량을 빠르게 확인합니다."
 pubDate: 2026-02-03
 tags: ["linux", "operations", "troubleshooting"]
 ---
 
-## Summary
+## 요약
 
-Disk issues are common in production. This note shows quick commands to identify usage hotspots.
+디스크 이슈는 프로덕션에서 흔합니다. 이 노트는 사용량 핫스팟을 찾는 빠른 명령을 제공합니다.
 
-## Commands
+## 핵심 개념
+
+- 디스크 사용률과 inode 사용률을 함께 봅니다.
+- 대용량 파일과 로그 누적이 주요 원인입니다.
+- 마운트 포인트별로 분리해 확인합니다.
+
+## 명령
 
 ```bash
-# filesystem usage
 df -h
+```
+파일시스템 사용량을 사람이 읽기 쉬운 단위로 확인합니다.
 
-# directory sizes
+```bash
 du -h --max-depth=1 /var
+```
+/var 하위 디렉터리별 사용량을 1단계 깊이로 확인합니다.
 
-# find large files (over 1GB)
+```bash
 find / -type f -size +1G -print
 ```
+1GB 이상인 큰 파일을 찾아 출력합니다.
 
-## Tips
+## 운영 팁
 
-- Check `/var/log` and `/tmp` first.
-- Databases often use `/var/lib`.
+- `/var/log`와 `/tmp`를 먼저 확인합니다.
+- 데이터베이스는 보통 `/var/lib`를 사용합니다.
 
-## Pitfalls
+## 주의사항
 
-- `df` can show free space while a deleted file is still held open.
-- Inodes can run out before disk space.
+- `df`는 삭제된 파일이 열려 있을 때 여유 공간이 있어 보일 수 있습니다.
+- inode가 디스크 공간보다 먼저 고갈될 수 있습니다.

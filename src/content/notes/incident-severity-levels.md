@@ -1,28 +1,52 @@
 ---
-title: "Incident severity levels"
-description: "Define severity levels to align response and communication."
+title: "인시던트 심각도 단계"
+description: "대응과 커뮤니케이션을 맞추기 위한 심각도 정의."
 pubDate: 2026-02-03
 tags: ["incident-response", "operations", "communication"]
 ---
 
-## Summary
+## 요약
 
-Clear severity levels help teams respond consistently and communicate impact quickly.
+명확한 심각도 단계는 팀이 일관되게 대응하고 영향도를 빠르게 공유하도록 돕습니다.
 
-## Example levels
+## 핵심 개념
 
-- **SEV-1**: Major outage, critical business impact.
-- **SEV-2**: Partial outage or severe degradation.
-- **SEV-3**: Limited impact, workaround available.
-- **SEV-4**: Minor issue or cosmetic bug.
+- 심각도는 대응 우선순위를 결정합니다.
+- 고객 영향과 서비스 범위를 기준으로 합니다.
+- 커뮤니케이션 규칙을 포함합니다.
 
-## What to define
+## 예시 단계
 
-- Impact scope (users, revenue, region).
-- Response time targets.
-- Communication cadence.
+- **SEV-1**: 대규모 장애, 치명적 비즈니스 영향.
+- **SEV-2**: 부분 장애 또는 심각한 성능 저하.
+- **SEV-3**: 제한된 영향, 우회 가능.
+- **SEV-4**: 경미한 문제 또는 UI 버그.
 
-## Pitfalls
+## 정의해야 할 것
 
-- Overusing SEV-1 creates alert fatigue.
-- Missing criteria leads to inconsistent decisions.
+- 영향 범위(사용자, 매출, 리전).
+- 대응 시간 목표.
+- 커뮤니케이션 주기.
+
+## 명령
+
+```bash
+rg -n "SEV|P0|P1|severity" docs/ -S
+```
+문서의 심각도 기준을 확인합니다.
+
+```bash
+rg -n "severity" src/ -S
+```
+서비스 내 심각도 사용 지점을 점검합니다.
+
+## 운영 팁
+
+- 심각도 기준을 사례와 함께 명확히 정의합니다.
+- 등급별 대응 시간과 커뮤니케이션 요구를 정리합니다.
+- 사후 회고로 기준을 주기적으로 조정합니다.
+
+## 주의사항
+
+- SEV-1을 과도하게 사용하면 알림 피로가 발생합니다.
+- 기준이 없으면 결정이 일관되지 않습니다.

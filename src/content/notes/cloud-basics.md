@@ -1,31 +1,56 @@
-﻿---
-title: "Cloud basics overview"
-description: "Core cloud concepts: regions, VPC/VNet, IAM, and managed services."
+---
+title: "클라우드 기본 개요"
+description: "리전, VPC/VNet, IAM, 관리형 서비스 등 핵심 개념."
 pubDate: 2026-02-03
 tags: ["cloud", "aws", "azure", "gcp", "it-basics"]
 ---
 
-## Summary
+## 요약
 
-A quick primer on shared cloud concepts across AWS, Azure, and GCP.
+AWS, Azure, GCP에 공통적인 클라우드 개념을 빠르게 정리합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Regions and availability zones define where workloads run.
-- VPC/VNet provides network isolation and routing control.
-- IAM governs who can access what.
-- Managed services reduce operational overhead.
+- 리전과 가용 영역은 워크로드가 실행되는 위치를 정의합니다.
+- VPC/VNet은 네트워크 격리와 라우팅 제어를 제공합니다.
+- IAM은 누가 무엇에 접근할 수 있는지 통제합니다.
+- 관리형 서비스는 운영 부담을 줄입니다.
+- 클라우드는 공유 책임 모델을 따릅니다.
+- 과금은 리소스 사용량과 전송량에 따라 달라집니다.
 
-## Commands or steps
+## 명령
 
-```text
-Conceptual mapping
+```bash
+aws sts get-caller-identity
+```
+AWS CLI가 어떤 계정으로 동작하는지 확인합니다.
+
+```bash
+az account show
+```
+Azure CLI의 현재 구독과 계정 정보를 확인합니다.
+
+```bash
+gcloud auth list
+```
+GCP CLI에서 활성화된 계정을 확인합니다.
+
+## 체크리스트
+
+개념 매핑:
 - VPC (AWS) ~= VNet (Azure) ~= VPC (GCP)
 - IAM (AWS) ~= Entra ID/RBAC (Azure) ~= IAM (GCP)
-```
 
-## Pitfalls
+## 운영 팁
 
-- Leaving public access open by default.
-- Forgetting to set budgets and alerts.
-- Over-provisioning resources without monitoring.
+- 환경별 계정을 분리해 권한과 비용을 분리합니다.
+- MFA와 감사 로그를 기본으로 활성화합니다.
+- 리소스 태그를 표준화합니다.
+- 네트워크와 IAM 변경은 승인 절차를 거칩니다.
+- 비용 경보와 예산을 반드시 설정합니다.
+
+## 주의사항
+
+- 기본값으로 공개 접근이 열려 있으면 사고로 이어집니다.
+- 예산과 알림을 설정하지 않으면 비용이 급증합니다.
+- 모니터링 없이 리소스를 과다 프로비저닝하면 낭비가 큽니다.

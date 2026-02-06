@@ -1,83 +1,32 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TagList from "../components/TagList.astro";
+import { DEFAULT_LANG, t as translate } from "../utils/i18n";
+import { PATHS } from "../utils/paths";
 
-const paths = [
-  {
-    title: "IT foundations",
-    description: "Build core muscle memory: Linux, Windows, networking, and shell basics.",
-    tags: ["it-basics", "linux", "windows", "networking", "cli", "dns", "dhcp"]
-  },
-  {
-    title: "DevOps starter",
-    description: "Learn automation, containers, CI/CD, and operational visibility.",
-    tags: ["devops", "docker", "kubernetes", "ci-cd", "observability"]
-  },
-  {
-    title: "Cloud & platform",
-    description: "Shared cloud patterns: IAM, networking, and managed services.",
-    tags: ["cloud", "aws", "azure", "gcp", "iam"]
-  },
-  {
-    title: "Security essentials",
-    description: "Lock down access, understand HTTPS, and protect keys.",
-    tags: ["security", "ssh", "tls", "http"]
-  },
-  {
-    title: "Operations & reliability",
-    description: "Incidents, monitoring, and reliable operations habits.",
-    tags: ["operations", "incident-response", "monitoring", "observability", "sre"]
-  },
-  {
-    title: "Data & storage",
-    description: "Databases, indexing, and backup fundamentals.",
-    tags: ["database", "sql", "backup", "disaster-recovery"]
-  },
-  {
-    title: "System design",
-    description: "Scalability, caching, and reliability patterns.",
-    tags: ["system-design", "caching", "load-balancing", "messaging", "sre"]
-  },
-  {
-    title: "Troubleshooting playbooks",
-    description: "Repeatable incident triage and debugging workflows.",
-    tags: ["troubleshooting", "api", "docker", "kubernetes"]
-  },
-  {
-    title: "Infrastructure as code",
-    description: "Automate infrastructure with safe, repeatable code.",
-    tags: ["iac", "terraform", "automation", "cloud"]
-  },
-  {
-    title: "Security operations",
-    description: "Detection, threat modeling, and security reviews.",
-    tags: ["security", "siem", "logging", "threat-modeling", "incident-response"]
-  },
-  {
-    title: "Incident scenarios",
-    description: "Hands-on incident response practice cases.",
-    tags: ["incident-response", "performance", "database", "dns", "operations"]
-  }
-];
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
-<BaseLayout title="Paths" description="Suggested learning paths for IT study notes.">
+<BaseLayout title={t("paths.meta.title")} description={t("paths.meta.description")}>
   <div class="container">
     <section class="hero">
-      <span class="hero-badge">Learning paths</span>
-      <h1>Study paths</h1>
-      <p>Pick a track and follow the related tags to build depth.</p>
+      <span class="hero-badge" data-i18n="paths.badge">{t("paths.badge")}</span>
+      <h1 data-i18n="paths.title">{t("paths.title")}</h1>
+      <p data-i18n="paths.lead">{t("paths.lead")}</p>
     </section>
 
     <section class="section">
-      <div class="note-grid">
-        {paths.map((path) => (
-          <article class="note-card">
-            <div class="note-card-top">
-              <h3 class="note-title">{path.title}</h3>
-              <p class="note-description">{path.description}</p>
+      <div class="path-grid">
+        {PATHS.map((path, index) => (
+          <article class="path-card">
+            <span class="path-index">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 data-i18n={`path.${path.id}.title`}>
+                {t(`path.${path.id}.title`)}
+              </h3>
+              <p data-i18n={`path.${path.id}.desc`}>{t(`path.${path.id}.desc`)}</p>
+              <TagList tags={path.tags} />
             </div>
-            <TagList tags={path.tags} />
           </article>
         ))}
       </div>

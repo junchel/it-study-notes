@@ -1,48 +1,58 @@
-﻿---
-title: "IT knowledge base structure and build-up plan"
-description: "How to define technical topics and build a compounding study system."
+---
+title: "IT 지식베이스 구조와 구축 계획"
+description: "기술 주제를 정의하고 누적되는 학습 시스템을 만드는 방법."
 pubDate: 2026-02-03
 tags: ["structure", "learning", "planning"]
 ---
 
-## Summary
+## 요약
 
-This note describes how to define technical topics and build a growing IT knowledge base.
+이 노트는 기술 주제를 정의하고 성장하는 IT 지식베이스를 만드는 방법을 설명합니다.
 
-## Core structure
+## 핵심 구조
 
-- **Foundations**: OS, networking, Linux, Windows basics.
-- **Systems**: servers, virtualization, storage, backups.
-- **Cloud**: AWS/Azure/GCP basics, IAM, networking, deployment.
-- **DevOps**: CI/CD, Docker, Kubernetes, monitoring.
-- **Security**: auth, hardening, threat modeling, incident response.
-- **Coding**: scripts, automation, tooling.
+- **기초**: OS, 네트워킹, Linux, Windows 기본.
+- **시스템**: 서버, 가상화, 스토리지, 백업.
+- **클라우드**: AWS/Azure/GCP 기본, IAM, 네트워킹, 배포.
+- **DevOps(개발/운영)**: CI/CD, Docker, Kubernetes, 모니터링.
+- **보안**: 인증, 하드닝, 위협 모델링, 인시던트 대응.
+- **코딩**: 스크립트, 자동화, 도구.
 
-## Build-up method
+## 구축 방법
 
-1. Start with a problem statement and the goal.
-2. Record key ideas and the minimal commands to solve it.
-3. Add pitfalls and failure cases.
-4. Link to related notes by shared tags.
-5. Revisit and update with `updatedDate` when you learn more.
+1. 문제 정의와 목표를 먼저 작성합니다.
+2. 핵심 아이디어와 최소 명령을 기록합니다.
+3. 주의사항과 실패 사례를 추가합니다.
+4. 공유 태그로 관련 노트를 연결합니다.
+5. 학습이 늘어나면 `updatedDate`로 갱신합니다.
 
-## Suggested note template
+## 운영 팁
+
+- 문서 소유자와 리뷰 주기를 명확히 지정합니다.
+- 새 문서 템플릿을 고정해 품질 편차를 줄입니다.
+- 검색 키워드와 피드백을 수집해 지속적으로 보완합니다.
+
+## 권장 노트 템플릿
 
 ```md
 ---
-title: "Your note title"
-description: "Short summary"
+title: "노트 제목"
+description: "짧은 요약"
 pubDate: 2026-02-03
-tags: ["topic", "subcategory"]
+tags: ["주제", "하위분류"]
 ---
 
-## Problem or goal
+## 문제 또는 목표
 
-## Key ideas
+## 핵심 개념
 
-## Commands or steps
+## 명령
 
-## Pitfalls
+## 운영 팁
 
-## References
+## 주의사항
+
+## 참고
 ```
+
+노트 프런트매터 작성 형식을 보여주는 예시입니다.

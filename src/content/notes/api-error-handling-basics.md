@@ -1,30 +1,72 @@
 ---
-title: "API error handling basics"
-description: "Design consistent error responses that clients can act on."
+title: "API 오류 처리 기본"
+description: "클라이언트가 대응할 수 있는 일관된 오류 응답을 설계합니다."
 pubDate: 2026-02-03
 tags: ["api", "backend", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Good error handling makes failures predictable and easier to debug.
+좋은 오류 처리는 실패를 예측 가능하게 하고 디버깅을 쉽게 합니다. 오류 응답은 계약이므로 클라이언트가 재시도, 수정, 중단을 판단할 수 있어야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Use a consistent error envelope across endpoints.
-- Separate client errors (4xx) from server errors (5xx).
-- Include stable error codes for programmatic handling.
-- Log correlation IDs for traceability.
+- 엔드포인트 전반에 일관된 오류 봉투(envelope)를 사용합니다.
+- 클라이언트 오류(4xx)와 서버 오류(5xx)를 분리합니다.
+- 프로그램 처리용 안정적인 오류 코드를 포함합니다.
+- 추적 가능성을 위해 상관 ID를 로그에 남깁니다.
+- 재시도 가능 여부를 명시해 클라이언트 동작을 단순화합니다.
+- 검증 오류와 비즈니스 규칙 오류를 구분합니다.
+- 내부 예외는 외부에 직접 노출하지 않습니다.
 
-## Guidelines
+## 명령
 
-- Define a small set of error codes and document them.
-- Return actionable messages without leaking internals.
-- Map validation failures to 400-level responses.
-- Include a request or trace ID in responses and logs.
+```bash
+curl -i https://api.example.com/invalid
+```
+오류 응답 형식과 상태 코드를 확인합니다.
 
-## Pitfalls
+```bash
+curl -i -X POST https://api.example.com/users -H "Content-Type: application/json" -d '{"email":"bad"}'
+```
+검증 오류의 상태 코드와 오류 본문을 확인합니다.
 
-- Inconsistent error shapes across endpoints.
-- Overly verbose messages that expose sensitive data.
-- Using 200 responses for errors.
+```bash
+rg -n "error_code|errorCode" src -S
+```
+코드에서 오류 코드 사용 위치를 찾습니다.
+
+```bash
+rg -n "request_id|correlation" src -S
+```
+요청 ID가 오류 응답과 로그에 포함되는지 점검합니다.
+
+## 예시 응답
+
+```json
+{
+  "error": {
+    "code": "INVALID_ARGUMENT",
+    "message": "email 형식이 올바르지 않습니다.",
+    "details": { "field": "email" },
+    "request_id": "req_1234",
+    "retryable": false
+  }
+}
+```
+클라이언트가 재시도 여부와 오류 원인을 판단할 수 있도록 최소 필드를 포함합니다.
+
+## 운영 팁
+
+- 적은 수의 오류 코드를 정의하고 문서화합니다.
+- 내부 정보를 노출하지 않으면서 실행 가능한 메시지를 반환합니다.
+- 검증 실패를 400대 응답에 매핑합니다.
+- 요청 ID 또는 트레이스 ID를 응답과 로그에 포함합니다.
+- 임시 장애는 `retryable` 필드나 표준 메시지로 안내합니다.
+- 장애 구간에서는 5xx에 동일한 오류 봉투를 유지합니다.
+
+## 주의사항
+
+- 엔드포인트마다 오류 형태가 다르면 클라이언트 오류가 증가합니다.
+- 민감한 데이터를 노출하는 과도한 메시지는 보안 사고로 이어집니다.
+- 오류에 200 응답을 사용하면 모니터링과 캐시가 깨집니다.

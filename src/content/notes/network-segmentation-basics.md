@@ -1,31 +1,50 @@
-﻿---
-title: "Network segmentation basics"
-description: "Reduce blast radius with subnets, VLANs, and access rules."
+---
+title: "네트워크 세그먼테이션 기본"
+description: "서브넷, VLAN, 접근 규칙으로 영향 범위를 줄입니다."
 pubDate: 2026-02-03
 tags: ["networking", "security", "segmentation"]
 ---
 
-## Summary
+## 요약
 
-Segmentation limits lateral movement and reduces risk.
+세그먼테이션은 내부 확산을 줄이고 침해 범위를 최소화합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Separate public, app, and data tiers.
-- Use least privilege between segments.
-- Monitor traffic between zones.
+- **티어 분리**: public/app/data를 분리해 최소 권한을 적용합니다.
+- **동서 트래픽**: 내부 간 통신을 모니터링하고 제어합니다.
+- **정책 단순화**: 이해 가능한 규칙이 운영 리스크를 줄입니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Define tiers and subnet boundaries
-- Apply ACLs and firewall rules
-- Audit inter-segment traffic
+```bash
+ip route
 ```
+서브넷 간 라우팅 경계를 확인합니다.
 
-## Pitfalls
+```bash
+nc -vz 10.0.2.10 5432
+```
+특정 세그먼트의 포트 접근 가능 여부를 빠르게 점검합니다.
 
-- Flat networks with shared access.
-- Overly complex rules that nobody understands.
-- Missing monitoring on east-west traffic.
+```bash
+iptables -S
+```
+호스트 수준 방화벽 규칙을 확인합니다.
+
+```bash
+traceroute 10.0.2.10
+```
+트래픽이 어떤 구간을 통과하는지 추적합니다.
+
+## 운영 팁
+
+- 보안 영역을 정의하고 통신 흐름을 문서화합니다.
+- 동서 트래픽을 최소화하도록 정책을 설정합니다.
+- 세그먼트 간 허용 규칙을 주기적으로 검토합니다.
+
+## 주의사항
+
+- 플랫 네트워크는 침해 확산을 키웁니다.
+- 과도하게 복잡한 규칙은 운영 난이도를 높입니다.
+- 동서 트래픽 모니터링이 없으면 내부 이상을 놓칩니다.

@@ -1,30 +1,67 @@
 ---
-title: "API pagination basics"
-description: "Return large datasets safely with predictable pagination patterns."
+title: "API 페이지네이션 기본"
+description: "예측 가능한 페이지네이션 패턴으로 대규모 데이터셋을 안전하게 반환합니다."
 pubDate: 2026-02-03
 tags: ["api", "backend", "design"]
 ---
 
-## Summary
+## 요약
 
-Pagination keeps responses small, predictable, and cheaper to serve.
+페이지네이션은 응답을 작고 예측 가능하게 만들며 제공 비용을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Page size limits protect performance and cost.
-- Offset pagination is simple but can drift with changing data.
-- Cursor pagination is stable for large, fast-moving datasets.
-- Always define a consistent sort order.
+- 페이지 크기 제한은 성능과 비용을 보호합니다.
+- 오프셋 기반은 단순하지만 데이터 변경 시 흔들릴 수 있습니다.
+- 커서 기반은 대용량, 빠르게 변하는 데이터에 안정적입니다.
+- 커서는 불투명한 토큰으로 취급합니다.
+- 항상 일관된 정렬 순서와 고유 키를 함께 정의합니다.
+- 전체 개수는 비용이 크면 선택적으로 제공합니다.
 
-## Guidelines
+## 명령
 
-- Set a default and a hard maximum page size.
-- Prefer cursor-based pagination for high-volume endpoints.
-- Include `next` and `prev` links or tokens in the response.
-- Document the sort order and pagination parameters clearly.
+```bash
+curl -s "https://api.example.com/items?page=1&limit=20"
+```
+페이지네이션 동작과 응답 크기를 확인합니다.
 
-## Pitfalls
+```bash
+curl -s "https://api.example.com/items?cursor=next_token&limit=20"
+```
+커서 기반 페이지네이션 응답을 확인합니다.
 
-- Unbounded page sizes can cause timeouts and memory spikes.
-- Offset pagination can skip or duplicate items under writes.
-- Inconsistent sorting leads to confusing client behavior.
+```bash
+rg -n "limit|offset|cursor" src -S
+```
+페이지네이션 파라미터 처리 위치를 찾습니다.
+
+```bash
+rg -n "ORDER BY|sort" src -S
+```
+정렬 기준이 모든 경로에 적용되는지 점검합니다.
+
+## 예시 응답
+
+```json
+{
+  "items": [{ "id": 101, "name": "item-a" }],
+  "next_cursor": "eyJpZCI6MTAxfQ==",
+  "has_more": true
+}
+```
+다음 페이지로 이동할 수 있도록 커서와 상태 값을 포함합니다.
+
+## 운영 팁
+
+- 기본값과 하드 최대 페이지 크기를 설정합니다.
+- 대용량 엔드포인트에는 커서 기반을 우선합니다.
+- 응답에 `next`/`prev` 링크나 토큰을 포함합니다.
+- 정렬 기준과 페이지네이션 파라미터를 명확히 문서화합니다.
+- 필터 조건이 있으면 커서에 조건을 포함하거나 무효화 규칙을 정의합니다.
+- 일관된 정렬 키가 없으면 커서 기반의 안정성이 깨집니다.
+
+## 주의사항
+
+- 제한 없는 페이지 크기는 타임아웃과 메모리 급증을 유발할 수 있습니다.
+- 오프셋 기반은 쓰기 중에 항목이 누락되거나 중복될 수 있습니다.
+- 정렬이 일관되지 않으면 클라이언트 동작이 혼란스러워집니다.

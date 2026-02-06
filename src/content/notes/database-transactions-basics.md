@@ -1,31 +1,42 @@
-﻿---
-title: "Database transactions basics"
-description: "ACID properties, isolation levels, and safe write patterns."
+---
+title: "데이터베이스 트랜잭션 기본"
+description: "ACID 특성, 격리 수준, 안전한 쓰기 패턴."
 pubDate: 2026-02-03
 tags: ["database", "sql", "transactions"]
 ---
 
-## Summary
+## 요약
 
-Transactions keep data consistent across multiple operations.
+트랜잭션은 여러 작업에 걸친 데이터 일관성을 보장합니다.
 
-## Key ideas
+## 핵심 개념
 
-- ACID: atomicity, consistency, isolation, durability.
-- Isolation levels trade consistency for performance.
-- Use transactions for multi-step updates.
+- ACID: 원자성, 일관성, 격리성, 지속성.
+- 격리 수준은 일관성과 성능 사이의 트레이드오프입니다.
+- 여러 단계 업데이트에는 트랜잭션을 사용합니다.
+- 재시도 로직과 멱등성을 함께 고려합니다.
 
-## Commands or steps
+## 명령
 
 ```sql
-BEGIN;
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-UPDATE accounts SET balance = balance + 100 WHERE id = 2;
-COMMIT;
+BEGIN; UPDATE accounts SET balance = balance - 100 WHERE id = 1; UPDATE accounts SET balance = balance + 100 WHERE id = 2; COMMIT;
 ```
+트랜잭션으로 계좌 이체를 원자적으로 처리하는 예시입니다.
 
-## Pitfalls
+```sql
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+```
+트랜잭션 격리 수준을 설정해 일관성과 성능을 조정합니다.
 
-- Long-running transactions blocking others.
-- Missing indexes on lock-heavy tables.
-- Assuming default isolation is enough for all workloads.
+## 운영 팁
+
+- 트랜잭션 범위를 작게 유지해 잠금 시간을 줄입니다.
+- 업무 특성에 맞는 격리 수준을 선택합니다.
+- 락 경합이 발생하는 테이블에 인덱스를 점검합니다.
+- 실패 시 재시도 정책을 정의하고 중복 처리를 방지합니다.
+
+## 주의사항
+
+- 장시간 트랜잭션이 다른 작업을 블로킹합니다.
+- 락이 많이 걸리는 테이블에 인덱스가 없으면 지연이 커집니다.
+- 모든 워크로드에 기본 격리 수준이 충분하다고 가정하면 오류가 발생합니다.

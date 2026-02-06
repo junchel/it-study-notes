@@ -1,28 +1,58 @@
 ---
-title: "Log levels basics"
-description: "Use consistent log levels to improve signal and debugging."
+title: "로그 레벨 기본"
+description: "일관된 로그 레벨로 신호와 소음을 분리합니다."
 pubDate: 2026-02-03
 tags: ["logging", "observability", "operations"]
 ---
 
-## Summary
+## 요약
 
-Log levels help teams separate noise from signal and respond faster during incidents.
+로그 레벨은 어떤 이벤트를 ‘알림’으로 볼지 결정하는 기준합니다.
 
-## Common levels
+## 핵심 개념
 
-- **DEBUG**: detailed, high-volume diagnostics.
-- **INFO**: normal operation events.
-- **WARN**: unexpected conditions that are non-fatal.
-- **ERROR**: failed operations that need attention.
-- **FATAL**: service cannot continue.
+- 로그 레벨은 중요도와 비용의 균형입니다.
+- 환경별 레벨 정책을 다르게 운영합니다.
+- 구조화 로그와 레벨 정책을 함께 봅니다.
 
-## Tips
+## 일반 레벨
 
-- Use structured logs (JSON) when possible.
-- Include correlation IDs for tracing.
+- **DEBUG**: 상세 진단(대량 로그).
+- **INFO**: 정상 동작 이벤트.
+- **WARN**: 비정상 징후지만 치명적이지 않음.
+- **ERROR**: 처리 실패, 즉시 주목 필요.
+- **FATAL**: 서비스가 계속 실행될 수 없음.
 
-## Pitfalls
+## 운영 팁
 
-- Overusing ERROR makes alerting noisy.
-- Missing context fields makes logs hard to search.
+- 알림 기준은 WARN/ERROR 중심으로 설정합니다.
+- DEBUG는 문제 해결 시에만 제한적으로 사용합니다.
+- 레벨마다 필수 필드(요청 ID, 사용자 ID, 경로)를 정의합니다.
+
+## 명령
+
+```bash
+export LOG_LEVEL=info
+```
+실행 환경 변수로 기본 로그 레벨을 설정합니다.
+
+```bash
+LOG_LEVEL=debug ./app
+```
+일시적으로 디버그 레벨로 애플리케이션을 실행합니다.
+
+```bash
+grep -E "WARN|ERROR|FATAL" /var/log/app.log
+```
+경고 이상 레벨만 빠르게 필터링합니다.
+
+```bash
+jq -c 'select(.level=="error" or .level=="fatal")' /var/log/app.json
+```
+구조화 로그에서 에러 레벨만 추출합니다.
+
+## 주의사항
+
+- ERROR를 과도하게 사용하면 알림 피로가 발생합니다.
+- 레벨 기준이 팀마다 다르면 분석이 어려워집니다.
+- 컨텍스트 필드가 누락되면 원인 분석 시간이 늘어납니다.

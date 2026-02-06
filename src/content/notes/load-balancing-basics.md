@@ -1,31 +1,64 @@
-﻿---
-title: "Load balancing basics"
-description: "Reverse proxies, L4/L7 load balancers, and common patterns."
+---
+title: "로드 밸런싱 기본"
+description: "리버스 프록시, L4/L7 로드밸런서, 실무 설계 포인트."
 pubDate: 2026-02-03
 tags: ["networking", "load-balancing", "architecture"]
 ---
 
-## Summary
+## 요약
 
-Load balancers distribute traffic across multiple backends to improve availability.
+로드 밸런서는 여러 백엔드로 트래픽을 분산해 가용성과 확장성을 높입니다.
 
-## Key ideas
+## 핵심 개념
 
-- L4 operates on TCP/UDP; L7 understands HTTP.
-- Health checks keep traffic away from failed nodes.
-- Sticky sessions trade simplicity for stateful behavior.
+- **L4 vs L7**: L4는 TCP/UDP 수준, L7은 HTTP 헤더/경로까지 인지합니다.
+- **알고리즘**: 라운드로빈, 최소 연결, 가중치 기반 등으로 분산합니다.
+- **헬스 체크**: 비정상 노드를 자동으로 제외합니다.
+- **세션 고정**: 상태가 있는 서비스는 필요하지만, 무상태를 우선합니다.
 
-## Commands or steps
+## 설계 체크리스트
 
-```text
-Checklist
-- Choose L4 or L7 based on protocol needs
-- Configure health checks
-- Decide on session affinity
+- 프로토콜 요구사항에 맞는 L4/L7 선택.
+- 헬스 체크 경로와 타임아웃, 임계값 정의.
+- 타임아웃(연결/응답)과 재시도 정책 합의.
+- 세션 고정이 필요한지, 대안(공유 세션 저장소) 검토.
+
+## 명령
+
+```bash
+dig +short lb.example.com
 ```
+로드 밸런서가 어떤 IP로 해석되는지 확인해 DNS 구성과 다중 레코드를 점검합니다.
 
-## Pitfalls
+```bash
+curl -I https://lb.example.com/health
+```
+헬스 체크 엔드포인트가 정상(예: 200)인지 확인합니다.
 
-- Missing timeouts causing request pileups.
-- No health checks or misconfigured ones.
-- Relying on sticky sessions without shared state.
+```bash
+curl -s -o /dev/null -w "%{http_code} %{time_total}\n" https://lb.example.com/
+```
+상태 코드와 총 응답 시간을 빠르게 측정해 지연 여부를 확인합니다.
+
+```bash
+ss -ltnp | grep ':443'
+```
+로드 밸런서 노드에서 HTTPS 포트 리스닝 상태를 확인합니다.
+
+## 관찰 포인트
+
+- **분산 균형**: 특정 백엔드에 트래픽이 몰리지 않는지 확인합니다.
+- **오류율**: 5xx 증가 시 헬스 체크와 타임아웃 설정을 재검토합니다.
+- **지연**: p95/p99가 상승하면 백엔드 병목 또는 재시도 폭주를 의심합니다.
+
+## 운영 팁
+
+- 헬스체크와 장애 감지 기준을 명확히 설정합니다.
+- 드레이닝을 설정해 연결 종료를 부드럽게 처리합니다.
+- 워크로드에 맞는 알고리즘을 선택합니다.
+
+## 주의사항
+
+- 타임아웃이 없거나 길면 요청이 쌓여 연쇄 장애가 발생합니다.
+- 헬스 체크가 너무 느리면 장애 감지가 늦습니다.
+- 세션 고정에 의존하면 수평 확장성과 장애 복구가 떨어집니다.

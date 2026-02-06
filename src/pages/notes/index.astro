@@ -3,18 +3,20 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import NoteCard from "../../components/NoteCard.astro";
 import Search from "../../components/Search.astro";
 import { getCollection } from "astro:content";
+import { DEFAULT_LANG, t as translate } from "../../utils/i18n";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
-<BaseLayout title="Notes" description="All IT study notes, ordered by date.">
+<BaseLayout title={t("notes.meta.title")} description={t("notes.meta.description")}>
   <div class="container">
     <section class="hero">
-      <span class="hero-badge">All notes</span>
-      <h1>IT study notes</h1>
-      <p>Every entry is a building block for your IT reference system.</p>
+      <span class="hero-badge" data-i18n="notes.badge">{t("notes.badge")}</span>
+      <h1 data-i18n="notes.title">{t("notes.title")}</h1>
+      <p data-i18n="notes.lead">{t("notes.lead")}</p>
     </section>
 
     <section class="section">

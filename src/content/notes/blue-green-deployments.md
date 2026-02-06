@@ -1,28 +1,61 @@
 ---
-title: "Blue-green deployments"
-description: "Deploy new versions safely with a parallel environment."
+title: "블루-그린 배포"
+description: "병렬 환경으로 안전하게 새 버전을 배포합니다."
 pubDate: 2026-02-03
 tags: ["deployment", "ci-cd", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Blue-green deployment runs two identical environments. You deploy to the idle one and switch traffic when ready.
+블루-그린 배포는 동일한 두 환경을 운영합니다. 대기 중인 환경에 배포하고 준비가 되면 트래픽을 전환합니다.
 
-## Benefits
+## 핵심 개념
 
-- Fast rollback by switching traffic back.
-- Minimal downtime.
-- Safer release validation.
+- 블루와 그린 환경을 동시에 유지해 무중단 전환합니다.
+- 트래픽 전환은 서비스 라우팅 변경으로 수행합니다.
+- 롤백은 이전 환경으로 즉시 되돌리는 구조입니다.
+- 배포 전후로 데이터 스키마 호환성을 보장해야 합니다.
 
-## Workflow
+## 장점
 
-1. Deploy new version to green environment.
-2. Run smoke tests.
-3. Switch traffic to green.
-4. Keep blue ready for rollback.
+- 트래픽만 되돌리면 빠른 롤백이 가능합니다.
+- 다운타임을 최소화합니다.
+- 릴리스 검증을 더 안전하게 수행할 수 있습니다.
 
-## Pitfalls
+## 워크플로
 
-- Data migrations can still cause issues.
-- Double infrastructure costs during deployment.
+1. 새 버전을 그린 환경에 배포합니다.
+2. 스모크 테스트를 수행합니다.
+3. 트래픽을 그린으로 전환합니다.
+4. 블루는 롤백을 위해 대기 상태로 유지합니다.
+
+## 명령
+
+```bash
+kubectl get svc -n prod
+```
+현재 트래픽을 받는 서비스 라우팅 대상을 확인합니다.
+
+```bash
+kubectl get deploy -n prod -l app=app
+```
+블루/그린 배포 상태와 레플리카 수를 확인합니다.
+
+```bash
+kubectl patch svc app -n prod -p '{"spec":{"selector":{"version":"green"}}}'
+```
+서비스 셀렉터를 변경해 트래픽을 그린으로 전환합니다.
+
+## 운영 팁
+
+- 데이터 스키마는 구버전과 호환되도록 변경합니다.
+- 전환 전 그린 환경의 캐시와 워밍업을 수행합니다.
+- 로드밸런서 헬스체크로 전환 타이밍을 제어합니다.
+- 배치 작업과 크론은 활성 환경에서만 실행되도록 분리합니다.
+- 전환 직후 에러율과 지연을 집중 모니터링합니다.
+
+## 주의사항
+
+- 데이터 마이그레이션은 여전히 문제를 일으킬 수 있습니다.
+- 배포 동안 인프라 비용이 두 배가 됩니다.
+- 환경 간 설정 불일치가 장애로 이어질 수 있습니다.

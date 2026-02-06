@@ -1,27 +1,62 @@
 ---
-title: "API versioning basics"
-description: "Ship API changes without breaking existing clients."
+title: "API 버저닝 기본"
+description: "기존 클라이언트를 깨지 않으면서 API 변경을 배포합니다."
 pubDate: 2026-02-03
 tags: ["api", "architecture", "design"]
 ---
 
-## Summary
+## 요약
 
-Versioning protects clients from breaking changes while allowing the API to evolve.
+버저닝은 API의 진화를 가능하게 하면서 클라이언트를 보호합니다.
 
-## Common approaches
+## 핵심 개념
 
-- URL versioning: `/v1/users`
-- Header versioning: `Accept: application/vnd.example.v1+json`
-- Query parameter versioning: `?v=1`
+- 하위 호환성을 유지하는 전략이 핵심입니다.
+- 버전은 URL이나 헤더로 명확히 전달합니다.
+- 폐기 정책과 마이그레이션 가이드를 제공합니다.
+- 파괴적 변경은 새 버전으로만 배포합니다.
+- 지원 기간과 종료 일정을 사전에 공지합니다.
 
-## Guidelines
+## 일반적인 접근
 
-- Avoid breaking changes within a version.
-- Deprecate with clear timelines.
-- Provide migration guides.
+- URL 버저닝: `/v1/users`
+- 헤더 버저닝: `Accept: application/vnd.example.v1+json`
+- 쿼리 파라미터 버저닝: `?v=1`
 
-## Pitfalls
+## 명령
 
-- Too many versions increase maintenance cost.
-- Inconsistent behavior across versions.
+```bash
+rg -n "/v1|/v2|version" src -S
+```
+버전 경로와 버전 처리 위치를 찾습니다.
+
+```bash
+curl -I https://api.example.com/v1/health
+```
+버전별 엔드포인트가 동작하는지 확인합니다.
+
+```bash
+rg -n "Deprecation|Sunset" src -S
+```
+버전 종료 안내 헤더가 적용되어 있는지 확인합니다.
+
+## 예시 헤더
+
+```http
+Deprecation: true
+Sunset: Wed, 01 Apr 2026 00:00:00 GMT
+```
+지원 종료 일정과 상태를 헤더로 안내합니다.
+
+## 운영 팁
+
+- 버전 내에서의 변경은 호환성을 깨지 않도록 합니다.
+- 명확한 일정과 함께 사용 중지(디프리케이션)를 공지합니다.
+- 마이그레이션 가이드를 제공합니다.
+- 구버전과 신버전의 차이를 변경 로그로 유지합니다.
+- 클라이언트 측 버전 사용률을 모니터링합니다.
+
+## 주의사항
+
+- 버전이 너무 많으면 유지보수 비용이 증가합니다.
+- 버전 간 동작이 일관되지 않으면 혼란이 커집니다.

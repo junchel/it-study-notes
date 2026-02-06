@@ -1,24 +1,36 @@
-﻿---
-title: "Incident scenario: latency spike"
-description: "Diagnose sudden latency increases in web services."
+---
+title: "인시던트 시나리오: 지연 급증"
+description: "웹 서비스의 갑작스러운 지연 증가를 진단합니다."
 pubDate: 2026-02-03
 tags: ["incident-response", "performance", "troubleshooting"]
 ---
 
-## Summary
+## 요약
 
-A structured response to sudden latency spikes in production.
+프로덕션에서 갑작스러운 지연 급증이 발생했을 때의 구조화된 대응 절차합니다.
 
-## Steps
+## 핵심 개념
 
-1. Confirm scope (single endpoint or all services).
-2. Check latency percentiles and error rates.
-3. Inspect upstream dependencies (DB, cache, APIs).
-4. Review recent deploys or config changes.
-5. Roll back or scale if needed.
+- 외부 의존성과 내부 병목을 분리합니다.
+- 지연 구간을 p95/p99로 확인합니다.
+- 캐시와 큐 적체 여부를 함께 봅니다.
 
-## Pitfalls
+## 절차
 
-- Focusing on averages instead of p95/p99.
-- Ignoring upstream timeouts.
-- Missing recent config changes.
+1. 범위를 확인합니다(단일 엔드포인트인지 전체 서비스인지).
+2. 지연 퍼센타일과 오류율을 확인합니다.
+3. 업스트림 의존성(DB, 캐시, API)을 점검합니다.
+4. 최근 배포나 설정 변경을 검토합니다.
+5. 필요하면 롤백 또는 스케일링합니다.
+
+## 운영 팁
+
+- 외부 의존성과 내부 서비스 지연을 분리해 확인합니다.
+- p95와 p99를 비교해 꼬리 지연을 판단합니다.
+- 문제 기능을 임시로 비활성화하는 플랜을 마련합니다.
+
+## 주의사항
+
+- 평균이 아니라 p95/p99에 집중해야 합니다.
+- 업스트림 타임아웃을 무시함.
+- 최근 설정 변경을 놓침.

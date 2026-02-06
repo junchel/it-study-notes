@@ -1,30 +1,49 @@
 ---
-title: "Circuit breaker basics"
-description: "Stop cascading failures by cutting off unhealthy dependencies."
+title: "서킷 브레이커 기본"
+description: "불건전한 의존성을 차단해 연쇄 장애를 막습니다."
 pubDate: 2026-02-03
 tags: ["reliability", "architecture", "backend"]
 ---
 
-## Summary
+## 요약
 
-Circuit breakers prevent repeated calls to failing services and give them time to recover.
+서킷 브레이커는 실패하는 서비스에 대한 반복 호출을 막고 복구 시간을 확보합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Breakers move between closed, open, and half-open states.
-- Failure thresholds trigger an open state.
-- Half-open probes test recovery before closing.
-- Fallbacks reduce user impact.
+- 브레이커는 닫힘(closed), 열림(open), 반열림(half-open) 상태를 전환합니다.
+- 실패 임계값이 열림 상태를 트리거합니다.
+- 반열림 상태에서 복구 여부를 탐지한 후 닫힘으로 전환합니다.
+- 폴백은 사용자 영향을 줄입니다.
+- 오류율뿐 아니라 지연 시간 기준을 함께 고려합니다.
 
-## Guidelines
+## 명령
 
-- Configure breakers per dependency, not globally.
-- Combine with timeouts and limited retries.
-- Emit metrics and alerts for breaker state changes.
-- Provide graceful fallbacks when possible.
+```bash
+rg -n "circuit|breaker|resilience4j|hystrix" src -S
+```
+코드에서 서킷 브레이커 구현 위치를 찾습니다.
 
-## Pitfalls
+```bash
+rg -n "fallback|degrade" src -S
+```
+폴백 처리 로직을 확인합니다.
 
-- A global breaker can take down healthy paths.
-- Aggressive thresholds can cause flapping.
-- Missing fallbacks can turn brief issues into outages.
+```bash
+rg -n "timeout|bulkhead" config/ -S
+```
+서킷 브레이커 관련 설정을 점검합니다.
+
+## 운영 팁
+
+- 전역이 아니라 의존성별로 브레이커를 설정합니다.
+- 타임아웃과 제한된 재시도와 함께 사용합니다.
+- 상태 변화에 대한 메트릭과 알림을 내보냅니다.
+- 가능하면 우아한 폴백을 제공합니다.
+- 반열림 상태의 시도 횟수와 간격을 보수적으로 설정합니다.
+
+## 주의사항
+
+- 전역 브레이커는 정상 경로까지 차단할 수 있습니다.
+- 과격한 임계값은 플래핑을 유발합니다.
+- 폴백이 없으면 짧은 장애가 큰 장애로 번질 수 있습니다.

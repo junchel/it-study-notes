@@ -1,30 +1,51 @@
 ---
-title: "Query plan basics"
-description: "Read execution plans to fix slow queries."
+title: "쿼리 플랜 기본"
+description: "실행 계획을 읽고 느린 쿼리를 개선합니다."
 pubDate: 2026-02-03
 tags: ["database", "performance", "sql"]
 ---
 
-## Summary
+## 요약
 
-Query plans show how the database executes SQL and where time is spent.
+쿼리 플랜은 DB가 SQL을 어떻게 실행하는지와 병목 지점을 보여줍니다.
 
-## Key ideas
+## 핵심 개념
 
-- Plans reveal joins, scans, and index usage.
-- Cost estimates help compare alternative plans.
-- Statistics drive planner decisions.
-- Plan regressions can happen after data changes.
+- **스캔/조인**: 풀 스캔 여부와 조인 순서가 성능을 좌우합니다.
+- **비용 추정치**: 플랜 선택 기준이므로 왜 느린지 힌트를 줍니다.
+- **통계**: 통계가 오래되면 잘못된 플랜이 선택될 수 있습니다.
 
-## Guidelines
+## 명령
 
-- Use `EXPLAIN` to inspect slow queries.
-- Check for full table scans on large tables.
-- Keep statistics updated after major data changes.
-- Add indexes that match filters and join keys.
+```sql
+EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';
+```
+쿼리 실행 경로를 확인해 인덱스 사용 여부를 파악합니다.
 
-## Pitfalls
+```sql
+EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
+```
+실제 실행 시간과 행 수를 포함한 플랜을 확인합니다.
 
-- Relying on query text without validating the plan.
-- Over-indexing and slowing writes.
-- Ignoring parameter sniffing or plan caching issues.
+```sql
+ANALYZE;
+```
+통계를 갱신해 플래너가 올바른 결정을 하도록 합니다.
+
+## 실무 포인트
+
+- **Rows 추정 vs 실제** 차이가 크면 통계 업데이트를 고려합니다.
+- **Seq Scan**이 반복되면 인덱스가 필요할 수 있습니다.
+- **Nested Loop**가 큰 테이블에서 반복되면 조인 전략을 바꿉니다.
+
+## 운영 팁
+
+- 인덱스 변경 전후로 실행 계획을 비교합니다.
+- 함수 사용으로 인덱스가 무효화되지 않도록 합니다.
+- 순차 스캔이 반복되면 통계를 점검합니다.
+
+## 주의사항
+
+- 플랜 없이 쿼리 텍스트만 보면 원인을 놓칠 수 있습니다.
+- 과도한 인덱스는 쓰기 성능을 떨어뜨립니다.
+- 파라미터 스니핑/캐시로 플랜이 비정상일 수 있습니다.

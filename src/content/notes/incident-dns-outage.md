@@ -1,23 +1,67 @@
-﻿---
-title: "Incident scenario: DNS outage"
-description: "Mitigate and communicate during name resolution failures."
+---
+title: "인시던트 시나리오: DNS 장애"
+description: "이름 해석 장애 시 완화와 커뮤니케이션을 수행합니다."
 pubDate: 2026-02-03
 tags: ["dns", "incident-response", "networking"]
 ---
 
-## Summary
+## 요약
 
-DNS outages break service discovery and user access.
+DNS 장애는 사용자가 서비스에 접근하지 못하게 만들며 영향 범위가 큽니다. 캐시와 TTL로 인해 복구 지연이 발생하므로 즉시 완화와 커뮤니케이션이 필요합니다.
 
-## Steps
+## 핵심 개념
 
-1. Confirm DNS resolution failures and scope.
-2. Switch to secondary DNS provider if available.
-3. Reduce TTL for critical records after stabilization.
-4. Communicate impact and resolution steps.
+- DNS 장애는 전체 트래픽에 광범위한 영향을 줍니다.
+- TTL과 캐시 때문에 복구 후에도 영향이 남습니다.
+- 보조 DNS, 빠른 TTL 조정, 우회 라우팅이 핵심 완화책입니다.
 
-## Pitfalls
+## 절차
 
-- Single DNS provider without failover.
-- Long TTLs delaying recovery.
-- Missing runbooks for DNS changes.
+1. 실패 범위(특정 도메인/레코드/리졸버)를 확인합니다.
+2. 보조 DNS 제공자로 전환하거나 레코드를 복원합니다.
+3. TTL을 낮춰 전파 지연을 줄이고 캐시 갱신을 유도합니다.
+4. 복구 상황과 예상 전파 시간을 안내합니다.
+5. 재발 방지로 멀티 DNS/모니터링을 강화합니다.
+
+## 체크리스트
+
+- 2개 이상의 DNS 제공자 또는 페일오버 체계가 있음
+- 핵심 레코드의 TTL 전략이 정의됨
+- 외부 리졸버 기반 모니터링이 있음
+- 변경 이력과 롤백 절차가 문서화됨
+- 장애 공지 템플릿이 준비됨
+
+## 명령
+
+```bash
+dig +short example.com
+```
+기본 리졸버에서 결과를 확인합니다.
+
+```bash
+dig @1.1.1.1 example.com
+```
+대체 리졸버에서 해석 결과를 비교합니다.
+
+```bash
+dig +trace example.com
+```
+권한 DNS까지의 해석 경로를 추적합니다.
+
+```bash
+dig -t soa example.com
+```
+SOA 레코드로 권한 서버 정보를 확인합니다.
+
+## 운영 팁
+
+- TTL 변경은 장애 전 미리 계획해 두어야 효과적입니다.
+- 다중 리졸버 기반 모니터링을 운영해 조기 탐지합니다.
+- 권한 DNS와 레지스트라 정보를 분리 보관합니다.
+- 장애 공지에는 예상 전파 시간을 포함합니다.
+
+## 주의사항
+
+- 단일 DNS 제공자는 광범위 장애에 취약합니다.
+- TTL이 길면 복구 후에도 사용자가 장애를 경험합니다.
+- 변경 절차가 없으면 잘못된 레코드가 오래 유지됩니다.

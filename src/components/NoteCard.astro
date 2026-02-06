@@ -1,18 +1,25 @@
 ﻿---
 import TagList from "./TagList.astro";
+import { DEFAULT_LANG, t as translate } from "../utils/i18n";
 
 const { note } = Astro.props;
 const { data } = note;
 const date = data.updatedDate || data.pubDate;
+const displayDate = date.toLocaleDateString("ko-KR");
+const noteHref = `/notes/${note.slug}/`;
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
 <article class="note-card">
   <div class="note-card-top">
-    <p class="note-date">{date.toLocaleDateString()}</p>
+    <p class="note-date">{displayDate}</p>
     <h3 class="note-title">
-      <a href={`/notes/${note.slug}/`}>{data.title}</a>
+      <a href={noteHref}>{data.title}</a>
     </h3>
     <p class="note-description">{data.description}</p>
   </div>
-  <TagList tags={data.tags} />
+  <div class="note-card-bottom">
+    <TagList tags={data.tags} />
+    <a class="note-card-cta" href={noteHref} data-i18n="note.card.open">{t("note.card.open")}</a>
+  </div>
 </article>

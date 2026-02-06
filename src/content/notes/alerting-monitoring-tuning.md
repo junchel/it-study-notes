@@ -1,31 +1,83 @@
-﻿---
-title: "Alerting and monitoring tuning"
-description: "Reduce alert noise and focus on actionable signals."
+---
+title: "알림 및 모니터링 튜닝"
+description: "알림 소음을 줄이고 실행 가능한 신호에 집중합니다."
 pubDate: 2026-02-03
 tags: ["monitoring", "alerting", "operations"]
 ---
 
-## Summary
+## 요약
 
-Good alerts are actionable, timely, and tied to user impact.
+좋은 알림은 실행 가능하고, 적시에 오며, 사용자 영향과 연결되어야 합니다. 알림 튜닝은 신호 대비 노이즈를 줄이고 대응 시간을 개선하는 작업이며, SLO와 에러 버짓을 기준으로 과·과소 알림을 조정합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Alert on symptoms, not every metric.
-- Group related alerts and suppress duplicates.
-- Review alert efficacy regularly.
+- 모든 지표가 아니라 증상 기반 지표(SLI)에 알림을 겁니다.
+- 에러 버짓 소진 속도(버닝 레이트)를 기준으로 임계값을 설계합니다.
+- 알림의 심각도, 소유자, 런북 링크를 함께 정의합니다.
+- 관련 알림을 묶고 중복을 억제합니다.
+- 저심각도 신호는 대시보드/티켓으로 전환해 알림 피로를 줄입니다.
+- 유지보수 창과 사일런스를 운영합니다.
+- 알림 효과를 MTTA/MTTR과 함께 정기적으로 검토합니다.
 
-## Commands or steps
+## 절차
 
-```text
-Checklist
-- Map alerts to user impact
-- Add rate limits or deduplication
-- Review noisy alerts monthly
+1. 사용자 영향 지표(SLI)와 목표(SLO)를 정의하고 베이스라인을 확보합니다.
+2. 알림 임계값, 지속 시간, 심각도 기준을 문서화합니다.
+3. 버닝 레이트 기반 알림과 정적 임계값 알림을 구분합니다.
+4. 알림 라우팅, 그룹핑, 중복 억제 설정을 구성합니다.
+5. 런북과 에스컬레이션 경로를 알림에 연결합니다.
+6. 월간 리뷰로 알림 노이즈와 응답 지표를 점검합니다.
+
+## 체크리스트
+
+- 알림에 `severity`, `owner`, `runbook` 라벨이 포함됩니다.
+- 동일 사건이 여러 채널로 중복 발송되지 않습니다.
+- 핵심 알림 수가 팀의 대응 용량을 초과하지 않습니다.
+- 유지보수 창과 사일런스 정책이 있습니다.
+- 알림 지표(발송 수, 응답 시간)를 추적합니다.
+
+## 명령
+
+```bash
+promtool check rules alert_rules.yml
 ```
+경보 룰 문법과 유효성을 검증합니다.
 
-## Pitfalls
+```bash
+amtool check-config alertmanager.yml
+```
+Alertmanager 설정 파일의 유효성을 검증합니다.
 
-- Alert fatigue from too many low-signal alerts.
-- Missing context in alerts.
-- No ownership for alert tuning.
+```bash
+amtool silence add alertname="HighErrorRate" --duration=1h
+```
+단기 유지보수 동안 특정 알림을 사일런스합니다.
+
+```bash
+promtool test rules tests.yml
+```
+알림 규칙에 대한 테스트 케이스를 실행합니다.
+
+```bash
+rg -n "severity|runbook|owner" alert_rules.yml -S
+```
+알림에 필수 라벨과 런북 링크가 있는지 확인합니다.
+
+```bash
+rg -n "group_by|group_wait|repeat_interval" alertmanager.yml -S
+```
+중복 억제와 반복 주기 설정을 점검합니다.
+
+## 운영 팁
+
+- 신규 알림은 1~2주 모니터링 후 임계값을 조정합니다.
+- 알림 메시지에 영향 범위와 대응 절차를 포함합니다.
+- 테스트 알림은 실제 채널에서 한 번 검증합니다.
+- 경보 대상 지표는 배포 직후 과도하게 흔들리지 않는지 확인합니다.
+- 알림 요약 템플릿을 표준화해 해석 시간을 줄입니다.
+
+## 주의사항
+
+- 증상 대신 원인 지표에만 알림을 걸면 노이즈가 증가합니다.
+- 임계값 변경 이력 없이 알림을 조정하면 회고가 어려워집니다.
+- 담당자/오너가 없으면 알림 소유권이 붕괴됩니다.

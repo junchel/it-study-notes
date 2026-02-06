@@ -1,29 +1,53 @@
 ---
-title: "JWT security pitfalls"
-description: "Common mistakes to avoid when using JWTs."
+title: "JWT 보안 주의사항"
+description: "JWT 사용 시 피해야 할 흔한 실수."
 pubDate: 2026-02-03
 tags: ["security", "auth", "jwt"]
 ---
 
-## Summary
+## 요약
 
-JWTs are powerful but easy to misuse. This note highlights common pitfalls.
+JWT는 강력하지만 잘못 쓰기 쉽습니다. 이 노트는 흔한 함정을 정리합니다.
 
-## Pitfalls
+## 핵심 개념
 
-- Accepting tokens without verifying signature.
-- Allowing `alg=none` or weak algorithms.
-- Long-lived tokens without rotation.
-- Storing sensitive data in the payload.
+- 알고리즘 혼동과 검증 누락이 위험합니다.
+- 만료/클레임 검증이 필수입니다.
+- 서명 키 관리가 보안의 핵심입니다.
 
-## Recommendations
+## 명령
 
-- Use short expiration times.
-- Rotate signing keys and support key IDs (`kid`).
-- Validate issuer, audience, and expiration.
+```bash
+rg -n "jwt|Bearer" src -S
+```
+JWT 사용 지점을 확인합니다.
 
-## Quick checklist
+```bash
+rg -n "HS256|RS256|alg" config/ -S
+```
+서명 알고리즘 설정을 점검합니다.
 
-- Signature verified
-- `exp` enforced
-- `iss` and `aud` validated
+## 운영 팁
+
+- 서명 알고리즘과 issuer, audience를 반드시 검증합니다.
+- 키 회전과 폐기 프로세스를 마련합니다.
+- 짧은 만료와 안전한 갱신 흐름을 사용합니다.
+
+## 주의사항
+
+- 서명 검증 없이 토큰을 허용함.
+- `alg=none` 또는 약한 알고리즘을 허용함.
+- 회전 없이 장기간 유효한 토큰을 사용함.
+- 페이로드에 민감 데이터를 저장함.
+
+## 권장 사항
+
+- 짧은 만료 시간을 사용합니다.
+- 서명 키를 순환하고 키 ID(`kid`)를 지원합니다.
+- 발급자, 대상, 만료 시간을 검증합니다.
+
+## 빠른 체크리스트
+
+- 서명 검증됨
+- `exp` 강제됨
+- `iss`, `aud` 검증됨

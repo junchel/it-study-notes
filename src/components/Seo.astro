@@ -1,15 +1,12 @@
 ﻿---
-const {
-  title,
-  description,
-  image,
-  canonical,
-  noIndex = false
-} = Astro.props;
+import { DEFAULT_LANG, t } from "../utils/i18n";
+
+const { title, description, image, canonical, noIndex = false } = Astro.props;
 
 const site = Astro.site ?? new URL("https://example.com");
-const metaTitle = title ? `${title} | IT Study Notes` : "IT Study Notes";
-const metaDescription = description || "A personal knowledge base for IT study notes.";
+const siteName = t(DEFAULT_LANG, "site.name");
+const metaTitle = title ? `${title} | ${siteName}` : siteName;
+const metaDescription = description || t(DEFAULT_LANG, "seo.defaultDescription");
 const canonicalUrl = canonical
   ? new URL(canonical, site)
   : new URL(Astro.url.pathname, site);
@@ -19,7 +16,7 @@ const imageUrl = image ? new URL(image, site) : new URL("/og.svg", site);
 <title>{metaTitle}</title>
 <meta name="description" content={metaDescription} />
 <link rel="canonical" href={canonicalUrl.toString()} />
-<meta property="og:site_name" content="IT Study Notes" />
+<meta property="og:site_name" content={siteName} />
 <meta property="og:type" content="website" />
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={metaDescription} />

@@ -1,31 +1,51 @@
-﻿---
-title: "CI/CD rollback strategies"
-description: "Safe deployment patterns and rollback planning."
+---
+title: "CI/CD 롤백 전략"
+description: "안전한 배포 패턴과 롤백 계획을 정리합니다."
 pubDate: 2026-02-03
 tags: ["ci-cd", "operations", "reliability"]
 ---
 
-## Summary
+## 요약
 
-Rollbacks reduce downtime when a release fails.
+롤백은 릴리스 실패 시 다운타임을 줄입니다.
 
-## Key ideas
+## 핵심 개념
 
-- Keep artifacts versioned and deployable.
-- Use blue/green or canary releases.
-- Automate rollback triggers when possible.
+- 아티팩트를 버전 관리하고 재배포 가능하게 유지합니다.
+- 블루/그린 또는 카나리 릴리스를 사용합니다.
+- 가능하면 롤백 트리거를 자동화합니다.
+- 스키마 변경은 하위 호환성을 우선합니다.
+- 롤백과 전진 수정(roll-forward) 기준을 구분합니다.
 
-## Commands or steps
+## 명령
 
-```text
-Checklist
-- Keep previous release artifacts
-- Define rollback criteria
-- Automate health checks
+```bash
+kubectl rollout undo deployment/app -n prod
 ```
+이전 리비전으로 롤백합니다.
 
-## Pitfalls
+```bash
+kubectl rollout history deployment/app -n prod
+```
+배포 이력을 확인해 롤백 대상을 선택합니다.
 
-- No rollback plan for database migrations.
-- Manual rollback steps without docs.
-- Rolling back without monitoring signals.
+## 체크리스트
+
+- 이전 릴리스 아티팩트를 보관합니다.
+- 롤백 기준을 정의합니다.
+- 헬스 체크를 자동화합니다.
+- 롤백 후 검증 지표와 체크리스트를 준비합니다.
+
+## 운영 팁
+
+- 자동 롤백 조건을 지표 기준으로 정의합니다.
+- 데이터 마이그레이션은 되돌림 가능하게 설계합니다.
+- 기능 플래그로 위험을 분산합니다.
+- 배포 전 롤백 가능한 시점 스냅샷을 확보합니다.
+- 배포 후 짧은 관측 창을 두고 단계적으로 확대합니다.
+
+## 주의사항
+
+- 데이터 마이그레이션에 대한 롤백 계획이 없으면 복구가 지연됩니다.
+- 문서 없는 수동 롤백 절차는 실수 확률이 높습니다.
+- 모니터링 신호 없이 롤백하면 재발 가능성이 큽니다.

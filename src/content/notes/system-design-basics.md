@@ -1,32 +1,58 @@
-﻿---
-title: "System design basics"
-description: "Scalability, reliability, and high-level architecture patterns."
+---
+title: "시스템 설계 기초"
+description: "확장성과 신뢰성을 고려한 시스템 설계의 기본 원칙을 정리합니다."
 pubDate: 2026-02-03
-tags: ["system-design", "architecture", "scalability"]
+tags: ["architecture", "backend", "scaling"]
 ---
 
-## Summary
+## 요약
 
-System design focuses on making services scalable, reliable, and maintainable.
+시스템 설계는 요구사항을 성능, 안정성, 비용 관점에서 구조화하는 과정입니다. 트레이드오프를 명확히 해야 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Separate read/write paths when load grows.
-- Use caching to reduce latency and load.
-- Design for failure with redundancy.
+- 기능 요구와 비기능 요구를 분리해 정의합니다.
+- 단일 장애점 제거와 수평 확장을 기본으로 고려합니다.
+- 데이터 일관성, 지연, 비용의 균형이 필요합니다.
+- 관측 가능성과 운영 가능성을 설계에 포함합니다.
 
-## Commands or steps
+## 체크리스트
 
-```text
-Checklist
-- Identify core use cases
-- Estimate traffic and data size
-- Choose storage and caching layers
-- Plan for scaling and failure
+- 트래픽 패턴과 피크를 명확히 합니다.
+- 장애 시나리오와 복구 목표(RTO/RPO)를 정합니다.
+- 저장소 선택 기준을 문서화합니다.
+- 모니터링, 로깅, 트레이싱을 설계에 포함합니다.
+
+## 명령
+
+```bash
+rg -n "RTO|RPO" docs/architecture -S
 ```
+문서에 복구 목표가 명시되어 있는지 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "SLO|SLA" docs/architecture -S
+```
+서비스 목표 수준이 설계 문서에 포함되어 있는지 확인합니다.
 
-- Premature optimization without real traffic data.
-- Single points of failure.
-- Ignoring observability requirements.
+```bash
+kubectl top nodes
+```
+현재 인프라의 자원 사용 추이를 확인해 확장 여지를 파악합니다.
+
+```bash
+kubectl get hpa -A
+```
+자동 확장 정책이 존재하는지 확인합니다.
+
+## 운영 팁
+
+- 설계 문서에 트레이드오프를 명확히 기록합니다.
+- 성능 테스트 결과를 설계 가정과 비교합니다.
+- 초기 설계를 단순하게 시작하고 점진적으로 확장합니다.
+
+## 주의사항
+
+- 과도한 분산 설계는 복잡도를 증가시킵니다.
+- 단일 DB에 모든 부하가 집중되지 않도록 합니다.
+- 설계 변경은 운영 부담을 늘릴 수 있으므로 단계적으로 진행합니다.

@@ -1,30 +1,65 @@
 ---
-title: "Audit logging basics"
-description: "Record security-relevant events to support investigations and compliance."
+title: "감사 로그 기본"
+description: "조사와 컴플라이언스를 위해 보안 관련 이벤트를 기록합니다."
 pubDate: 2026-02-03
 tags: ["security", "logging", "operations"]
 ---
 
-## Summary
+## 요약
 
-Audit logs track sensitive actions so teams can detect abuse and investigate incidents.
+감사 로그는 민감한 작업을 추적해 남용을 탐지하고 사고를 조사할 수 있게 합니다.
 
-## Key ideas
+## 핵심 개념
 
-- Capture who did what, when, and from where.
-- Immutable logs protect integrity.
-- Separate audit logs from application logs.
-- Retention and access controls are part of the design.
+- 누가, 무엇을, 언제, 어디서 했는지 기록합니다.
+- 변경 불가능한 로그가 무결성을 보호합니다.
+- 감사 로그는 애플리케이션 로그와 분리합니다.
+- 보존 기간과 접근 통제도 설계의 일부입니다.
+- 시간 동기화가 정확해야 타임라인 분석이 가능합니다.
+- 행위자, 대상, 결과, 요청 ID를 필수 필드로 유지합니다.
 
-## Guidelines
+## 명령
 
-- Log authentication events and privilege changes.
-- Include request IDs and actor identifiers.
-- Protect logs with write-once or append-only storage.
-- Review audit logs regularly or alert on anomalies.
+```bash
+rg -n "audit" src -S
+```
+감사 로그 기록 지점을 확인합니다.
 
-## Pitfalls
+```bash
+rg -n "audit" logs/ -S
+```
+감사 로그 파일이 생성되는지 점검합니다.
 
-- Logging sensitive data like passwords or tokens.
-- Missing coverage for admin and data export actions.
-- Storing logs without access controls.
+```bash
+ls -l logs/audit.log
+```
+감사 로그 파일의 권한과 소유자를 확인합니다.
+
+## 예시 로그
+
+```json
+{
+  "ts": "2026-02-05T12:00:00Z",
+  "actor": "user_123",
+  "action": "role.update",
+  "target": "role_admin",
+  "result": "success",
+  "request_id": "req_9876"
+}
+```
+조사와 추적이 가능하도록 행위자, 대상, 결과, 요청 ID를 포함합니다.
+
+## 운영 팁
+
+- 인증 이벤트와 권한 변경을 기록합니다.
+- 요청 ID와 행위자 식별자를 포함합니다.
+- 쓰기 한 번 또는 append-only 저장소로 로그를 보호합니다.
+- 정기적으로 감사 로그를 검토하거나 이상 징후를 알림합니다.
+- 감사 로그 보존 기간과 조회 권한을 정책으로 고정합니다.
+- 로그 위·변조를 방지하기 위해 중앙 수집과 무결성 검증을 적용합니다.
+
+## 주의사항
+
+- 비밀번호나 토큰 같은 민감 데이터를 기록하면 위험합니다.
+- 관리자/데이터 내보내기 작업이 누락되면 사고 분석이 어렵습니다.
+- 접근 통제 없이 로그를 저장하면 내부 유출 위험이 커집니다.
