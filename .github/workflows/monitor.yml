@@ -22,9 +22,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SITE_URL="${{ vars.SITE_URL }}"
+          SITE_URL="${{ vars.MONITOR_URL }}"
           if [ -z "$SITE_URL" ]; then
-            SITE_URL="https://jjchwordpress.cloud"
+            SITE_URL="${{ vars.SITE_URL }}"
+          fi
+          if [ -z "$SITE_URL" ]; then
+            SITE_URL="http://jjchwordpress.cloud"
           fi
 
           FAILED=""
