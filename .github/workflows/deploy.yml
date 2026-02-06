@@ -41,3 +41,31 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify live site
+        shell: bash
+        run: |
+          set -euo pipefail
+          SITE_URL="${{ vars.SITE_URL }}"
+          if [ -z "$SITE_URL" ]; then
+            SITE_URL="https://jjchwordpress.cloud"
+          fi
+
+          echo "Checking: ${SITE_URL}/"
+          for i in {1..12}; do
+            if curl -fsSIL --max-time 20 "${SITE_URL}/" >/dev/null; then
+              break
+            fi
+            if [ "$i" -eq 12 ]; then
+              echo "Homepage check failed after retries"
+              exit 1
+            fi
+            sleep 10
+          done
+
+          echo "Checking: ${SITE_URL}/sitemap.xml"
+          curl -fsSIL --max-time 20 "${SITE_URL}/sitemap.xml" >/dev/null

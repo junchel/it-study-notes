@@ -1,0 +1,111 @@
+name: Monitor site availability
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: "site-monitor"
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe public endpoints
+        id: probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          SITE_URL="${{ vars.SITE_URL }}"
+          if [ -z "$SITE_URL" ]; then
+            SITE_URL="https://jjchwordpress.cloud"
+          fi
+
+          FAILED=""
+          for URL in "${SITE_URL}/" "${SITE_URL}/sitemap.xml"; do
+            echo "Checking ${URL}"
+            if ! curl -fsSIL --retry 5 --retry-delay 5 --retry-connrefused --max-time 20 "$URL" >/dev/null; then
+              FAILED="${FAILED}${URL} "
+            fi
+          done
+
+          if [ -n "$FAILED" ]; then
+            echo "status=down" >> "$GITHUB_OUTPUT"
+            echo "failed_urls=${FAILED}" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=up" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open alert issue
+        if: steps.probe.outputs.status == 'down'
+        uses: actions/github-script@v7
+        env:
+          FAILED_URLS: ${{ steps.probe.outputs.failed_urls }}
+        with:
+          script: |
+            const title = "[Monitor] jjchwordpress.cloud availability alert";
+            const body = [
+              "자동 모니터링에서 사이트 장애가 감지되었습니다.",
+              "",
+              `- 감지 시각(UTC): ${new Date().toISOString()}`,
+              `- 실패 URL: ${process.env.FAILED_URLS}`,
+              "",
+              "Actions 로그를 확인해 원인을 점검하세요."
+            ].join("\n");
+            const { owner, repo } = context.repo;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            if (!existing) {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body
+              });
+            }
+
+      - name: Close alert issue on recovery
+        if: steps.probe.outputs.status == 'up'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "[Monitor] jjchwordpress.cloud availability alert";
+            const { owner, repo } = context.repo;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body: `사이트가 복구되었습니다. 감지 시각(UTC): ${new Date().toISOString()}`
+              });
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: existing.number,
+                state: "closed"
+              });
+            }
+
+      - name: Mark workflow failed when site is down
+        if: steps.probe.outputs.status == 'down'
+        run: |
+          echo "Site check failed: ${{ steps.probe.outputs.failed_urls }}"
+          exit 1
