@@ -1,0 +1,26 @@
+{
+  "default_board": "general",
+  "admins": ["junchel"],
+  "board_editors": {
+    "general": ["junchel"],
+    "ai": ["junchel"],
+    "devops": ["junchel"],
+    "security": ["junchel"],
+    "network": ["junchel"]
+  },
+  "note_paths": ["src/content/notes/**/*.md"],
+  "admin_only_paths": [
+    ".github/**",
+    "src/layouts/**",
+    "src/components/**",
+    "src/utils/**",
+    "src/styles/**",
+    "astro.config.mjs",
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "ROADMAP.md",
+    "ARCHITECTURE.md",
+    "CONTENT_GUIDE.md"
+  ]
+}

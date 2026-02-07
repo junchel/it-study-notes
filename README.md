@@ -64,6 +64,14 @@ npm run preview
 - 장애 감지 시 GitHub Issue를 자동 생성하고, 복구 감지 시 해당 Issue를 자동 종료합니다.
 - 수동 점검이 필요하면 GitHub Actions에서 `Monitor site availability`를 수동 실행할 수 있습니다.
 
+## 권한 정책 (읽기 공개 + 편집 제한)
+
+- 웹 읽기 권한은 누구에게나 열려 있습니다.
+- 편집은 GitHub PR 기반으로 제한됩니다.
+- `/.github/workflows/rbac.yml`이 PR 변경 파일을 검사합니다.
+- 게시판별 편집 권한은 `/.github/rbac.config.json`에서 관리합니다.
+- 상세 운영 방법은 `RBAC_GUIDE.md`를 참고합니다.
+
 ## 검색 엔진 색인
 
 1. `https://jjchwordpress.cloud/sitemap.xml`이 정상 로드되는지 확인합니다.

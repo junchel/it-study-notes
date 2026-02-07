@@ -10,6 +10,7 @@ title: "노트 제목"
 description: "목록/검색에 사용할 한 줄 요약"
 pubDate: 2026-02-03
 tags: ["networking", "linux"]
+board: "general"
 ---
 
 ## 요약
@@ -57,6 +58,12 @@ command
 - 기존 태그를 재사용해 탐색 구조를 유지합니다.
 - 중복 태그(`api` vs `apis`)를 피합니다.
 - 소문자 영문 태그를 기본으로 사용합니다.
+
+## 게시판 규칙
+
+- `board` 값으로 게시판(권한 단위)을 지정합니다.
+- 예시: `general`, `ai`, `devops`, `security`, `network`
+- `board`가 없으면 기본값 `general`로 처리합니다.
 
 ## 드래프트
 
