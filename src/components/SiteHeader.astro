@@ -82,9 +82,10 @@ const isActive = (href) => (href === "/" ? pathname === "/" : pathname.startsWit
   const toggle = document.querySelector("[data-menu-toggle]");
   const nav = document.getElementById("site-nav");
   const backdrop = document.querySelector("[data-menu-backdrop]");
+  const navCollapseQuery = "(max-width: 1120px)";
 
   if (toggle && nav) {
-    const isMobile = () => window.innerWidth <= 768;
+    const isMobile = () => window.matchMedia(navCollapseQuery).matches;
     toggle.setAttribute("data-ready", "true");
     nav.dataset.collapsible = "true";
     nav.setAttribute("aria-hidden", isMobile() ? "true" : "false");

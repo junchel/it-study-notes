@@ -96,26 +96,32 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
             </label>
           </div>
           <div class="workspace-toolbar-filters">
-            <label for="workspace-note-search" data-i18n="workspace.toolbar.searchLabel">
-              {t("workspace.toolbar.searchLabel")}
-            </label>
-            <input
-              id="workspace-note-search"
-              type="search"
-              class="workspace-input"
-              data-note-search
-              placeholder={t("workspace.toolbar.searchPlaceholder")}
-              data-i18n="workspace.toolbar.searchPlaceholder"
-              data-i18n-attr="placeholder"
-            />
-            <label for="workspace-note-filter" data-i18n="workspace.toolbar.filterLabel">
-              {t("workspace.toolbar.filterLabel")}
-            </label>
-            <select id="workspace-note-filter" class="workspace-input" data-note-filter></select>
-            <label for="workspace-board-filter" data-i18n="workspace.toolbar.boardFilterLabel">
-              {t("workspace.toolbar.boardFilterLabel")}
-            </label>
-            <select id="workspace-board-filter" class="workspace-input" data-board-filter></select>
+            <div class="workspace-filter-field">
+              <label for="workspace-note-search" data-i18n="workspace.toolbar.searchLabel">
+                {t("workspace.toolbar.searchLabel")}
+              </label>
+              <input
+                id="workspace-note-search"
+                type="search"
+                class="workspace-input"
+                data-note-search
+                placeholder={t("workspace.toolbar.searchPlaceholder")}
+                data-i18n="workspace.toolbar.searchPlaceholder"
+                data-i18n-attr="placeholder"
+              />
+            </div>
+            <div class="workspace-filter-field">
+              <label for="workspace-note-filter" data-i18n="workspace.toolbar.filterLabel">
+                {t("workspace.toolbar.filterLabel")}
+              </label>
+              <select id="workspace-note-filter" class="workspace-input" data-note-filter></select>
+            </div>
+            <div class="workspace-filter-field">
+              <label for="workspace-board-filter" data-i18n="workspace.toolbar.boardFilterLabel">
+                {t("workspace.toolbar.boardFilterLabel")}
+              </label>
+              <select id="workspace-board-filter" class="workspace-input" data-board-filter></select>
+            </div>
           </div>
         </div>
 
