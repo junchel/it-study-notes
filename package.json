@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check:rbac": "node scripts/check-rbac.mjs",
     "postbuild": "pagefind --site dist --exclude-selectors .no-search",
     "format": "prettier --write ."
   },

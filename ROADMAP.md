@@ -3,6 +3,7 @@
 ## 현재
 
 - Git 기반 RBAC 1차 적용 완료: `CODEOWNERS`, PR 권한검사 워크플로(`.github/workflows/rbac.yml`), 보드별 권한 설정 파일(`.github/rbac.config.json`), 운영 문서(`RBAC_GUIDE.md`)를 추가함.
+- RBAC 검증 강화: 노트 frontmatter `board`가 미등록 값이면 PR을 실패시키고, 로컬 검증 스크립트 `npm run check:rbac`를 추가함.
 - UI 기본 문구를 한국어로 전환하고 네비게이션/섹션 라벨 KR/EN 토글을 추가함.
 - UI를 프리미엄 에디토리얼 톤으로 리디자인하고 히어로/카드/검색 스타일을 개선함.
 - 히어로 아트워크, 노트 상세 매거진 레이아웃, 절제된 모션을 적용함.

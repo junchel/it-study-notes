@@ -71,6 +71,7 @@ npm run preview
 - `/.github/workflows/rbac.yml`이 PR 변경 파일을 검사합니다.
 - 게시판별 편집 권한은 `/.github/rbac.config.json`에서 관리합니다.
 - 상세 운영 방법은 `RBAC_GUIDE.md`를 참고합니다.
+- 로컬 점검은 `npm run check:rbac`로 실행합니다.
 
 ## 검색 엔진 색인
 
