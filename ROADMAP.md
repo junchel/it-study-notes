@@ -5,6 +5,7 @@
 - Git 기반 RBAC 1차 적용 완료: `CODEOWNERS`, PR 권한검사 워크플로(`.github/workflows/rbac.yml`), 보드별 권한 설정 파일(`.github/rbac.config.json`), 운영 문서(`RBAC_GUIDE.md`)를 추가함.
 - RBAC 검증 강화: 노트 frontmatter `board`가 미등록 값이면 PR을 실패시키고, 로컬 검증 스크립트 `npm run check:rbac`를 추가함.
 - UI 기본 문구를 한국어로 전환하고 네비게이션/섹션 라벨 KR/EN 토글을 추가함.
+- 홈 히어로 문구를 "검색보다 빠른 실전 문서형 IT 노트 시스템" 중심으로 재작성하고, KR/EN 스왑 카피를 같은 톤으로 정렬함.
 - 홈 핵심 문구("IT 학습을 검색 가능한 지식 라이브러리로.")를 타이틀 프레임+에디토리얼 노트 구조로 리디자인해 가독성과 시각 중심을 개선함.
 - 워크스페이스에 `board`(general/ai/devops/security/network) 필드/필터를 추가하고, 선택 노트를 Markdown 파일로 직접 내보내는 기능을 추가함.
 - UI를 프리미엄 에디토리얼 톤으로 리디자인하고 히어로/카드/검색 스타일을 개선함.
