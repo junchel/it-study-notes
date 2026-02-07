@@ -36,6 +36,7 @@ board: "ai"
 ```
 
 `board`가 없으면 `default_board`를 사용합니다.
+`board`를 지정했는데 `rbac.config.json`에 없는 값이면 PR이 실패합니다.
 
 ## GitHub 설정(필수)
 

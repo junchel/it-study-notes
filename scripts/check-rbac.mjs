@@ -80,20 +80,22 @@ const readFileForBoard = (filePath) => {
   return readFileAtRef(baseSha, filePath);
 };
 
-const resolveBoard = (filePath) => {
+const resolveBoardMeta = (filePath) => {
   const fallbackBoard = config.default_board || "general";
   const text = readFileForBoard(filePath);
-  if (!text) return fallbackBoard;
+  if (!text) return { board: fallbackBoard.toLowerCase(), explicit: false };
 
   const trimmed = text.trimStart();
-  if (!trimmed.startsWith("---")) return fallbackBoard;
+  if (!trimmed.startsWith("---")) return { board: fallbackBoard.toLowerCase(), explicit: false };
 
   const match = trimmed.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return fallbackBoard;
+  if (!match) return { board: fallbackBoard.toLowerCase(), explicit: false };
 
   const frontmatter = match[1];
   const boardMatch = frontmatter.match(/^board:\s*["']?([a-zA-Z0-9_-]+)["']?\s*$/m);
-  return boardMatch ? boardMatch[1].toLowerCase() : fallbackBoard;
+  return boardMatch
+    ? { board: boardMatch[1].toLowerCase(), explicit: true }
+    : { board: fallbackBoard.toLowerCase(), explicit: false };
 };
 
 const getChangedFiles = () => {
@@ -112,6 +114,8 @@ const boardEditors = new Map(
     new Set(toArray(users).map(normalizeUser).filter(Boolean))
   ])
 );
+const defaultBoard = String(config.default_board || "general").toLowerCase();
+const allowedBoards = new Set([defaultBoard, ...boardEditors.keys()]);
 const noteMatchers = toArray(config.note_paths).map(globToRegex);
 const adminMatchers = toArray(config.admin_only_paths).map(globToRegex);
 
@@ -150,9 +154,18 @@ changedFiles.forEach((filePath) => {
 
   if (isAdmin) return;
 
-  const board = resolveBoard(filePath);
+  const boardMeta = resolveBoardMeta(filePath);
+  if (boardMeta.explicit && !allowedBoards.has(boardMeta.board)) {
+    violations.push({
+      filePath,
+      reason: `unknown board "${boardMeta.board}" (configure in .github/rbac.config.json)`
+    });
+    return;
+  }
+
+  const board = boardMeta.board;
   const allowedEditors =
-    boardEditors.get(board) || boardEditors.get(String(config.default_board || "general").toLowerCase());
+    boardEditors.get(board) || boardEditors.get(defaultBoard);
   if (!allowedEditors || !allowedEditors.has(actor)) {
     violations.push({
       filePath,
