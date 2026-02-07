@@ -346,6 +346,20 @@ img {
   margin: 0;
 }
 
+.hero-title-frame {
+  display: grid;
+  gap: 8px;
+  width: fit-content;
+  max-width: min(100%, 690px);
+  padding: 14px 18px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(17, 26, 31, 0.12);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.9), rgba(250, 243, 233, 0.86)),
+    linear-gradient(160deg, rgba(165, 109, 46, 0.08), rgba(24, 74, 89, 0.07));
+  box-shadow: 0 16px 30px rgba(12, 18, 24, 0.12);
+}
+
 .hero-title {
   margin: 0;
   display: grid;
@@ -441,6 +455,15 @@ img {
 
 .hero-title-rest {
   color: #132733;
+}
+
+.hero-title-note {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #596c76;
+  font-weight: 700;
 }
 
 .hero-body {
@@ -1782,6 +1805,13 @@ img {
   .hero-title {
     max-width: 100%;
     gap: 8px;
+  }
+
+  .hero-title-frame {
+    width: 100%;
+    padding: 12px 12px 10px;
+    border-radius: 14px;
+    box-shadow: 0 10px 20px rgba(12, 18, 24, 0.1);
   }
 
   .hero-title-emphasis {

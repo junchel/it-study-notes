@@ -33,19 +33,24 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
         <span class="hero-badge" data-i18n="home.hero.badge">
           {t("home.hero.badge")}
         </span>
-        <h1 class="hero-title">
-          <span class="hero-title-kicker" data-i18n="home.hero.titleTop">
-            {t("home.hero.titleTop")}
-          </span>
-          <span class="hero-title-emphasis">
-            <span class="hero-title-accent" data-i18n="home.hero.titleAccent">
-              {t("home.hero.titleAccent")}
+        <div class="hero-title-frame">
+          <h1 class="hero-title">
+            <span class="hero-title-kicker" data-i18n="home.hero.titleTop">
+              {t("home.hero.titleTop")}
             </span>
-            <span class="hero-title-rest" data-i18n="home.hero.titleBottom">
-              {t("home.hero.titleBottom")}
+            <span class="hero-title-emphasis">
+              <span class="hero-title-accent" data-i18n="home.hero.titleAccent">
+                {t("home.hero.titleAccent")}
+              </span>
+              <span class="hero-title-rest" data-i18n="home.hero.titleBottom">
+                {t("home.hero.titleBottom")}
+              </span>
             </span>
-          </span>
-        </h1>
+          </h1>
+          <p class="hero-title-note" data-i18n="home.hero.note">
+            {t("home.hero.note")}
+          </p>
+        </div>
         <p class="hero-body" data-i18n="home.hero.body">{t("home.hero.body")}</p>
         <div class="hero-proof">
           <p class="hero-proof-title" data-i18n="home.hero.proofTitle">{t("home.hero.proofTitle")}</p>
