@@ -1,0 +1,15 @@
+# 기본 소유자(관리자)
+* @junchel
+
+# 콘텐츠(노트) 경로
+/src/content/notes/** @junchel
+
+# 인프라/보안 관련 경로
+/.github/** @junchel
+/package.json @junchel
+/package-lock.json @junchel
+/astro.config.mjs @junchel
+/src/layouts/** @junchel
+/src/components/** @junchel
+/src/utils/** @junchel
+/src/styles/** @junchel

@@ -1,0 +1,959 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { DEFAULT_LANG, t as translate } from "../../utils/i18n";
+
+const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
+---
+
+<BaseLayout title={t("workspace.meta.title")} description={t("workspace.meta.description")}>
+  <div class="container">
+    <section class="hero workspace-hero">
+      <span class="hero-badge" data-i18n="workspace.badge">{t("workspace.badge")}</span>
+      <h1 data-i18n="workspace.title">{t("workspace.title")}</h1>
+      <p data-i18n="workspace.lead">{t("workspace.lead")}</p>
+      <div class="workspace-kpis">
+        <article class="workspace-kpi-card">
+          <span data-i18n="workspace.kpi.categories">{t("workspace.kpi.categories")}</span>
+          <strong data-workspace-kpi="categories">0</strong>
+        </article>
+        <article class="workspace-kpi-card">
+          <span data-i18n="workspace.kpi.notes">{t("workspace.kpi.notes")}</span>
+          <strong data-workspace-kpi="notes">0</strong>
+        </article>
+        <article class="workspace-kpi-card">
+          <span data-i18n="workspace.kpi.updated">{t("workspace.kpi.updated")}</span>
+          <strong data-workspace-kpi="updated">{t("workspace.kpi.updatedEmpty")}</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="workspace-shell" data-workspace-app>
+      <aside class="workspace-sidebar">
+        <h2 class="workspace-panel-title" data-i18n="workspace.category.title">{t("workspace.category.title")}</h2>
+
+        <form class="workspace-category-form" data-category-form>
+          <label for="workspace-category-name" data-i18n="workspace.category.nameLabel">
+            {t("workspace.category.nameLabel")}
+          </label>
+          <input
+            id="workspace-category-name"
+            type="text"
+            class="workspace-input"
+            data-category-name
+            placeholder={t("workspace.category.namePlaceholder")}
+            data-i18n="workspace.category.namePlaceholder"
+            data-i18n-attr="placeholder"
+          />
+
+          <label for="workspace-category-parent" data-i18n="workspace.category.parentLabel">
+            {t("workspace.category.parentLabel")}
+          </label>
+          <select id="workspace-category-parent" class="workspace-input" data-category-parent></select>
+
+          <div class="workspace-inline-actions">
+            <button type="submit" class="button workspace-btn" data-i18n="workspace.category.add">
+              {t("workspace.category.add")}
+            </button>
+            <button
+              type="button"
+              class="button secondary workspace-btn workspace-btn-secondary"
+              data-category-clear-parent
+              data-i18n="workspace.category.clear"
+            >
+              {t("workspace.category.clear")}
+            </button>
+          </div>
+        </form>
+
+        <div class="workspace-category-tree" data-category-tree></div>
+      </aside>
+
+      <div class="workspace-main">
+        <div class="workspace-toolbar">
+          <div class="workspace-toolbar-actions">
+            <button type="button" class="button workspace-btn" data-note-new data-i18n="workspace.toolbar.new">
+              {t("workspace.toolbar.new")}
+            </button>
+            <button
+              type="button"
+              class="button secondary workspace-btn workspace-btn-secondary"
+              data-export
+              data-i18n="workspace.toolbar.export"
+            >
+              {t("workspace.toolbar.export")}
+            </button>
+            <label class="workspace-import-btn" data-i18n="workspace.toolbar.import">
+              {t("workspace.toolbar.import")}
+              <input type="file" accept="application/json" data-import />
+            </label>
+          </div>
+          <div class="workspace-toolbar-filters">
+            <label for="workspace-note-search" data-i18n="workspace.toolbar.searchLabel">
+              {t("workspace.toolbar.searchLabel")}
+            </label>
+            <input
+              id="workspace-note-search"
+              type="search"
+              class="workspace-input"
+              data-note-search
+              placeholder={t("workspace.toolbar.searchPlaceholder")}
+              data-i18n="workspace.toolbar.searchPlaceholder"
+              data-i18n-attr="placeholder"
+            />
+            <label for="workspace-note-filter" data-i18n="workspace.toolbar.filterLabel">
+              {t("workspace.toolbar.filterLabel")}
+            </label>
+            <select id="workspace-note-filter" class="workspace-input" data-note-filter></select>
+          </div>
+        </div>
+
+        <p class="workspace-status" data-workspace-status aria-live="polite"></p>
+
+        <div class="workspace-content-grid">
+          <section class="workspace-list-panel">
+            <h2 class="workspace-panel-title" data-i18n="workspace.notes.title">
+              {t("workspace.notes.title")}
+            </h2>
+            <div class="workspace-note-list" data-note-list></div>
+          </section>
+
+          <section class="workspace-editor-panel">
+            <h2 class="workspace-panel-title" data-i18n="workspace.editor.title">
+              {t("workspace.editor.title")}
+            </h2>
+            <form class="workspace-editor-form" data-note-form>
+              <label for="workspace-note-title" data-i18n="workspace.editor.titleLabel">
+                {t("workspace.editor.titleLabel")}
+              </label>
+              <input
+                id="workspace-note-title"
+                type="text"
+                name="title"
+                class="workspace-input"
+                data-note-title
+                placeholder={t("workspace.editor.titlePlaceholder")}
+                data-i18n="workspace.editor.titlePlaceholder"
+                data-i18n-attr="placeholder"
+              />
+
+              <label for="workspace-note-category" data-i18n="workspace.editor.categoryLabel">
+                {t("workspace.editor.categoryLabel")}
+              </label>
+              <select
+                id="workspace-note-category"
+                name="category"
+                class="workspace-input"
+                data-note-category
+              ></select>
+
+              <label for="workspace-note-tags" data-i18n="workspace.editor.tagsLabel">
+                {t("workspace.editor.tagsLabel")}
+              </label>
+              <input
+                id="workspace-note-tags"
+                type="text"
+                name="tags"
+                class="workspace-input"
+                data-note-tags
+                placeholder={t("workspace.editor.tagsPlaceholder")}
+                data-i18n="workspace.editor.tagsPlaceholder"
+                data-i18n-attr="placeholder"
+              />
+
+              <label for="workspace-note-body" data-i18n="workspace.editor.bodyLabel">
+                {t("workspace.editor.bodyLabel")}
+              </label>
+              <textarea
+                id="workspace-note-body"
+                name="body"
+                class="workspace-textarea"
+                data-note-body
+                rows="16"
+                placeholder={t("workspace.editor.bodyPlaceholder")}
+                data-i18n="workspace.editor.bodyPlaceholder"
+                data-i18n-attr="placeholder"
+              ></textarea>
+
+              <div class="workspace-editor-actions">
+                <button type="submit" class="button workspace-btn" data-i18n="workspace.editor.save">
+                  {t("workspace.editor.save")}
+                </button>
+                <button
+                  type="button"
+                  class="button secondary workspace-btn workspace-btn-secondary"
+                  data-note-delete
+                  data-i18n="workspace.editor.delete"
+                >
+                  {t("workspace.editor.delete")}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script type="module">
+  const storageKey = "it-study-notes.workspace.v1";
+  const i18n = window.__SITE_I18N__;
+
+  const els = {
+    app: document.querySelector("[data-workspace-app]"),
+    kpiCategories: document.querySelector('[data-workspace-kpi="categories"]'),
+    kpiNotes: document.querySelector('[data-workspace-kpi="notes"]'),
+    kpiUpdated: document.querySelector('[data-workspace-kpi="updated"]'),
+    categoryForm: document.querySelector("[data-category-form]"),
+    categoryName: document.querySelector("[data-category-name]"),
+    categoryParent: document.querySelector("[data-category-parent]"),
+    categoryClearParent: document.querySelector("[data-category-clear-parent]"),
+    categoryTree: document.querySelector("[data-category-tree]"),
+    noteNew: document.querySelector("[data-note-new]"),
+    noteSearch: document.querySelector("[data-note-search]"),
+    noteFilter: document.querySelector("[data-note-filter]"),
+    noteList: document.querySelector("[data-note-list]"),
+    noteForm: document.querySelector("[data-note-form]"),
+    noteTitle: document.querySelector("[data-note-title]"),
+    noteCategory: document.querySelector("[data-note-category]"),
+    noteTags: document.querySelector("[data-note-tags]"),
+    noteBody: document.querySelector("[data-note-body]"),
+    noteDelete: document.querySelector("[data-note-delete]"),
+    exportButton: document.querySelector("[data-export]"),
+    importInput: document.querySelector("[data-import]"),
+    status: document.querySelector("[data-workspace-status]")
+  };
+
+  if (i18n && els.app) {
+    const state = {
+      categories: [],
+      notes: [],
+      selectedCategoryId: null,
+      editingNoteId: null,
+      searchQuery: "",
+      filterCategoryId: "all"
+    };
+
+    let lastStatus = null;
+
+    const nowIso = () => new Date().toISOString();
+    const makeId = () =>
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    const getLang = () => document.documentElement.dataset.lang || i18n.defaultLang;
+
+    const format = (template, vars) =>
+      template.replace(/\{(\w+)\}/g, (_, key) =>
+        Object.prototype.hasOwnProperty.call(vars, key) ? String(vars[key]) : ""
+      );
+
+    const tr = (key, vars) => {
+      const lang = getLang();
+      const template =
+        (i18n.messages[lang] && i18n.messages[lang][key]) ||
+        i18n.messages[i18n.defaultLang][key] ||
+        key;
+      return vars ? format(template, vars) : template;
+    };
+
+    const escapeHtml = (value = "") =>
+      value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+
+    const parseJson = (value) => {
+      if (!value) return null;
+      try {
+        return JSON.parse(value);
+      } catch {
+        return null;
+      }
+    };
+
+    const normalizeCategories = (items) => {
+      if (!Array.isArray(items)) return [];
+      const mapped = items
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const id = String(item.id || "").trim() || makeId();
+          const name = String(item.name || "").trim();
+          if (!name) return null;
+          const parentId = item.parentId ? String(item.parentId).trim() : null;
+          return {
+            id,
+            name,
+            parentId: parentId || null,
+            createdAt: item.createdAt || nowIso(),
+            updatedAt: item.updatedAt || nowIso()
+          };
+        })
+        .filter(Boolean);
+
+      const byId = new Map();
+      mapped.forEach((category) => {
+        if (!byId.has(category.id)) byId.set(category.id, category);
+      });
+
+      byId.forEach((category) => {
+        if (!category.parentId) return;
+        if (!byId.has(category.parentId) || category.parentId === category.id) {
+          category.parentId = null;
+        }
+      });
+
+      return Array.from(byId.values());
+    };
+
+    const normalizeNotes = (items, categories) => {
+      if (!Array.isArray(items)) return [];
+      const categoryIds = new Set(categories.map((category) => category.id));
+      const mapped = items
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const id = String(item.id || "").trim() || makeId();
+          const title = String(item.title || "").trim();
+          if (!title) return null;
+          const tags = Array.isArray(item.tags)
+            ? item.tags
+                .map((tag) => String(tag || "").trim())
+                .filter(Boolean)
+                .filter((tag, index, list) => list.indexOf(tag) === index)
+            : [];
+          const rawCategoryId = item.categoryId ? String(item.categoryId).trim() : null;
+          return {
+            id,
+            title,
+            body: String(item.body || ""),
+            tags,
+            categoryId: rawCategoryId && categoryIds.has(rawCategoryId) ? rawCategoryId : null,
+            createdAt: item.createdAt || nowIso(),
+            updatedAt: item.updatedAt || nowIso()
+          };
+        })
+        .filter(Boolean);
+
+      const byId = new Map();
+      mapped.forEach((note) => {
+        if (!byId.has(note.id)) byId.set(note.id, note);
+      });
+      return Array.from(byId.values());
+    };
+
+    const sortCategories = (items) =>
+      items
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, getLang() === "ko" ? "ko-KR" : "en-US"));
+
+    const flattenCategories = (parentId = null, depth = 0, trail = new Set()) => {
+      const children = sortCategories(
+        state.categories.filter((category) => (category.parentId || null) === parentId)
+      );
+
+      let rows = [];
+      children.forEach((category) => {
+        rows.push({ ...category, depth });
+        if (trail.has(category.id)) return;
+        const nextTrail = new Set(trail);
+        nextTrail.add(category.id);
+        rows = rows.concat(flattenCategories(category.id, depth + 1, nextTrail));
+      });
+      return rows;
+    };
+
+    const collectDescendantIds = (rootId) => {
+      const ids = new Set([rootId]);
+      const queue = [rootId];
+      while (queue.length) {
+        const currentId = queue.shift();
+        state.categories.forEach((category) => {
+          if (category.parentId === currentId && !ids.has(category.id)) {
+            ids.add(category.id);
+            queue.push(category.id);
+          }
+        });
+      }
+      return ids;
+    };
+
+    const parseTags = (value) =>
+      String(value || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .filter((item, index, list) => list.indexOf(item) === index);
+
+    const formatDate = (value) => {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      const formatter = new Intl.DateTimeFormat(getLang() === "ko" ? "ko-KR" : "en-US", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
+      return formatter.format(date);
+    };
+
+    const getCategoryLabel = (categoryId) => {
+      if (!categoryId) return tr("workspace.notes.categoryNone");
+      const category = state.categories.find((item) => item.id === categoryId);
+      return category ? category.name : tr("workspace.notes.categoryNone");
+    };
+
+    const getLastUpdatedAt = () => {
+      const stamps = [
+        ...state.categories.map((category) => category.updatedAt),
+        ...state.notes.map((note) => note.updatedAt)
+      ]
+        .map((value) => new Date(value).getTime())
+        .filter((value) => Number.isFinite(value));
+
+      if (!stamps.length) return null;
+      return new Date(Math.max(...stamps)).toISOString();
+    };
+
+    const getFilteredNotes = () => {
+      const query = state.searchQuery.trim().toLowerCase();
+      const filter = state.filterCategoryId;
+      const categoryScope =
+        filter && filter !== "all" && filter !== "uncategorized"
+          ? collectDescendantIds(filter)
+          : null;
+
+      return state.notes
+        .filter((note) => {
+          if (filter === "uncategorized" && note.categoryId) return false;
+          if (categoryScope && !categoryScope.has(note.categoryId || "")) return false;
+          if (!query) return true;
+          const pool = `${note.title}\n${note.tags.join(" ")}\n${note.body}`.toLowerCase();
+          return pool.includes(query);
+        })
+        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    };
+
+    const saveState = () => {
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ categories: state.categories, notes: state.notes })
+        );
+      } catch {}
+    };
+
+    const loadState = () => {
+      const raw = parseJson(localStorage.getItem(storageKey));
+      if (!raw || typeof raw !== "object") return;
+      const categories = normalizeCategories(raw.categories);
+      const notes = normalizeNotes(raw.notes, categories);
+      state.categories = categories;
+      state.notes = notes;
+    };
+
+    const setStatus = (key, vars, tone = "normal") => {
+      lastStatus = { key, vars, tone };
+      if (!els.status) return;
+      els.status.textContent = tr(key, vars);
+      els.status.dataset.tone = tone;
+    };
+
+    const refreshStatus = () => {
+      if (!els.status) return;
+      if (!lastStatus) {
+        els.status.textContent = "";
+        delete els.status.dataset.tone;
+        return;
+      }
+      els.status.textContent = tr(lastStatus.key, lastStatus.vars);
+      els.status.dataset.tone = lastStatus.tone;
+    };
+
+    const renderKpis = () => {
+      if (els.kpiCategories) els.kpiCategories.textContent = String(state.categories.length);
+      if (els.kpiNotes) els.kpiNotes.textContent = String(state.notes.length);
+      if (els.kpiUpdated) {
+        const updated = getLastUpdatedAt();
+        els.kpiUpdated.textContent = updated ? formatDate(updated) : tr("workspace.kpi.updatedEmpty");
+      }
+    };
+
+    const renderCategoryOptions = () => {
+      const flat = flattenCategories();
+      const parentValue = els.categoryParent ? els.categoryParent.value : "";
+      const noteCategoryValue = els.noteCategory ? els.noteCategory.value : "";
+
+      if (els.categoryParent) {
+        els.categoryParent.innerHTML = [
+          `<option value="">${escapeHtml(tr("workspace.category.parentNone"))}</option>`,
+          ...flat.map(
+            (category) =>
+              `<option value="${escapeHtml(category.id)}">${"&nbsp;".repeat(
+                category.depth * 2
+              )}${escapeHtml(category.name)}</option>`
+          )
+        ].join("");
+        if (parentValue && flat.some((category) => category.id === parentValue)) {
+          els.categoryParent.value = parentValue;
+        }
+      }
+
+      if (els.noteCategory) {
+        els.noteCategory.innerHTML = [
+          `<option value="">${escapeHtml(tr("workspace.notes.categoryNone"))}</option>`,
+          ...flat.map(
+            (category) =>
+              `<option value="${escapeHtml(category.id)}">${"&nbsp;".repeat(
+                category.depth * 2
+              )}${escapeHtml(category.name)}</option>`
+          )
+        ].join("");
+
+        if (noteCategoryValue && flat.some((category) => category.id === noteCategoryValue)) {
+          els.noteCategory.value = noteCategoryValue;
+        } else if (
+          state.selectedCategoryId &&
+          flat.some((category) => category.id === state.selectedCategoryId)
+        ) {
+          els.noteCategory.value = state.selectedCategoryId;
+        } else {
+          els.noteCategory.value = "";
+        }
+      }
+
+      if (els.noteFilter) {
+        els.noteFilter.innerHTML = [
+          `<option value="all">${escapeHtml(tr("workspace.toolbar.filterAll"))}</option>`,
+          `<option value="uncategorized">${escapeHtml(
+            tr("workspace.toolbar.filterUncategorized")
+          )}</option>`,
+          ...flat.map(
+            (category) =>
+              `<option value="${escapeHtml(category.id)}">${"&nbsp;".repeat(
+                category.depth * 2
+              )}${escapeHtml(category.name)}</option>`
+          )
+        ].join("");
+
+        const hasFilterCategory = flat.some((category) => category.id === state.filterCategoryId);
+        if (
+          state.filterCategoryId !== "all" &&
+          state.filterCategoryId !== "uncategorized" &&
+          !hasFilterCategory
+        ) {
+          state.filterCategoryId = "all";
+        }
+        els.noteFilter.value = state.filterCategoryId;
+      }
+    };
+
+    const renderCategoryTree = () => {
+      if (!els.categoryTree) return;
+      if (!state.categories.length) {
+        els.categoryTree.innerHTML = `<p class="workspace-empty">${escapeHtml(
+          tr("workspace.category.empty")
+        )}</p>`;
+        return;
+      }
+
+      const countNotesInTree = (categoryId) => {
+        const ids = collectDescendantIds(categoryId);
+        return state.notes.filter((note) => note.categoryId && ids.has(note.categoryId)).length;
+      };
+
+      const renderBranch = (parentId = null, trail = new Set()) => {
+        const children = sortCategories(
+          state.categories.filter((category) => (category.parentId || null) === parentId)
+        );
+        if (!children.length) return "";
+
+        return `
+          <ul class="workspace-tree-list">
+            ${children
+              .map((category) => {
+                const isActive = state.selectedCategoryId === category.id;
+                const count = countNotesInTree(category.id);
+                const nextTrail = new Set(trail);
+                nextTrail.add(category.id);
+                const childTree = trail.has(category.id) ? "" : renderBranch(category.id, nextTrail);
+                return `
+                  <li class="workspace-tree-item">
+                    <div class="workspace-tree-row ${isActive ? "is-active" : ""}">
+                      <button
+                        type="button"
+                        class="workspace-tree-name"
+                        data-action="select-category"
+                        data-id="${escapeHtml(category.id)}"
+                      >
+                        ${escapeHtml(category.name)}
+                      </button>
+                      <span class="workspace-tree-count">${escapeHtml(
+                        tr("workspace.category.noteCount", { count })
+                      )}</span>
+                      <div class="workspace-tree-actions">
+                        <button
+                          type="button"
+                          class="workspace-tree-action"
+                          data-action="prepare-child"
+                          data-id="${escapeHtml(category.id)}"
+                        >
+                          ${escapeHtml(tr("workspace.category.child"))}
+                        </button>
+                        <button
+                          type="button"
+                          class="workspace-tree-action danger"
+                          data-action="delete-category"
+                          data-id="${escapeHtml(category.id)}"
+                        >
+                          ${escapeHtml(tr("workspace.category.delete"))}
+                        </button>
+                      </div>
+                    </div>
+                    ${childTree}
+                  </li>
+                `;
+              })
+              .join("")}
+          </ul>
+        `;
+      };
+
+      els.categoryTree.innerHTML = renderBranch();
+    };
+
+    const syncEditor = () => {
+      if (!els.noteTitle || !els.noteTags || !els.noteBody || !els.noteCategory) return;
+
+      const note = state.notes.find((item) => item.id === state.editingNoteId);
+      if (!note) {
+        els.noteTitle.value = "";
+        els.noteTags.value = "";
+        els.noteBody.value = "";
+        if (
+          state.selectedCategoryId &&
+          state.categories.some((category) => category.id === state.selectedCategoryId)
+        ) {
+          els.noteCategory.value = state.selectedCategoryId;
+        } else {
+          els.noteCategory.value = "";
+        }
+        return;
+      }
+
+      els.noteTitle.value = note.title;
+      els.noteTags.value = note.tags.join(", ");
+      els.noteBody.value = note.body;
+      els.noteCategory.value = note.categoryId || "";
+    };
+
+    const renderNoteList = () => {
+      if (!els.noteList) return;
+      const notes = getFilteredNotes();
+
+      if (!notes.length) {
+        els.noteList.innerHTML = `<p class="workspace-empty">${escapeHtml(tr("workspace.notes.empty"))}</p>`;
+        return;
+      }
+
+      els.noteList.innerHTML = notes
+        .map((note) => {
+          const isActive = note.id === state.editingNoteId;
+          const title = note.title || tr("workspace.notes.untitled");
+          const preview = note.body.replace(/\s+/g, " ").trim().slice(0, 160);
+          const tags = note.tags
+            .slice(0, 4)
+            .map((tag) => `<span class="workspace-note-tag">${escapeHtml(tag)}</span>`)
+            .join("");
+          return `
+            <article class="workspace-note-item ${isActive ? "is-active" : ""}">
+              <header class="workspace-note-head">
+                <h3>${escapeHtml(title)}</h3>
+                <span>${escapeHtml(tr("workspace.notes.updated"))}: ${escapeHtml(
+            formatDate(note.updatedAt)
+          )}</span>
+              </header>
+              <p>${escapeHtml(preview)}</p>
+              <div class="workspace-note-meta">
+                <span class="workspace-note-category">${escapeHtml(
+                  tr("workspace.notes.category")
+                )}: ${escapeHtml(getCategoryLabel(note.categoryId))}</span>
+                <span class="workspace-note-tags">${tags}</span>
+              </div>
+              <button
+                type="button"
+                class="workspace-note-open"
+                data-action="open-note"
+                data-id="${escapeHtml(note.id)}"
+              >
+                ${escapeHtml(tr("workspace.notes.open"))}
+              </button>
+            </article>
+          `;
+        })
+        .join("");
+    };
+
+    const renderAll = () => {
+      renderKpis();
+      renderCategoryOptions();
+      renderCategoryTree();
+      renderNoteList();
+      syncEditor();
+      refreshStatus();
+    };
+
+    const exportWorkspace = () => {
+      const payload = {
+        version: 1,
+        exportedAt: nowIso(),
+        categories: state.categories,
+        notes: state.notes
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const anchor = document.createElement("a");
+      const dateStamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
+      anchor.href = URL.createObjectURL(blob);
+      anchor.download = `it-study-notes-workspace-${dateStamp}.json`;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(anchor.href);
+      setStatus("workspace.status.exportDone", undefined, "success");
+    };
+
+    const applyImportedData = (payload) => {
+      if (!payload || typeof payload !== "object") return false;
+      const categories = normalizeCategories(payload.categories);
+      const notes = normalizeNotes(payload.notes, categories);
+      state.categories = categories;
+      state.notes = notes;
+      state.selectedCategoryId = null;
+      state.editingNoteId = null;
+      state.filterCategoryId = "all";
+      saveState();
+      renderAll();
+      return true;
+    };
+
+    const handleCategorySubmit = (event) => {
+      event.preventDefault();
+      if (!els.categoryName || !els.categoryParent) return;
+
+      const name = els.categoryName.value.trim();
+      if (!name) {
+        setStatus("workspace.status.categoryNameRequired", undefined, "warning");
+        return;
+      }
+
+      const parentId = els.categoryParent.value || null;
+      const duplicate = state.categories.some(
+        (category) =>
+          (category.parentId || null) === parentId &&
+          category.name.toLowerCase() === name.toLowerCase()
+      );
+      if (duplicate) {
+        setStatus("workspace.status.categoryDuplicate", undefined, "warning");
+        return;
+      }
+
+      const category = {
+        id: makeId(),
+        name,
+        parentId,
+        createdAt: nowIso(),
+        updatedAt: nowIso()
+      };
+      state.categories.push(category);
+      state.selectedCategoryId = category.id;
+      state.filterCategoryId = category.id;
+      els.categoryName.value = "";
+      saveState();
+      renderAll();
+      setStatus("workspace.status.categoryAdded", { name: category.name }, "success");
+    };
+
+    const handleCategoryAction = (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+      const action = button.getAttribute("data-action");
+      const id = button.getAttribute("data-id");
+      if (!id) return;
+
+      const category = state.categories.find((item) => item.id === id);
+      if (!category) return;
+
+      if (action === "select-category") {
+        state.selectedCategoryId = id;
+        state.filterCategoryId = id;
+        renderAll();
+        setStatus("workspace.status.categorySelected", { name: category.name });
+        return;
+      }
+
+      if (action === "prepare-child") {
+        if (els.categoryParent) els.categoryParent.value = id;
+        if (els.categoryName) els.categoryName.focus();
+        setStatus("workspace.status.childReady", { name: category.name });
+        return;
+      }
+
+      if (action === "delete-category") {
+        const hasChildren = state.categories.some((item) => item.parentId === id);
+        if (hasChildren) {
+          setStatus("workspace.status.categoryHasChildren", undefined, "warning");
+          return;
+        }
+        const hasNotes = state.notes.some((note) => note.categoryId === id);
+        if (hasNotes) {
+          setStatus("workspace.status.categoryHasNotes", undefined, "warning");
+          return;
+        }
+
+        state.categories = state.categories.filter((item) => item.id !== id);
+        if (state.selectedCategoryId === id) state.selectedCategoryId = null;
+        if (state.filterCategoryId === id) state.filterCategoryId = "all";
+        saveState();
+        renderAll();
+        setStatus("workspace.status.categoryDeleted", { name: category.name }, "success");
+      }
+    };
+
+    const handleNoteSave = (event) => {
+      event.preventDefault();
+      if (!els.noteTitle || !els.noteCategory || !els.noteTags || !els.noteBody) return;
+
+      const title = els.noteTitle.value.trim();
+      if (!title) {
+        setStatus("workspace.status.noteTitleRequired", undefined, "warning");
+        return;
+      }
+
+      const categoryIdRaw = els.noteCategory.value.trim();
+      const categoryId =
+        categoryIdRaw && state.categories.some((category) => category.id === categoryIdRaw)
+          ? categoryIdRaw
+          : null;
+      const tags = parseTags(els.noteTags.value);
+      const body = els.noteBody.value;
+      const timestamp = nowIso();
+
+      let note = state.notes.find((item) => item.id === state.editingNoteId);
+      if (!note) {
+        note = {
+          id: makeId(),
+          title,
+          body,
+          tags,
+          categoryId,
+          createdAt: timestamp,
+          updatedAt: timestamp
+        };
+        state.notes.push(note);
+      } else {
+        note.title = title;
+        note.body = body;
+        note.tags = tags;
+        note.categoryId = categoryId;
+        note.updatedAt = timestamp;
+      }
+
+      state.editingNoteId = note.id;
+      state.selectedCategoryId = note.categoryId;
+      saveState();
+      renderAll();
+      setStatus("workspace.status.noteSaved", { title: note.title }, "success");
+    };
+
+    const handleNoteDelete = () => {
+      if (!state.editingNoteId) {
+        setStatus("workspace.status.noteSelectForDelete", undefined, "warning");
+        return;
+      }
+
+      const target = state.notes.find((note) => note.id === state.editingNoteId);
+      if (!target) return;
+      if (!window.confirm(tr("workspace.editor.deleteConfirm"))) return;
+
+      state.notes = state.notes.filter((note) => note.id !== target.id);
+      state.editingNoteId = null;
+      saveState();
+      renderAll();
+      setStatus("workspace.status.noteDeleted", { title: target.title }, "success");
+    };
+
+    const handleNoteListAction = (event) => {
+      const button = event.target.closest("button[data-action='open-note']");
+      if (!button) return;
+      const noteId = button.getAttribute("data-id");
+      if (!noteId) return;
+      const note = state.notes.find((item) => item.id === noteId);
+      if (!note) return;
+      state.editingNoteId = note.id;
+      state.selectedCategoryId = note.categoryId;
+      renderAll();
+      setStatus("workspace.status.noteLoaded", { title: note.title });
+    };
+
+    const handleImport = async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const payload = parseJson(text);
+        if (!payload || typeof payload !== "object") {
+          setStatus("workspace.status.importFailed", undefined, "error");
+          return;
+        }
+        const shouldReplace = window.confirm(tr("workspace.status.importReplaceConfirm"));
+        if (!shouldReplace) return;
+        const ok = applyImportedData(payload);
+        if (!ok) {
+          setStatus("workspace.status.importFailed", undefined, "error");
+          return;
+        }
+        setStatus("workspace.status.importDone", undefined, "success");
+      } catch {
+        setStatus("workspace.status.importFailed", undefined, "error");
+      } finally {
+        event.target.value = "";
+      }
+    };
+
+    loadState();
+    renderAll();
+    setStatus("workspace.status.ready");
+
+    els.categoryForm?.addEventListener("submit", handleCategorySubmit);
+    els.categoryClearParent?.addEventListener("click", () => {
+      if (els.categoryParent) els.categoryParent.value = "";
+    });
+    els.categoryTree?.addEventListener("click", handleCategoryAction);
+
+    els.noteSearch?.addEventListener("input", (event) => {
+      state.searchQuery = event.target.value || "";
+      renderNoteList();
+    });
+    els.noteFilter?.addEventListener("change", (event) => {
+      state.filterCategoryId = event.target.value || "all";
+      renderNoteList();
+    });
+    els.noteNew?.addEventListener("click", () => {
+      state.editingNoteId = null;
+      syncEditor();
+      renderNoteList();
+    });
+    els.noteForm?.addEventListener("submit", handleNoteSave);
+    els.noteDelete?.addEventListener("click", handleNoteDelete);
+    els.noteList?.addEventListener("click", handleNoteListAction);
+
+    els.exportButton?.addEventListener("click", exportWorkspace);
+    els.importInput?.addEventListener("change", handleImport);
+
+    window.addEventListener("site:lang", () => {
+      renderAll();
+    });
+  }
+</script>
