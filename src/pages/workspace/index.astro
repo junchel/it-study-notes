@@ -82,6 +82,14 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
             >
               {t("workspace.toolbar.export")}
             </button>
+            <button
+              type="button"
+              class="button secondary workspace-btn workspace-btn-secondary"
+              data-export-markdown
+              data-i18n="workspace.toolbar.exportMarkdown"
+            >
+              {t("workspace.toolbar.exportMarkdown")}
+            </button>
             <label class="workspace-import-btn" data-i18n="workspace.toolbar.import">
               {t("workspace.toolbar.import")}
               <input type="file" accept="application/json" data-import />
@@ -104,6 +112,10 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
               {t("workspace.toolbar.filterLabel")}
             </label>
             <select id="workspace-note-filter" class="workspace-input" data-note-filter></select>
+            <label for="workspace-board-filter" data-i18n="workspace.toolbar.boardFilterLabel">
+              {t("workspace.toolbar.boardFilterLabel")}
+            </label>
+            <select id="workspace-board-filter" class="workspace-input" data-board-filter></select>
           </div>
         </div>
 
@@ -145,6 +157,11 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
                 class="workspace-input"
                 data-note-category
               ></select>
+
+              <label for="workspace-note-board" data-i18n="workspace.editor.boardLabel">
+                {t("workspace.editor.boardLabel")}
+              </label>
+              <select id="workspace-note-board" name="board" class="workspace-input" data-note-board></select>
 
               <label for="workspace-note-tags" data-i18n="workspace.editor.tagsLabel">
                 {t("workspace.editor.tagsLabel")}
@@ -212,26 +229,31 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
     noteNew: document.querySelector("[data-note-new]"),
     noteSearch: document.querySelector("[data-note-search]"),
     noteFilter: document.querySelector("[data-note-filter]"),
+    boardFilter: document.querySelector("[data-board-filter]"),
     noteList: document.querySelector("[data-note-list]"),
     noteForm: document.querySelector("[data-note-form]"),
     noteTitle: document.querySelector("[data-note-title]"),
     noteCategory: document.querySelector("[data-note-category]"),
+    noteBoard: document.querySelector("[data-note-board]"),
     noteTags: document.querySelector("[data-note-tags]"),
     noteBody: document.querySelector("[data-note-body]"),
     noteDelete: document.querySelector("[data-note-delete]"),
     exportButton: document.querySelector("[data-export]"),
+    exportMarkdownButton: document.querySelector("[data-export-markdown]"),
     importInput: document.querySelector("[data-import]"),
     status: document.querySelector("[data-workspace-status]")
   };
 
   if (i18n && els.app) {
+    const BOARD_OPTIONS = ["general", "ai", "devops", "security", "network"];
     const state = {
       categories: [],
       notes: [],
       selectedCategoryId: null,
       editingNoteId: null,
       searchQuery: "",
-      filterCategoryId: "all"
+      filterCategoryId: "all",
+      filterBoard: "all"
     };
 
     let lastStatus = null;
@@ -325,11 +347,16 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
                 .filter((tag, index, list) => list.indexOf(tag) === index)
             : [];
           const rawCategoryId = item.categoryId ? String(item.categoryId).trim() : null;
+          const boardCandidate = String(item.board || "general")
+            .trim()
+            .toLowerCase();
+          const board = BOARD_OPTIONS.includes(boardCandidate) ? boardCandidate : "general";
           return {
             id,
             title,
             body: String(item.body || ""),
             tags,
+            board,
             categoryId: rawCategoryId && categoryIds.has(rawCategoryId) ? rawCategoryId : null,
             createdAt: item.createdAt || nowIso(),
             updatedAt: item.updatedAt || nowIso()
@@ -404,6 +431,45 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       return category ? category.name : tr("workspace.notes.categoryNone");
     };
 
+    const getBoardLabel = (board) =>
+      BOARD_OPTIONS.includes(board) ? tr(`workspace.board.${board}`) : tr("workspace.board.general");
+
+    const slugify = (value) =>
+      String(value || "")
+        .normalize("NFKD")
+        .toLowerCase()
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 80) || "workspace-note";
+
+    const toFrontmatterList = (items) => `[${items.map((item) => `"${item}"`).join(", ")}]`;
+
+    const toMarkdown = (note) => {
+      const lines = note.body.replace(/\r\n/g, "\n");
+      const description = lines
+        .split("\n")
+        .map((line) => line.trim())
+        .find(Boolean);
+      const safeDescription = description
+        ? description.slice(0, 120).replaceAll('"', '\\"')
+        : "워크스페이스에서 작성한 노트";
+      const dateOnly = note.updatedAt.slice(0, 10);
+      const tags = note.tags.length ? note.tags : [note.board];
+      const frontmatter = [
+        "---",
+        `title: "${note.title.replaceAll('"', '\\"')}"`,
+        `description: "${safeDescription}"`,
+        `pubDate: ${note.createdAt.slice(0, 10)}`,
+        `updatedDate: ${dateOnly}`,
+        `tags: ${toFrontmatterList(tags)}`,
+        `board: "${note.board}"`,
+        "---",
+        ""
+      ].join("\n");
+      return `${frontmatter}${lines}\n`;
+    };
+
     const getLastUpdatedAt = () => {
       const stamps = [
         ...state.categories.map((category) => category.updatedAt),
@@ -419,6 +485,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
     const getFilteredNotes = () => {
       const query = state.searchQuery.trim().toLowerCase();
       const filter = state.filterCategoryId;
+      const boardFilter = state.filterBoard;
       const categoryScope =
         filter && filter !== "all" && filter !== "uncategorized"
           ? collectDescendantIds(filter)
@@ -426,10 +493,11 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 
       return state.notes
         .filter((note) => {
+          if (boardFilter !== "all" && note.board !== boardFilter) return false;
           if (filter === "uncategorized" && note.categoryId) return false;
           if (categoryScope && !categoryScope.has(note.categoryId || "")) return false;
           if (!query) return true;
-          const pool = `${note.title}\n${note.tags.join(" ")}\n${note.body}`.toLowerCase();
+          const pool = `${note.title}\n${note.tags.join(" ")}\n${note.body}\n${note.board}`.toLowerCase();
           return pool.includes(query);
         })
         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
@@ -484,6 +552,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       const flat = flattenCategories();
       const parentValue = els.categoryParent ? els.categoryParent.value : "";
       const noteCategoryValue = els.noteCategory ? els.noteCategory.value : "";
+      const noteBoardValue = els.noteBoard ? els.noteBoard.value : "";
 
       if (els.categoryParent) {
         els.categoryParent.innerHTML = [
@@ -546,6 +615,32 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           state.filterCategoryId = "all";
         }
         els.noteFilter.value = state.filterCategoryId;
+      }
+
+      if (els.noteBoard) {
+        els.noteBoard.innerHTML = BOARD_OPTIONS.map(
+          (board) => `<option value="${escapeHtml(board)}">${escapeHtml(getBoardLabel(board))}</option>`
+        ).join("");
+
+        if (BOARD_OPTIONS.includes(noteBoardValue)) {
+          els.noteBoard.value = noteBoardValue;
+        } else {
+          els.noteBoard.value = "general";
+        }
+      }
+
+      if (els.boardFilter) {
+        els.boardFilter.innerHTML = [
+          `<option value="all">${escapeHtml(tr("workspace.toolbar.boardFilterAll"))}</option>`,
+          ...BOARD_OPTIONS.map(
+            (board) => `<option value="${escapeHtml(board)}">${escapeHtml(getBoardLabel(board))}</option>`
+          )
+        ].join("");
+
+        if (!BOARD_OPTIONS.includes(state.filterBoard)) {
+          state.filterBoard = "all";
+        }
+        els.boardFilter.value = state.filterBoard;
       }
     };
 
@@ -624,7 +719,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
     };
 
     const syncEditor = () => {
-      if (!els.noteTitle || !els.noteTags || !els.noteBody || !els.noteCategory) return;
+      if (!els.noteTitle || !els.noteTags || !els.noteBody || !els.noteCategory || !els.noteBoard) return;
 
       const note = state.notes.find((item) => item.id === state.editingNoteId);
       if (!note) {
@@ -639,6 +734,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
         } else {
           els.noteCategory.value = "";
         }
+        els.noteBoard.value = "general";
         return;
       }
 
@@ -646,6 +742,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       els.noteTags.value = note.tags.join(", ");
       els.noteBody.value = note.body;
       els.noteCategory.value = note.categoryId || "";
+      els.noteBoard.value = note.board || "general";
     };
 
     const renderNoteList = () => {
@@ -679,6 +776,9 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
                 <span class="workspace-note-category">${escapeHtml(
                   tr("workspace.notes.category")
                 )}: ${escapeHtml(getCategoryLabel(note.categoryId))}</span>
+                <span class="workspace-note-board">${escapeHtml(tr("workspace.notes.board"))}: ${escapeHtml(
+            getBoardLabel(note.board || "general")
+          )}</span>
                 <span class="workspace-note-tags">${tags}</span>
               </div>
               <button
@@ -723,6 +823,26 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       setStatus("workspace.status.exportDone", undefined, "success");
     };
 
+    const exportSelectedMarkdown = () => {
+      const note = state.notes.find((item) => item.id === state.editingNoteId);
+      if (!note) {
+        setStatus("workspace.status.noteSelectForMarkdown", undefined, "warning");
+        return;
+      }
+
+      const markdown = toMarkdown(note);
+      const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+      const anchor = document.createElement("a");
+      const fileName = `${slugify(note.title)}.md`;
+      anchor.href = URL.createObjectURL(blob);
+      anchor.download = fileName;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(anchor.href);
+      setStatus("workspace.status.markdownExportDone", { title: note.title }, "success");
+    };
+
     const applyImportedData = (payload) => {
       if (!payload || typeof payload !== "object") return false;
       const categories = normalizeCategories(payload.categories);
@@ -732,6 +852,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       state.selectedCategoryId = null;
       state.editingNoteId = null;
       state.filterCategoryId = "all";
+      state.filterBoard = "all";
       saveState();
       renderAll();
       return true;
@@ -822,7 +943,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 
     const handleNoteSave = (event) => {
       event.preventDefault();
-      if (!els.noteTitle || !els.noteCategory || !els.noteTags || !els.noteBody) return;
+      if (!els.noteTitle || !els.noteCategory || !els.noteBoard || !els.noteTags || !els.noteBody) return;
 
       const title = els.noteTitle.value.trim();
       if (!title) {
@@ -837,6 +958,10 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           : null;
       const tags = parseTags(els.noteTags.value);
       const body = els.noteBody.value;
+      const boardValue = String(els.noteBoard.value || "general")
+        .trim()
+        .toLowerCase();
+      const board = BOARD_OPTIONS.includes(boardValue) ? boardValue : "general";
       const timestamp = nowIso();
 
       let note = state.notes.find((item) => item.id === state.editingNoteId);
@@ -846,6 +971,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           title,
           body,
           tags,
+          board,
           categoryId,
           createdAt: timestamp,
           updatedAt: timestamp
@@ -855,6 +981,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
         note.title = title;
         note.body = body;
         note.tags = tags;
+        note.board = board;
         note.categoryId = categoryId;
         note.updatedAt = timestamp;
       }
@@ -940,6 +1067,10 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
       state.filterCategoryId = event.target.value || "all";
       renderNoteList();
     });
+    els.boardFilter?.addEventListener("change", (event) => {
+      state.filterBoard = event.target.value || "all";
+      renderNoteList();
+    });
     els.noteNew?.addEventListener("click", () => {
       state.editingNoteId = null;
       syncEditor();
@@ -950,6 +1081,7 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
     els.noteList?.addEventListener("click", handleNoteListAction);
 
     els.exportButton?.addEventListener("click", exportWorkspace);
+    els.exportMarkdownButton?.addEventListener("click", exportSelectedMarkdown);
     els.importInput?.addEventListener("change", handleImport);
 
     window.addEventListener("site:lang", () => {
