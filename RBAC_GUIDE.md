@@ -45,7 +45,7 @@ board: "ai"
 2. `Require approvals`는 단독 운영 레포면 `0`, 다중 운영이면 `1` 이상으로 설정
 3. `Require review from Code Owners`는 다중 운영 시 활성화(권장)
 4. `Require status checks to pass before merging` 활성화
-5. Status checks에 `RBAC Policy Check / rbac` 추가
+5. Status checks에 `rbac` 체크를 추가
 6. (조직 레포인 경우) `Restrict who can push to matching branches`에서 관리자만 direct push 허용(권장)
 
 ## 동작 방식
