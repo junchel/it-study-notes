@@ -20,6 +20,56 @@ const stats = [
   { labelKey: "home.hero.stats.tags", value: tagSet.size },
   { labelKey: "home.hero.stats.paths", value: PATHS.length }
 ];
+const heroMetrics = [
+  {
+    labelKey: "home.hero.metric1.label",
+    valueKey: "home.hero.metric1.value",
+    bodyKey: "home.hero.metric1.body"
+  },
+  {
+    labelKey: "home.hero.metric2.label",
+    valueKey: "home.hero.metric2.value",
+    bodyKey: "home.hero.metric2.body"
+  },
+  {
+    labelKey: "home.hero.metric3.label",
+    valueKey: "home.hero.metric3.value",
+    bodyKey: "home.hero.metric3.body"
+  }
+];
+const quickActions = [
+  {
+    id: "incident",
+    titleKey: "home.execute.incident.title",
+    bodyKey: "home.execute.incident.body",
+    command: "journalctl -u nginx -n 120 --no-pager",
+    href: "/tags/incident-response/",
+    ctaKey: "home.execute.incident.cta"
+  },
+  {
+    id: "deploy",
+    titleKey: "home.execute.deploy.title",
+    bodyKey: "home.execute.deploy.body",
+    command: "kubectl rollout status deploy/api -n prod",
+    href: "/tags/deployment/",
+    ctaKey: "home.execute.deploy.cta"
+  },
+  {
+    id: "security",
+    titleKey: "home.execute.security.title",
+    bodyKey: "home.execute.security.body",
+    command: "sudo ss -tulpen | grep -E ':80|:443|:22'",
+    href: "/tags/security/",
+    ctaKey: "home.execute.security.cta"
+  }
+];
+const pathLevelCycle = ["foundation", "practical", "advanced"];
+const workspaceTreePreview = [
+  { key: "home.workspace.snapshot.tree1", depth: 0 },
+  { key: "home.workspace.snapshot.tree2", depth: 1 },
+  { key: "home.workspace.snapshot.tree3", depth: 2 },
+  { key: "home.workspace.snapshot.tree4", depth: 1 }
+];
 const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
 ---
 
@@ -59,12 +109,27 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
             <li data-i18n="home.hero.point2">{t("home.hero.point2")}</li>
             <li data-i18n="home.hero.point3">{t("home.hero.point3")}</li>
           </ul>
+          <div class="hero-proof-metrics">
+            {heroMetrics.map((metric) => (
+              <article class="hero-proof-metric">
+                <span class="hero-proof-metric-label" data-i18n={metric.labelKey}>
+                  {t(metric.labelKey)}
+                </span>
+                <strong class="hero-proof-metric-value" data-i18n={metric.valueKey}>
+                  {t(metric.valueKey)}
+                </strong>
+                <p class="hero-proof-metric-body" data-i18n={metric.bodyKey}>
+                  {t(metric.bodyKey)}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
         <div class="hero-actions">
           <a class="button" href="/notes/" data-i18n="home.hero.primary">
             {t("home.hero.primary")}
           </a>
-          <a class="button secondary" href="/about/" data-i18n="home.hero.secondary">
+          <a class="button secondary" href="/workspace/" data-i18n="home.hero.secondary">
             {t("home.hero.secondary")}
           </a>
         </div>
@@ -105,46 +170,6 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           ))}
           </div>
         </div>
-        <div class="hero-panel-card workflow-preview">
-          <h2 class="workflow-preview-title" data-i18n="home.workflow.title">
-            {t("home.workflow.title")}
-          </h2>
-          <ol class="workflow-preview-list">
-            <li class="workflow-preview-item">
-              <span class="workflow-preview-index">01</span>
-              <div>
-                <p class="workflow-preview-item-title" data-i18n="home.workflow.step1.title">
-                  {t("home.workflow.step1.title")}
-                </p>
-                <p class="workflow-preview-item-body" data-i18n="home.workflow.step1.body">
-                  {t("home.workflow.step1.body")}
-                </p>
-              </div>
-            </li>
-            <li class="workflow-preview-item">
-              <span class="workflow-preview-index">02</span>
-              <div>
-                <p class="workflow-preview-item-title" data-i18n="home.workflow.step2.title">
-                  {t("home.workflow.step2.title")}
-                </p>
-                <p class="workflow-preview-item-body" data-i18n="home.workflow.step2.body">
-                  {t("home.workflow.step2.body")}
-                </p>
-              </div>
-            </li>
-            <li class="workflow-preview-item">
-              <span class="workflow-preview-index">03</span>
-              <div>
-                <p class="workflow-preview-item-title" data-i18n="home.workflow.step3.title">
-                  {t("home.workflow.step3.title")}
-                </p>
-                <p class="workflow-preview-item-body" data-i18n="home.workflow.step3.body">
-                  {t("home.workflow.step3.body")}
-                </p>
-              </div>
-            </li>
-          </ol>
-        </div>
         <div class="hero-panel-card command-preview">
           <h2 class="command-preview-title" data-i18n="home.command.title">
             {t("home.command.title")}
@@ -170,6 +195,30 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
     <section class="section home-section">
       <div class="section-title">
         <div class="section-heading">
+          <span class="section-kicker" data-i18n="home.section.execute.kicker">{t("home.section.execute.kicker")}</span>
+          <h2 data-i18n="home.section.execute">{t("home.section.execute")}</h2>
+        </div>
+        <a href="/notes/" data-i18n="home.section.execute.link">
+          {t("home.section.execute.link")}
+        </a>
+      </div>
+      <div class="home-execution-grid">
+        {quickActions.map((action, index) => (
+          <article class:list={["home-execution-card", `home-execution-tone-${index + 1}`]}>
+            <h3 data-i18n={action.titleKey}>{t(action.titleKey)}</h3>
+            <code class="command-line">{action.command}</code>
+            <p data-i18n={action.bodyKey}>{t(action.bodyKey)}</p>
+            <a class="home-execution-link" href={action.href} data-i18n={action.ctaKey}>
+              {t(action.ctaKey)}
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section home-section">
+      <div class="section-title">
+        <div class="section-heading">
           <span class="section-kicker" data-i18n="home.section.paths.kicker">{t("home.section.paths.kicker")}</span>
           <h2 data-i18n="home.section.paths">{t("home.section.paths")}</h2>
         </div>
@@ -182,6 +231,9 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
           <article class:list={["path-card", `path-card-tone-${(index % 3) + 1}`]}>
             <span class="path-index">{String(index + 1).padStart(2, "0")}</span>
             <div>
+              <span class="path-level" data-i18n={`home.path.level.${pathLevelCycle[index % pathLevelCycle.length]}`}>
+                {t(`home.path.level.${pathLevelCycle[index % pathLevelCycle.length]}`)}
+              </span>
               <h3 data-i18n={`path.${path.id}.title`}>
                 {t(`path.${path.id}.title`)}
               </h3>
@@ -206,6 +258,49 @@ const t = (key, vars) => translate(DEFAULT_LANG, key, vars);
         {notes.map((note) => (
           <NoteCard note={note} />
         ))}
+      </div>
+    </section>
+
+    <section class="section home-section">
+      <div class="section-title">
+        <div class="section-heading">
+          <span class="section-kicker" data-i18n="home.section.workspace.kicker">{t("home.section.workspace.kicker")}</span>
+          <h2 data-i18n="home.section.workspace">{t("home.section.workspace")}</h2>
+        </div>
+        <a href="/workspace/" data-i18n="home.section.workspace.link">
+          {t("home.section.workspace.link")}
+        </a>
+      </div>
+      <div class="home-workspace-shell">
+        <article class="home-workspace-pane">
+          <h3 data-i18n="home.workspace.snapshot.treeTitle">{t("home.workspace.snapshot.treeTitle")}</h3>
+          <p data-i18n="home.workspace.snapshot.treeBody">{t("home.workspace.snapshot.treeBody")}</p>
+          <ul class="home-workspace-tree">
+            {workspaceTreePreview.map((item) => (
+              <li class="home-workspace-tree-item" style={`--depth:${item.depth};`}>
+                <span data-i18n={item.key}>{t(item.key)}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+        <article class="home-workspace-pane">
+          <h3 data-i18n="home.workspace.snapshot.flowTitle">{t("home.workspace.snapshot.flowTitle")}</h3>
+          <p data-i18n="home.workspace.snapshot.flowBody">{t("home.workspace.snapshot.flowBody")}</p>
+          <ol class="home-workspace-flow">
+            <li>
+              <h4 data-i18n="home.workspace.snapshot.step1.title">{t("home.workspace.snapshot.step1.title")}</h4>
+              <p data-i18n="home.workspace.snapshot.step1.body">{t("home.workspace.snapshot.step1.body")}</p>
+            </li>
+            <li>
+              <h4 data-i18n="home.workspace.snapshot.step2.title">{t("home.workspace.snapshot.step2.title")}</h4>
+              <p data-i18n="home.workspace.snapshot.step2.body">{t("home.workspace.snapshot.step2.body")}</p>
+            </li>
+            <li>
+              <h4 data-i18n="home.workspace.snapshot.step3.title">{t("home.workspace.snapshot.step3.title")}</h4>
+              <p data-i18n="home.workspace.snapshot.step3.body">{t("home.workspace.snapshot.step3.body")}</p>
+            </li>
+          </ol>
+        </article>
       </div>
     </section>
   </div>
